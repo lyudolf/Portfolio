@@ -1,0 +1,20 @@
+# Large Notion export archives
+*.zip
+notion_export/
+notion_export_2024/
+
+# Analysis scripts (temporary)
+analysis/
+analyze.py
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp extraction scripts
+/tmp/

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — 프로젝트 포트폴리오</title>
+  <meta name="description" content="XR 개발자 프로젝트 포트폴리오">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ===== GNB (Global Navigation) ===== -->
+  <nav class="gnb" id="gnb">
+    <div class="gnb-inner">
+      <a href="#" class="gnb-logo" onclick="goHome(); return false;">
+        <div class="gnb-logo-icon">P</div>
+        <span>Portfolio</span>
+      </a>
+      <div class="gnb-tabs" id="gnbTabs">
+        <button class="gnb-tab active" data-page="home">Home</button>
+        <button class="gnb-tab" data-page="kisti">KISTi</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HOME PAGE
+       ============================================================ -->
+  <div id="page-home" class="page active">
+    <section class="hero" id="about">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-greeting">안녕하세요 👋</div>
+        <h1 class="hero-title">
+          <span class="hero-gradient">이름</span>입니다
+        </h1>
+        <p class="hero-desc">
+          직함 / 역할에 대한 간단한 소개 문구를 입력해주세요.<br>
+          관심 분야와 전문 영역을 설명하는 두 번째 줄입니다.
+        </p>
+        <div class="skill-tags">
+          <span class="skill-tag">Unity</span>
+          <span class="skill-tag">VR / XR</span>
+          <span class="skill-tag">C#</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">MediaPipe</span>
+          <span class="skill-tag">Meta Quest</span>
+        </div>
+      </div>
+      <div class="hero-scroll" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
+        <span>프로젝트 보기</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M19 12l-7 7-7-7" />
+        </svg>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-inner">
+        <div class="section-label">Projects</div>
+        <h2 class="section-title">프로젝트</h2>
+        <p class="section-sub">참여한 프로젝트들을 소개합니다.</p>
+        <div class="project-grid" id="projectGrid"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============================================================
+       KISTI PAGE (LNB + Content)
+       ============================================================ -->
+  <div id="page-kisti" class="page">
+    <div class="kisti-layout">
+
+      <!-- LNB (Left Navigation Bar) -->
+      <aside class="lnb" id="lnb">
+        <div class="lnb-header">
+          <h3>📂 KISTi XR</h3>
+          <span class="lnb-badge" id="lnbDocCount">0</span>
+        </div>
+        <div class="lnb-tree" id="lnbTree">
+          <!-- Rendered by JS -->
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="kisti-main" id="kistiMain">
+        <!-- Rendered by JS based on LNB selection -->
+      </main>
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <p>Portfolio · 프로젝트 포트폴리오</p>
+  </footer>
+
+  <!-- ===== Modal ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge" id="modalBadge"></span>
+          <h2 class="modal-title" id="modalTitle"></h2>
+        </div>
+        <button class="modal-close" id="modalClose">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ===== Lightbox ===== -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
