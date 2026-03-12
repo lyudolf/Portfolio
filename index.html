@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio — 프로젝트 포트폴리오</title>
+  <title>lyudolf — XR 프로젝트 정리</title>
   <meta name="description" content="XR 개발자 프로젝트 포트폴리오">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
     <div class="gnb-inner">
       <a href="#" class="gnb-logo" onclick="goHome(); return false;">
         <div class="gnb-logo-icon">P</div>
-        <span>Portfolio</span>
+        <span>XR 프로젝트 정리</span>
       </a>
       <div class="gnb-tabs" id="gnbTabs">
         <button class="gnb-tab active" data-page="home">Home</button>
@@ -36,65 +36,209 @@
   <div id="page-home" class="page active">
     <section class="hero" id="about">
       <div class="hero-bg"></div>
-      <div class="hero-content">
-        <div class="hero-greeting">안녕하세요 👋</div>
-        <h1 class="hero-title">
-          <span class="hero-gradient">이름</span>입니다
-        </h1>
-        <p class="hero-desc">
-          직함 / 역할에 대한 간단한 소개 문구를 입력해주세요.<br>
-          관심 분야와 전문 영역을 설명하는 두 번째 줄입니다.
-        </p>
-        <div class="skill-tags">
-          <span class="skill-tag">Unity</span>
-          <span class="skill-tag">VR / XR</span>
-          <span class="skill-tag">C#</span>
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">MediaPipe</span>
-          <span class="skill-tag">Meta Quest</span>
-        </div>
-      </div>
-      <div class="hero-scroll" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
-        <span>프로젝트 보기</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M19 12l-7 7-7-7" />
-        </svg>
-      </div>
-    </section>
 
-    <section class="section" id="projects">
-      <div class="section-inner">
-        <div class="section-label">Projects</div>
-        <h2 class="section-title">프로젝트</h2>
-        <p class="section-sub">참여한 프로젝트들을 소개합니다.</p>
-        <div class="project-grid" id="projectGrid"></div>
+      <div class="hero-split">
+        <!-- Left: Text -->
+        <div class="hero-left">
+          <div class="hero-label">XR · VR · Unity Developer</div>
+          <h1 class="hero-title">
+            <span class="hero-line">Experience</span>
+            <span class="hero-line"><span class="hero-gradient">makes it real.</span></span>
+          </h1>
+          <p class="hero-desc">
+            VR 인지훈련 콘텐츠 기획부터 개발까지,<br>
+            실감형 XR 프로젝트를 만듭니다.
+          </p>
+          <div class="hero-actions">
+            <button class="hero-cta" onclick="switchPage('kisti')">
+              프로젝트 보기
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+            <div class="hero-tags">
+              <span>Unity</span><span>VR / XR</span><span>C#</span><span>MediaPipe</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: 3D Carousel -->
+        <div class="hero-right">
+          <div class="carousel-scene" id="carouselScene">
+            <div class="carousel-track" id="carouselTrack">
+              <div class="carousel-card" data-index="0">
+                <img src="data/carousel/vr_training.png" alt="VR Training">
+                <div class="carousel-card-label">VR 인지훈련</div>
+              </div>
+              <div class="carousel-card" data-index="1">
+                <img src="data/carousel/cognitive_test.png" alt="Cognitive Test">
+                <div class="carousel-card-label">인지기능 평가</div>
+              </div>
+              <div class="carousel-card" data-index="2">
+                <img src="data/carousel/exercise_guide.png" alt="Exercise Guide">
+                <div class="carousel-card-label">운동성 분석</div>
+              </div>
+            </div>
+            <div class="carousel-dots" id="carouselDots">
+              <span class="carousel-dot active" data-i="0"></span>
+              <span class="carousel-dot" data-i="1"></span>
+              <span class="carousel-dot" data-i="2"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </div>
+
 
   <!-- ============================================================
-       KISTI PAGE (LNB + Content)
+       KISTI PAGE — PM Portfolio Detail
        ============================================================ -->
   <div id="page-kisti" class="page">
-    <div class="kisti-layout">
+    <div class="pm-page">
 
-      <!-- LNB (Left Navigation Bar) -->
-      <aside class="lnb" id="lnb">
-        <div class="lnb-header">
-          <h3>📂 KISTi XR</h3>
-          <span class="lnb-badge" id="lnbDocCount">0</span>
+      <!-- Section 1: Hero -->
+      <section class="pm-hero">
+        <div class="pm-hero-inner">
+          <div class="pm-hero-tags">
+            <span>#고령자UX_재정의</span>
+            <span>#임상데이터_수집</span>
+            <span>#운영런처_구조화</span>
+            <span>#레거시_리팩토링</span>
+          </div>
+          <h1 class="pm-hero-title">XR 기반 비대면<br>인지·운동 융합 훈련 시스템 구축</h1>
+          <p class="pm-hero-sub">고령자를 위한 XR은 단순히 "재미있는 콘텐츠"로 완성되지 않습니다.<br>실제 임상 데이터가 수집되고, 현장 운영이 안정적으로 이어지는 <strong>'시스템'</strong>을 설계했습니다.</p>
+          <div class="pm-hero-meta">
+            <div class="pm-meta-item">
+              <span class="pm-meta-label">역할</span>
+              <span class="pm-meta-value">서비스 기획 (PM)</span>
+            </div>
+            <div class="pm-meta-item">
+              <span class="pm-meta-label">기간</span>
+              <span class="pm-meta-value">2024 — 2025</span>
+            </div>
+            <div class="pm-meta-item">
+              <span class="pm-meta-label">기술</span>
+              <span class="pm-meta-value">Unity · VR · SSO · Force Plate</span>
+            </div>
+          </div>
         </div>
-        <div class="lnb-tree" id="lnbTree">
-          <!-- Rendered by JS -->
-        </div>
-      </aside>
+      </section>
 
-      <!-- Main Content Area -->
-      <main class="kisti-main" id="kistiMain">
-        <!-- Rendered by JS based on LNB selection -->
-      </main>
+      <!-- Section 2: PM's Impact -->
+      <section class="pm-section" id="pmImpact">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">PM's Impact</div>
+          <h2 class="pm-section-title">기준이 없는 상황에서 기준을 세우고,<br>굴러가는 구조를 만들다</h2>
+          <div class="pm-impact-grid">
+            <div class="pm-impact-card">
+              <div class="pm-impact-icon">📈</div>
+              <h3>핵심 성과</h3>
+              <p>차기 연차 연계 및 기술이전 논의 단계로 발전.<br>장기 협업 및 예산 확대 제안 수령.</p>
+            </div>
+            <div class="pm-impact-card">
+              <div class="pm-impact-icon">🏗️</div>
+              <h3>운영 구조 구축</h3>
+              <p>임상 환경에서 실제 운영 가능한 구조 구축 완료.</p>
+            </div>
+          </div>
+          <blockquote class="pm-quote">
+            "기획은 문서를 만드는 일이 아니라, 실제로 필요한 구조를 현실 안에서 작동하게 만드는 일임을 증명했습니다."
+          </blockquote>
+          <button class="pm-modal-btn" onclick="openPmModal(0)">
+            <span>더 깊은 고민의 과정 읽어보기</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <div class="pm-divider"></div>
+
+      <!-- Section 3: Project Overview -->
+      <section class="pm-section" id="pmOverview">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">Project Overview</div>
+          <h2 class="pm-section-title">기존 구조를 다시 봐야 했던 이유</h2>
+          <div class="pm-problems">
+            <div class="pm-problem-item">
+              <div class="pm-problem-num">01</div>
+              <div class="pm-problem-content">
+                <h4>과도한 시각적 정보량</h4>
+                <p>VR 공간 내 동시 표시되는 UI·오브젝트가 고령자의 인지 부하를 초과</p>
+              </div>
+            </div>
+            <div class="pm-problem-item">
+              <div class="pm-problem-num">02</div>
+              <div class="pm-problem-content">
+                <h4>높은 멀미 부담</h4>
+                <p>카메라 이동·시점 전환이 잦아 고령 사용자의 VR 적응 장벽 증가</p>
+              </div>
+            </div>
+            <div class="pm-problem-item">
+              <div class="pm-problem-num">03</div>
+              <div class="pm-problem-content">
+                <h4>Depth가 깊은 운영 한계</h4>
+                <p>교수자가 4~5단계를 거쳐야 세션을 시작할 수 있어 현장 운영 비효율</p>
+              </div>
+            </div>
+          </div>
+          <div class="pm-principle">
+            <h3>🎯 설계 원칙: 고령자 기준의 UX 재정의</h3>
+            <p>피로도와 조작 정확도를 최우선으로 고려하고, 교수자 중심의 중앙 제어 기능을 강화했습니다.</p>
+          </div>
+          <button class="pm-modal-btn" onclick="openPmModal(1)">
+            <span>더 깊은 고민의 과정 읽어보기</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <div class="pm-divider"></div>
+
+      <!-- Section 4: Core Solutions -->
+      <section class="pm-section" id="pmSolutions">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">Core Solutions</div>
+          <h2 class="pm-section-title">해결책 및 핵심 기능</h2>
+          <div class="pm-solutions-grid">
+            <div class="pm-solution-card">
+              <div class="pm-solution-badge">운영 시스템</div>
+              <h3>교수자 / 훈련자 런처</h3>
+              <p>4~5단계 진입 과정을 <strong>1~2 Depth</strong>로 과감히 단축. 대상자 선택부터 결과 확인까지 단일 흐름으로 재구성.</p>
+            </div>
+            <div class="pm-solution-card">
+              <div class="pm-solution-badge">임상 검사</div>
+              <h3>인지 / 균형 / 운동성</h3>
+              <p>데이터 정합성 수집 및 <strong>낙상 위험 사전 감지</strong>. Force Plate 연동으로 실시간 균형 모니터링.</p>
+            </div>
+            <div class="pm-solution-card">
+              <div class="pm-solution-badge">훈련 콘텐츠</div>
+              <h3>곤충잡기 / 공놀이</h3>
+              <p>직관적 상호작용에 인지 변수를 결합하여 <strong>임상 정량 지표</strong>를 자연스럽게 도출.</p>
+            </div>
+          </div>
+          <button class="pm-modal-btn" onclick="openPmModal(2)">
+            <span>더 깊은 고민의 과정 읽어보기</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
     </div>
   </div>
+
+  <!-- ===== PM Detail Modal ===== -->
+  <div class="pm-modal-overlay" id="pmModalOverlay">
+    <div class="pm-modal" id="pmModal">
+      <button class="pm-modal-close" id="pmModalClose" onclick="closePmModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <div class="pm-modal-body" id="pmModalBody"></div>
+    </div>
+  </div>
+
 
   <!-- ===== Footer ===== -->
   <footer class="footer">

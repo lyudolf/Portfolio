@@ -118,8 +118,8 @@ window.addEventListener('DOMContentLoaded', async () => {
             btn.addEventListener('click', () => switchPage(btn.dataset.page));
         });
 
-        // Render home project grid
-        renderProjectGrid(data);
+        // Init 3D carousel
+        initCarousel();
 
         // Render KISTi LNB tree
         renderLnbTree();
@@ -161,8 +161,7 @@ function switchPage(page) {
     if (tab) tab.classList.add('active');
 
     if (page === 'kisti') {
-        renderLnbTree();
-        renderContentForKey(activeLnbKey);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
@@ -172,26 +171,76 @@ function goHome() {
 }
 
 // ============================================================
-// Home: Project Grid
+// Home: 3D Carousel
 // ============================================================
-function renderProjectGrid(data) {
-    const grid = document.getElementById('projectGrid');
-    const total = data.total_documents || allDocs.length;
-    const cats = new Set(allDocs.map(d => d.category)).size;
+let carouselIndex = 0;
+let carouselTimer = null;
 
-    grid.innerHTML = `
-    <div class="project-card" onclick="switchPage('kisti')">
-      <div class="project-card-visual">🥽</div>
-      <div class="project-card-body">
-        <div class="project-card-badge">2024 — 2025</div>
-        <h3 class="project-card-title">KISTi XR 인지훈련 콘텐츠</h3>
-        <p class="project-card-desc">고령자용 비대면 VR 인지-운동 훈련 및 인지·균형·운동성 평가 시스템</p>
-        <div class="project-card-stats">
-          <div class="project-card-stat"><strong>${total}</strong> 문서</div>
-          <div class="project-card-stat"><strong>${cats}</strong> 카테고리</div>
-        </div>
-      </div>
-    </div>`;
+function initCarousel() {
+    const cards = document.querySelectorAll('.carousel-card');
+    const dots = document.querySelectorAll('.carousel-dot');
+    if (!cards.length) return;
+
+    // Set initial positions
+    updateCarousel();
+
+    // Click on cards to rotate
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            const pos = card.getAttribute('data-pos');
+            if (pos === 'left') {
+                carouselIndex = (carouselIndex - 1 + cards.length) % cards.length;
+            } else if (pos === 'right') {
+                carouselIndex = (carouselIndex + 1) % cards.length;
+            } else if (pos === 'center') {
+                switchPage('kisti');
+                return;
+            }
+            updateCarousel();
+            resetCarouselTimer();
+        });
+    });
+
+    // Click on dots
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            carouselIndex = parseInt(dot.dataset.i);
+            updateCarousel();
+            resetCarouselTimer();
+        });
+    });
+
+    // Auto-rotate every 4 seconds
+    startCarouselTimer();
+}
+
+function updateCarousel() {
+    const cards = document.querySelectorAll('.carousel-card');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const total = cards.length;
+    const positions = ['center', 'right', 'left'];
+
+    cards.forEach((card, i) => {
+        const offset = (i - carouselIndex + total) % total;
+        card.setAttribute('data-pos', positions[offset]);
+    });
+
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === carouselIndex);
+    });
+}
+
+function startCarouselTimer() {
+    carouselTimer = setInterval(() => {
+        const cards = document.querySelectorAll('.carousel-card');
+        carouselIndex = (carouselIndex + 1) % cards.length;
+        updateCarousel();
+    }, 4000);
+}
+
+function resetCarouselTimer() {
+    clearInterval(carouselTimer);
+    startCarouselTimer();
 }
 
 // ============================================================
@@ -710,3 +759,63 @@ function cleanName(filename) {
 function slug(s) {
     return s.replace(/[^a-zA-Z0-9가-힣]/g, '_').toLowerCase();
 }
+
+// ============================================================
+// PM Detail Modals
+// ============================================================
+const pmModalContents = [
+    // Modal 0: PM's Impact — 기획자로서의 문제 해결
+    `<h3>기획자로서의 문제 해결</h3>
+    <p>이 프로젝트는 처음부터 새로 설계하는 일이 아니었습니다. 레거시 구조를 인수받은 상태에서 일정은 이미 불안정했고, 기능은 많았으며, 클라이언트와의 신뢰도는 아직 형성되지 않은 상황이었습니다.</p>
+    <p>저는 먼저 기존 자료를 전부 다시 읽고 구조화한 뒤, 다이어그램과 기획서를 새로 정리해 미팅에 들어갔습니다. 어디까지가 기존 합의인지, 어디부터 제가 개입해야 하는지를 명확히 질문했고, 기능 요청이 쌓일 때마다 최종적으로 무엇을 만들고 싶은지 엔드포인트를 다시 확인했습니다.</p>
+    <p>"안 되는 이유"를 먼저 말하기보다, 어떻게 하면 구현 가능하게 만들 수 있는지 대안을 고민했습니다.</p>
+    <h3>성과 및 회고</h3>
+    <p>이 프로젝트는 단순 납품형 용역으로 끝나지 않았습니다. 임상은 현재 안정적으로 진행 중이며, 기술이전 논의도 이어지고 있습니다.</p>
+    <p>클라이언트는 제가 계속 참여하는 조건으로 다음 연차와 예산 확대를 제안했습니다. 이 프로젝트는 저에게 "기획은 문서를 만드는 일이 아니라, 실제로 필요한 구조를 현실 안에서 작동하게 만드는 일"이라는 점을 더 분명하게 보여준 경험이었습니다.</p>`,
+
+    // Modal 1: Project Overview — 왜 XR이어야 했는가
+    `<h3>왜 XR이어야 했는가</h3>
+    <p>이 프로젝트에서 XR은 보여주기 위한 기술이 아니라, 훈련 목적을 현실적으로 구현하기 위한 수단이었습니다. 공간 기반 상호작용을 통해 단순 클릭보다 풍부한 반응을 유도했고, 반응 시간, 위치, 선택 패턴 등 다양한 수행 데이터를 수집할 수 있어 임상 연구 목적과 자연스럽게 연결되었습니다.</p>
+    <h3>사용자 이해와 설계 원칙</h3>
+    <p>고령자는 일반 사용자와 달리 시인성, 조작 정확도, 피로도, 공간 적응, 실패 경험에 민감합니다.</p>
+    <p>텍스트는 UI를 해치지 않는 선에서 충분히 크게 설계했고, 교수자가 전체 수치 조정과 UI 크기 변경을 제어할 수 있도록 구성했습니다. 조작 부담을 줄이기 위해 핸드트래킹 민감도를 높이고, 오브젝트 콜라이더를 크게 적용해 작은 오차에도 성공 경험으로 이어지도록 설계했습니다.</p>`,
+
+    // Modal 2: Core Solutions — 운영 시스템, 훈련/검사 콘텐츠 상세
+    `<h3>운영 시스템: 교수자 / 훈련자 런처</h3>
+    <p>이 프로젝트에서 런처는 단순한 시작 화면이 아니라, 현장에서 반복적으로 세션을 운영하기 위한 핵심 시스템이었습니다. 기존 구조는 교수자와 훈련자가 분리되어 있었지만, depth가 지나치게 깊고 정보 구조가 정리되어 있지 않았습니다.</p>
+    <p>저는 전체 구조를 1~2 depth 수준으로 과감하게 재정리했습니다. 대상자 선택, 초대, 방 입장, 설정, 진행, 결과 확인 흐름을 단순하게 재구성했습니다.</p>
+    <h3>훈련 콘텐츠: 곤충잡기 &amp; 공놀이</h3>
+    <p>'곤충잡기'는 색상, 종류, 방향, 위치, 기억 과제를 결합한 인지·운동 복합 훈련 콘텐츠입니다. '잡는다'는 행동은 직관적이며 반응속도를 유도하기 좋습니다. 3x5 그리드 기반의 기억 과제를 결합해 인출과 위치 재구성을 하나의 흐름에 담았습니다.</p>
+    <p>'공놀이'는 던지기, 받기, 분류하기 흐름 안에서 협응과 지시 이해를 유도합니다. 발사 궤적에 베지어 커브를 적용해 고령자도 안정적으로 참여하도록 난이도를 튜닝했습니다.</p>
+    <h3>검사 콘텐츠: 인지검사 &amp; 균형검사</h3>
+    <p>인지검사는 재미보다 측정과 추적을 우선한 구조로, 시각·촉각 주의력 등 9가지 항목과 반응 시간을 수집합니다. 검사 도중 다운이 발생하면 데이터 신뢰도에 영향을 미치므로 실행 안정성을 품질의 일부로 보고 접근했습니다.</p>
+    <p>균형검사는 Force Plate를 웹소켓으로 연동해 실시간 발 압력을 확인하며, 낙상 위험을 방지하는 안전 장치 역할을 합니다.</p>`
+];
+
+function openPmModal(index) {
+    const overlay = document.getElementById('pmModalOverlay');
+    const body = document.getElementById('pmModalBody');
+    if (!overlay || !body) return;
+    body.innerHTML = pmModalContents[index] || '';
+    // Small delay to trigger CSS transition
+    requestAnimationFrame(() => {
+        overlay.classList.add('visible');
+    });
+    document.body.style.overflow = 'hidden';
+}
+
+function closePmModal() {
+    const overlay = document.getElementById('pmModalOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('visible');
+    document.body.style.overflow = '';
+}
+
+// Close PM modal on ESC or overlay click
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePmModal();
+});
+
+document.addEventListener('click', (e) => {
+    if (e.target && e.target.id === 'pmModalOverlay') closePmModal();
+});
