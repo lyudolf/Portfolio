@@ -108,42 +108,55 @@ let activeLnbKey = 'overview'; // current LNB selection
 // Boot
 // ============================================================
 window.addEventListener('DOMContentLoaded', async () => {
+    // GNB tabs — must work regardless of data loading
+    document.querySelectorAll('.gnb-tab').forEach(btn => {
+        btn.addEventListener('click', () => switchPage(btn.dataset.page));
+    });
+
+    // Init 3D carousel
+    initCarousel();
+
+    // Modal close handlers
+    const modalCloseBtn = document.getElementById('modalClose');
+    const modalOverlay = document.getElementById('modalOverlay');
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if (modalOverlay) modalOverlay.addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeModal();
+    });
+
+    const lightbox = document.getElementById('lightbox');
+    if (lightbox) lightbox.addEventListener('click', () => {
+        lightbox.classList.remove('visible');
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeModal();
+            closePmModal();
+            const lb = document.getElementById('lightbox');
+            if (lb) lb.classList.remove('visible');
+        }
+    });
+
+    // PM modal overlay click to close
+    const pmOverlay = document.getElementById('pmModalOverlay');
+    if (pmOverlay) pmOverlay.addEventListener('click', e => {
+        if (e.target === e.currentTarget) closePmModal();
+    });
+
+    // Try to load content.json (may fail on file:// protocol)
     try {
         const resp = await fetch('data/content.json');
         const data = await resp.json();
         allDocs = data.documents.map((d, i) => ({ ...d, id: d.id || i + 1 }));
 
-        // GNB tabs
-        document.querySelectorAll('.gnb-tab').forEach(btn => {
-            btn.addEventListener('click', () => switchPage(btn.dataset.page));
-        });
-
-        // Init 3D carousel
-        initCarousel();
-
-        // Render KISTi LNB tree
+        // Render KISTi LNB tree (only if data loaded)
         renderLnbTree();
 
         // Default content: overview
         renderContentForKey('overview');
-
-        // Modal
-        document.getElementById('modalClose').addEventListener('click', closeModal);
-        document.getElementById('modalOverlay').addEventListener('click', e => {
-            if (e.target === e.currentTarget) closeModal();
-        });
-        document.getElementById('lightbox').addEventListener('click', () => {
-            document.getElementById('lightbox').classList.remove('visible');
-        });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                closeModal();
-                document.getElementById('lightbox').classList.remove('visible');
-            }
-        });
-
     } catch (err) {
-        console.error('Load failed:', err);
+        console.warn('Content data not loaded (OK for PM-only view):', err.message);
     }
 });
 
@@ -764,32 +777,56 @@ function slug(s) {
 // PM Detail Modals
 // ============================================================
 const pmModalContents = [
-    // Modal 0: PM's Impact — 기획자로서의 문제 해결
-    `<h3>기획자로서의 문제 해결</h3>
-    <p>이 프로젝트는 처음부터 새로 설계하는 일이 아니었습니다. 레거시 구조를 인수받은 상태에서 일정은 이미 불안정했고, 기능은 많았으며, 클라이언트와의 신뢰도는 아직 형성되지 않은 상황이었습니다.</p>
-    <p>저는 먼저 기존 자료를 전부 다시 읽고 구조화한 뒤, 다이어그램과 기획서를 새로 정리해 미팅에 들어갔습니다. 어디까지가 기존 합의인지, 어디부터 제가 개입해야 하는지를 명확히 질문했고, 기능 요청이 쌓일 때마다 최종적으로 무엇을 만들고 싶은지 엔드포인트를 다시 확인했습니다.</p>
-    <p>"안 되는 이유"를 먼저 말하기보다, 어떻게 하면 구현 가능하게 만들 수 있는지 대안을 고민했습니다.</p>
-    <h3>성과 및 회고</h3>
-    <p>이 프로젝트는 단순 납품형 용역으로 끝나지 않았습니다. 임상은 현재 안정적으로 진행 중이며, 기술이전 논의도 이어지고 있습니다.</p>
-    <p>클라이언트는 제가 계속 참여하는 조건으로 다음 연차와 예산 확대를 제안했습니다. 이 프로젝트는 저에게 "기획은 문서를 만드는 일이 아니라, 실제로 필요한 구조를 현실 안에서 작동하게 만드는 일"이라는 점을 더 분명하게 보여준 경험이었습니다.</p>`,
+    // Modal 0: 곤충잡기
+    `<h3>곤충잡기 — 설계 상세</h3>
+    <p>곤충잡기는 색상, 종류, 방향, 위치, 기억 과제를 결합한 인지·운동 복합 훈련 콘텐츠입니다. 손으로 곤충을 잡아 채집함에 넣는 직관적인 상호작용을 기반으로 하되, 단계가 올라갈수록 협동, 규칙 이해, 기억 재구성까지 확장되도록 설계했습니다.</p>
+    <h3>기획 의도</h3>
+    <p>이 콘텐츠를 기획할 때 가장 중요하게 본 것은 복잡한 설명 없이 바로 이해되는 상호작용이었습니다. '잡는다'는 행동은 고령자에게도 매우 직관적이고, 시각 탐색, 반응속도, 상지 움직임을 자연스럽게 유도할 수 있습니다.</p>
+    <p>또한 색상, 곤충 종류, 방향, 위치, 기억 과제를 조합하면 같은 틀 안에서도 다양한 난이도 설계가 가능해 임상적 정량 지표와도 연결하기 좋았습니다.</p>
+    <h3>설계 포인트</h3>
+    <p>초기 단계는 특정 색상의 곤충을 잡아 넣는 단순 구조로 시작해 진입장벽을 낮췄습니다. 이후에는 요술봉이나 붓 같은 도구를 활용해 역할을 분리하고, 조력자와 채집자가 협력하도록 설계해 상호작용 밀도를 높였습니다.</p>
+    <p>후반부에는 3×5 그리드 기반의 기억 과제를 결합해, 곤충의 종류·색상·위치를 짧게 기억한 뒤 다시 재배치하도록 구성했습니다.</p>
+    <p>이 과정에서 특히 많은 시간을 쓴 부분은 곤충 속도와 딜레이 조정이었습니다. 너무 빠르면 실패 경험이 누적되고, 너무 느리면 훈련 효과가 떨어지기 때문에 고령자 기준에서 반복적으로 조율해야 했습니다. 또한 색상 구분에서도 실제 사용성을 기준으로 판단해, 혼동 가능성이 있는 색상은 과감히 교체했습니다.</p>
+    <p style="color:var(--accent); font-weight:600; margin-top:20px;">곤충잡기는 단순한 반응형 게임이 아니라, 주의집중, 선택적 주의, 협동, 기억등록과 인출, 위치 재구성을 하나의 흐름 안에 담아낸 고령자용 인지·운동 복합 훈련 콘텐츠입니다.</p>`,
 
-    // Modal 1: Project Overview — 왜 XR이어야 했는가
-    `<h3>왜 XR이어야 했는가</h3>
-    <p>이 프로젝트에서 XR은 보여주기 위한 기술이 아니라, 훈련 목적을 현실적으로 구현하기 위한 수단이었습니다. 공간 기반 상호작용을 통해 단순 클릭보다 풍부한 반응을 유도했고, 반응 시간, 위치, 선택 패턴 등 다양한 수행 데이터를 수집할 수 있어 임상 연구 목적과 자연스럽게 연결되었습니다.</p>
-    <h3>사용자 이해와 설계 원칙</h3>
-    <p>고령자는 일반 사용자와 달리 시인성, 조작 정확도, 피로도, 공간 적응, 실패 경험에 민감합니다.</p>
-    <p>텍스트는 UI를 해치지 않는 선에서 충분히 크게 설계했고, 교수자가 전체 수치 조정과 UI 크기 변경을 제어할 수 있도록 구성했습니다. 조작 부담을 줄이기 위해 핸드트래킹 민감도를 높이고, 오브젝트 콜라이더를 크게 적용해 작은 오차에도 성공 경험으로 이어지도록 설계했습니다.</p>`,
+    // Modal 1: 공놀이
+    `<h3>공놀이 — 설계 상세</h3>
+    <p>공놀이는 던지기, 받기, 분류하기의 흐름 안에서 협응, 상지 움직임, 타이밍 반응, 지시 이해를 유도하는 협동형 콘텐츠입니다. 익숙한 오브젝트를 활용해 심리적 진입장벽을 낮추면서도, 단계별로 난이도를 확장할 수 있도록 설계했습니다.</p>
+    <h3>기획 의도</h3>
+    <p>공은 고령자에게도 매우 익숙한 물체이기 때문에, VR 안에서도 비교적 빠르게 규칙을 이해할 수 있다는 장점이 있습니다. 또한 던지는 사람과 받는 사람의 역할을 나누면, 단순한 개인 과제가 아니라 상호작용 기반의 협동 구조를 만들 수 있습니다.</p>
+    <p>저는 이 콘텐츠를 단순한 공 주고받기가 아니라, 오브젝트를 선택하고, 지시에 따라 던지고, 공중에서 받고, 다시 분류하는 복합적 수행 구조로 설계했습니다. 이를 통해 반응속도뿐 아니라 협응, 음성 지시 이해, 분류 능력, 움직임 조절까지 함께 드러나도록 했습니다.</p>
+    <h3>설계 포인트</h3>
+    <p>1~3단계는 풍선 색상 구분으로 시작해 비교적 쉬운 수행을 유도했고, 이후 인형과 오브젝트, 크기 구분, 음성 지시, 범주 분류까지 점차 인지적 난이도를 높였습니다.</p>
+    <p>특히 역할이 한쪽에 고정되지 않도록 1사이클마다 역할을 교체해, 모든 사용자가 던지기와 받기를 모두 경험할 수 있도록 설계했습니다.</p>
+    <p>실제 플레이에서 가장 많이 조정한 부분은 공중에서 받기 난이도였습니다. 초기에는 오브젝트 낙하가 부담스럽다는 문제가 있었고, 이를 완화하기 위해 발사 궤적에 베지어 커브를 적용하고 중력값을 조정했습니다. 그 결과 사용자가 예측 가능한 흐름 안에서 오브젝트를 받을 수 있게 되었고, 실패보다 성공 경험이 더 많이 축적되도록 개선할 수 있었습니다.</p>
+    <p style="color:var(--accent); font-weight:600; margin-top:20px;">공놀이는 익숙한 상호작용을 바탕으로 협응과 반응을 유도하되, 실제 플레이 난이도를 세밀하게 조정해 고령자도 안정적으로 참여할 수 있도록 설계한 협동형 인지·운동 훈련 콘텐츠입니다.</p>`,
 
-    // Modal 2: Core Solutions — 운영 시스템, 훈련/검사 콘텐츠 상세
-    `<h3>운영 시스템: 교수자 / 훈련자 런처</h3>
-    <p>이 프로젝트에서 런처는 단순한 시작 화면이 아니라, 현장에서 반복적으로 세션을 운영하기 위한 핵심 시스템이었습니다. 기존 구조는 교수자와 훈련자가 분리되어 있었지만, depth가 지나치게 깊고 정보 구조가 정리되어 있지 않았습니다.</p>
-    <p>저는 전체 구조를 1~2 depth 수준으로 과감하게 재정리했습니다. 대상자 선택, 초대, 방 입장, 설정, 진행, 결과 확인 흐름을 단순하게 재구성했습니다.</p>
-    <h3>훈련 콘텐츠: 곤충잡기 &amp; 공놀이</h3>
-    <p>'곤충잡기'는 색상, 종류, 방향, 위치, 기억 과제를 결합한 인지·운동 복합 훈련 콘텐츠입니다. '잡는다'는 행동은 직관적이며 반응속도를 유도하기 좋습니다. 3x5 그리드 기반의 기억 과제를 결합해 인출과 위치 재구성을 하나의 흐름에 담았습니다.</p>
-    <p>'공놀이'는 던지기, 받기, 분류하기 흐름 안에서 협응과 지시 이해를 유도합니다. 발사 궤적에 베지어 커브를 적용해 고령자도 안정적으로 참여하도록 난이도를 튜닝했습니다.</p>
-    <h3>검사 콘텐츠: 인지검사 &amp; 균형검사</h3>
-    <p>인지검사는 재미보다 측정과 추적을 우선한 구조로, 시각·촉각 주의력 등 9가지 항목과 반응 시간을 수집합니다. 검사 도중 다운이 발생하면 데이터 신뢰도에 영향을 미치므로 실행 안정성을 품질의 일부로 보고 접근했습니다.</p>
-    <p>균형검사는 Force Plate를 웹소켓으로 연동해 실시간 발 압력을 확인하며, 낙상 위험을 방지하는 안전 장치 역할을 합니다.</p>`
+    // Modal 2: 인지검사
+    `<h3>인지검사 — 설계 상세</h3>
+    <p>인지검사는 훈련 콘텐츠와 분리된 1인용 검사형 콘텐츠로, 반복 방문을 통해 사용자의 인지 기능 변화를 추적하기 위한 구조로 설계했습니다.</p>
+    <h3>기획 의도</h3>
+    <p>훈련 콘텐츠가 몰입과 수행 경험을 중심으로 설계되었다면, 검사 콘텐츠는 일관성, 측정 가능성, 데이터 정합성이 가장 중요했습니다. 그래서 검사에서는 재미 요소를 강화하기보다, 사용자가 과제를 정확히 이해하고 안정적으로 수행할 수 있는 흐름을 만드는 데 집중했습니다.</p>
+    <h3>설계 포인트</h3>
+    <p>시각·촉각 주의력, 기억등록과 기억인출, 위치·방향·깊이 기반의 시공간 기능, 이름대기와 이해력 등 총 9가지 항목과 반응 시간을 수집할 수 있도록 구성했습니다. 모든 검사는 튜토리얼을 먼저 제공한 뒤, 유사한 유형의 문제를 난이도만 높여가며 제시하는 방식으로 설계했습니다.</p>
+    <p>특히 이 파트에서는 프로그램 안정성을 매우 중요하게 봤습니다. 임상 환경에서는 검사 도중 다운이 발생하면 사용자는 처음부터 다시 수행해야 하고, 이는 데이터 신뢰도와 운영 효율 모두에 큰 영향을 미칩니다. 그래서 검사 콘텐츠는 UX뿐 아니라 실행 안정성 자체가 품질의 일부라고 보고 접근했습니다.</p>
+    <p style="color:var(--accent); font-weight:600; margin-top:20px;">인지검사는 재미보다 측정과 추적을 우선한 구조로, 고령자가 과제를 이해하고 안정적으로 수행할 수 있도록 설계한 1인용 임상형 콘텐츠입니다.</p>`,
+
+    // Modal 3: 균형검사
+    `<h3>균형검사 — 설계 상세</h3>
+    <p>균형검사는 Force Plate를 웹소켓으로 연동해, 실시간 발 압력 분포와 자세 안정성을 확인하는 검사 콘텐츠입니다. 단순한 평가 항목을 넘어, 전체 XR 훈련 환경에서의 안전도를 보완하는 역할까지 함께 수행했습니다.</p>
+    <h3>기획 의도</h3>
+    <p>이 프로젝트는 상지만 움직이는 콘텐츠로 끝나지 않았습니다. 고령자 대상 훈련에서는 하지 안정성과 낙상 위험까지 함께 고려해야 하고, 특히 비대면 XR 환경에서는 사용자의 이상 행동이나 넘어짐 가능성을 사전에 감지하는 구조가 중요했습니다.</p>
+    <p>그래서 균형검사는 별도의 검사 콘텐츠인 동시에, 곤충잡기와 공놀이 같은 주요 훈련 콘텐츠에도 상시 적용되는 안전 장치로 설계했습니다.</p>
+    <h3>설계 포인트</h3>
+    <p>30초 동안 서 있는 절차를 반복하는 구조였지만, 초기의 "눈을 감고 숫자를 세는 방식"은 실제 사용자에게 위험할 수 있다고 판단했습니다. 그래서 눈을 완전히 감게 하는 대신, 씬 내부를 어둡게 조정하는 방식으로 난이도를 대체했습니다. 검사의 목적은 유지하되, 실제 낙상 위험은 낮추는 방향으로 설계를 수정한 것입니다.</p>
+    <p style="color:var(--accent); font-weight:600; margin-top:20px;">균형검사는 고령자의 신체 안정성을 측정하는 검사이자, XR 훈련 전반의 안전도를 보완하는 장치로 설계된 핵심 기능입니다.</p>`,
+
+    // Modal 4: 운동성 검사
+    `<h3>운동성 검사 — 설계 상세</h3>
+    <p>운동성 검사는 화상 기반 자세 수업과 MR 오브젝트 상호작용을 연결한 1:1 구조의 PoC 성격 콘텐츠입니다. 사용자가 오브젝트에 맞춰 자세를 취하도록 유도하며, 향후 실제 프로덕트로 확장 가능한 가능성을 검토하는 방향으로 기획했습니다.</p>
+    <h3>기획 의도</h3>
+    <p>이 콘텐츠는 주 훈련 축과는 별개였지만, 단순 시연용 PoC로 끝나지 않도록 설계하는 것이 중요했습니다. 그래서 "보여주기 위한 기능"이 아니라, 실제 서비스로 이어질 수 있는 구조인지에 초점을 두고 접근했습니다.</p>
+    <p style="color:var(--accent); font-weight:600; margin-top:20px;">운동성 검사는 화상 기반 수업과 XR 상호작용을 연결해, 향후 실사용 가능한 방향성을 검토한 프로덕트 관점의 PoC 콘텐츠입니다.</p>`
 ];
 
 function openPmModal(index) {
@@ -811,11 +848,3 @@ function closePmModal() {
     document.body.style.overflow = '';
 }
 
-// Close PM modal on ESC or overlay click
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closePmModal();
-});
-
-document.addEventListener('click', (e) => {
-    if (e.target && e.target.id === 'pmModalOverlay') closePmModal();
-});

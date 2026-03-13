@@ -92,13 +92,13 @@
 
 
   <!-- ============================================================
-       KISTI PAGE — PM Portfolio Detail
+       KISTI PAGE — PM 케이스 스터디 (9 Sections)
        ============================================================ -->
   <div id="page-kisti" class="page">
     <div class="pm-page">
 
-      <!-- Section 1: Hero -->
-      <section class="pm-hero">
+      <!-- ① Hero -->
+      <section class="pm-hero" id="pmHero">
         <div class="pm-hero-inner">
           <div class="pm-hero-tags">
             <span>#고령자UX_재정의</span>
@@ -125,102 +125,290 @@
         </div>
       </section>
 
-      <!-- Section 2: PM's Impact -->
-      <section class="pm-section" id="pmImpact">
+      <!-- ② 프로젝트 개요 -->
+      <section class="pm-section" id="pmOverview">
         <div class="pm-section-inner">
-          <div class="pm-section-label">PM's Impact</div>
-          <h2 class="pm-section-title">기준이 없는 상황에서 기준을 세우고,<br>굴러가는 구조를 만들다</h2>
-          <div class="pm-impact-grid">
-            <div class="pm-impact-card">
-              <div class="pm-impact-icon">📈</div>
-              <h3>핵심 성과</h3>
-              <p>차기 연차 연계 및 기술이전 논의 단계로 발전.<br>장기 협업 및 예산 확대 제안 수령.</p>
-            </div>
-            <div class="pm-impact-card">
-              <div class="pm-impact-icon">🏗️</div>
-              <h3>운영 구조 구축</h3>
-              <p>임상 환경에서 실제 운영 가능한 구조 구축 완료.</p>
-            </div>
+          <div class="pm-section-label">Project Overview</div>
+          <h2 class="pm-section-title">고령자의 인지·운동 기능 향상과<br>임상 데이터 수집을 동시에</h2>
+          <div class="pm-text-block">
+            <p>이 프로젝트는 고령자의 인지·운동 기능 향상과 임상 데이터 수집을 동시에 목표로 한 XR 기반 비대면 훈련 시스템입니다. 단순한 체험형 VR이 아니라, 실제 임상 환경에서 반복적으로 사용될 수 있는 구조를 만드는 것이 핵심이었습니다.</p>
+            <p>기존에는 레거시 기반 콘텐츠와 복잡한 운영 구조, 고령자에게 적합하지 않은 UX, 불안정한 실행 환경 등 여러 문제가 혼재되어 있었습니다. 저는 이 프로젝트에 중간 투입된 이후, 산개된 자료와 기존 구조를 다시 정리하고, 고령자 기준의 UX와 임상 운영 흐름에 맞춰 전체 구조를 재설계했습니다.</p>
           </div>
-          <blockquote class="pm-quote">
-            "기획은 문서를 만드는 일이 아니라, 실제로 필요한 구조를 현실 안에서 작동하게 만드는 일임을 증명했습니다."
-          </blockquote>
-          <button class="pm-modal-btn" onclick="openPmModal(0)">
-            <span>더 깊은 고민의 과정 읽어보기</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+          <div class="pm-role-section">
+            <h3 class="pm-role-heading">담당 역할</h3>
+            <div class="pm-role-tags">
+              <span>제안</span><span>기획</span><span>UI/UX 설계</span><span>콘텐츠 구조 설계</span><span>클라이언트 커뮤니케이션</span><span>개발 일정 관리</span><span>QA</span>
+            </div>
+            <p class="pm-role-desc">단순히 화면이나 기능을 기획하는 역할에 그치지 않고, 실제로 프로젝트가 굴러가도록 만드는 기준과 흐름을 설계하는 데 집중했습니다.</p>
+          </div>
         </div>
       </section>
 
       <div class="pm-divider"></div>
 
-      <!-- Section 3: Project Overview -->
-      <section class="pm-section" id="pmOverview">
+      <!-- ③ 문제 정의 -->
+      <section class="pm-section" id="pmProblem">
         <div class="pm-section-inner">
-          <div class="pm-section-label">Project Overview</div>
+          <div class="pm-section-label">Problem Definition</div>
           <h2 class="pm-section-title">기존 구조를 다시 봐야 했던 이유</h2>
+          <p class="pm-section-desc">기존 업체가 제작한 콘텐츠는 기능 자체는 존재했지만, 실제 고령자가 사용하기에는 여러 한계가 있었습니다. 저는 이 프로젝트를 단순 개선이 아니라, 고령자가 실제로 사용할 수 있는 구조로 다시 설계하는 작업이라고 판단했습니다.</p>
           <div class="pm-problems">
             <div class="pm-problem-item">
               <div class="pm-problem-num">01</div>
               <div class="pm-problem-content">
                 <h4>과도한 시각적 정보량</h4>
-                <p>VR 공간 내 동시 표시되는 UI·오브젝트가 고령자의 인지 부하를 초과</p>
+                <p>무한하게 펼쳐진 공간형 씬은 시각적 정보량이 과했고, 목표 오브젝트에 집중하기 어려웠습니다.</p>
               </div>
             </div>
             <div class="pm-problem-item">
               <div class="pm-problem-num">02</div>
               <div class="pm-problem-content">
-                <h4>높은 멀미 부담</h4>
-                <p>카메라 이동·시점 전환이 잦아 고령 사용자의 VR 적응 장벽 증가</p>
+                <h4>높은 멀미·적응 부담</h4>
+                <p>VR 환경에 익숙하지 않은 고령자에게는 공간 적응과 멀미 부담이 컸습니다.</p>
               </div>
             </div>
             <div class="pm-problem-item">
               <div class="pm-problem-num">03</div>
               <div class="pm-problem-content">
-                <h4>Depth가 깊은 운영 한계</h4>
-                <p>교수자가 4~5단계를 거쳐야 세션을 시작할 수 있어 현장 운영 비효율</p>
+                <h4>깊은 Depth의 런처 구조</h4>
+                <p>런처 구조가 지나치게 깊어 실제 운영 효율이 떨어졌습니다.</p>
               </div>
             </div>
           </div>
-          <div class="pm-principle">
-            <h3>🎯 설계 원칙: 고령자 기준의 UX 재정의</h3>
-            <p>피로도와 조작 정확도를 최우선으로 고려하고, 교수자 중심의 중앙 제어 기능을 강화했습니다.</p>
-          </div>
-          <button class="pm-modal-btn" onclick="openPmModal(1)">
-            <span>더 깊은 고민의 과정 읽어보기</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
         </div>
       </section>
 
       <div class="pm-divider"></div>
 
-      <!-- Section 4: Core Solutions -->
-      <section class="pm-section" id="pmSolutions">
+      <!-- ④ 사용자 이해와 설계 원칙 -->
+      <section class="pm-section" id="pmPrinciple">
         <div class="pm-section-inner">
-          <div class="pm-section-label">Core Solutions</div>
-          <h2 class="pm-section-title">해결책 및 핵심 기능</h2>
-          <div class="pm-solutions-grid">
-            <div class="pm-solution-card">
-              <div class="pm-solution-badge">운영 시스템</div>
-              <h3>교수자 / 훈련자 런처</h3>
-              <p>4~5단계 진입 과정을 <strong>1~2 Depth</strong>로 과감히 단축. 대상자 선택부터 결과 확인까지 단일 흐름으로 재구성.</p>
+          <div class="pm-section-label">Design Principles</div>
+          <h2 class="pm-section-title">고령자를 위한 XR은<br>기준이 달라야 한다</h2>
+          <p class="pm-section-desc">이 프로젝트에서 가장 먼저 다시 정의한 것은 기능이 아니라 <strong>사용자</strong>였습니다. "가능한 기능"보다 "실제로 수행 가능한 경험"을 만드는 것이 더 중요했습니다.</p>
+          <div class="pm-principle-list">
+            <div class="pm-principle-item">
+              <div class="pm-principle-icon">🔤</div>
+              <div>
+                <h4>충분한 텍스트 크기</h4>
+                <p>UI를 해치지 않는 선에서 충분히 크게 설계하고, 교수자가 UI 크기를 제어할 수 있도록 구성</p>
+              </div>
             </div>
-            <div class="pm-solution-card">
-              <div class="pm-solution-badge">임상 검사</div>
-              <h3>인지 / 균형 / 운동성</h3>
-              <p>데이터 정합성 수집 및 <strong>낙상 위험 사전 감지</strong>. Force Plate 연동으로 실시간 균형 모니터링.</p>
+            <div class="pm-principle-item">
+              <div class="pm-principle-icon">✋</div>
+              <div>
+                <h4>조작 부담 최소화</h4>
+                <p>핸드트래킹 민감도를 높이고, 오브젝트 콜라이더를 크게 적용해 작은 오차에도 성공 경험으로 연결</p>
+              </div>
             </div>
-            <div class="pm-solution-card">
-              <div class="pm-solution-badge">훈련 콘텐츠</div>
-              <h3>곤충잡기 / 공놀이</h3>
-              <p>직관적 상호작용에 인지 변수를 결합하여 <strong>임상 정량 지표</strong>를 자연스럽게 도출.</p>
+            <div class="pm-principle-item">
+              <div class="pm-principle-icon">🎨</div>
+              <div>
+                <h4>시각 정보 축소</h4>
+                <p>배경과 오브젝트를 정적으로, 공간을 과감하게 축소. 노년층이 구분하기 쉬운 색상 조합으로 조정</p>
+              </div>
+            </div>
+            <div class="pm-principle-item">
+              <div class="pm-principle-icon">⏱️</div>
+              <div>
+                <h4>피로도·난이도 배분</h4>
+                <p>고령자는 쉽게 피로해지고 실패 경험에 민감 — 콘텐츠 진행 시간과 난이도를 세밀하게 조율</p>
+              </div>
             </div>
           </div>
-          <button class="pm-modal-btn" onclick="openPmModal(2)">
-            <span>더 깊은 고민의 과정 읽어보기</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+          <div class="pm-callout">
+            <p>이 프로젝트에서 중요한 것은 고난도 게임을 만드는 것이 아니라,<br><strong>사용자가 끝까지 수행할 수 있는 구조</strong>를 만드는 것이었습니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="pm-divider"></div>
+
+      <!-- ⑤ 훈련 콘텐츠 -->
+      <section class="pm-section" id="pmTraining">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">Training Contents</div>
+          <h2 class="pm-section-title">인지·운동 복합 훈련 콘텐츠</h2>
+          <div class="pm-content-cards">
+            <div class="pm-content-card" onclick="openPmModal(0)">
+              <div class="pm-content-card-icon">🦋</div>
+              <div class="pm-content-card-badge">인지·운동 복합</div>
+              <h3>곤충잡기</h3>
+              <p>색상, 종류, 방향, 위치, 기억 과제를 결합한 복합 훈련. 손으로 곤충을 잡아 채집함에 넣는 직관적 상호작용을 기반으로, 단계별로 협동·규칙 이해·기억 재구성까지 확장.</p>
+              <div class="pm-content-card-footer">
+                <span class="pm-content-card-link">
+                  설계 상세 보기
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="pm-content-card" onclick="openPmModal(1)">
+              <div class="pm-content-card-icon">⚽</div>
+              <div class="pm-content-card-badge">협동형</div>
+              <h3>공놀이</h3>
+              <p>던지기, 받기, 분류하기의 흐름 안에서 협응, 상지 움직임, 타이밍 반응, 지시 이해를 유도하는 협동형 콘텐츠. 익숙한 오브젝트로 심리적 진입장벽을 낮추면서 단계별 확장.</p>
+              <div class="pm-content-card-footer">
+                <span class="pm-content-card-link">
+                  설계 상세 보기
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="pm-divider"></div>
+
+      <!-- ⑥ 검사 콘텐츠 -->
+      <section class="pm-section" id="pmAssessment">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">Assessment Contents</div>
+          <h2 class="pm-section-title">임상형 검사 콘텐츠</h2>
+          <div class="pm-content-cards pm-content-cards--three">
+            <div class="pm-content-card" onclick="openPmModal(2)">
+              <div class="pm-content-card-icon">🧠</div>
+              <div class="pm-content-card-badge">1인 검사</div>
+              <h3>인지검사</h3>
+              <p>시각·촉각 주의력, 기억등록/인출, 시공간 기능, 이름대기 등 9가지 항목과 반응 시간을 수집하는 종합 인지기능 평가.</p>
+              <div class="pm-content-card-footer">
+                <span class="pm-content-card-link">
+                  설계 상세 보기
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="pm-content-card" onclick="openPmModal(3)">
+              <div class="pm-content-card-icon">⚖️</div>
+              <div class="pm-content-card-badge">안전 장치</div>
+              <h3>균형검사</h3>
+              <p>Force Plate를 웹소켓으로 연동해 실시간 발 압력 분포와 자세 안정성을 확인. XR 훈련 전반의 안전도를 보완.</p>
+              <div class="pm-content-card-footer">
+                <span class="pm-content-card-link">
+                  설계 상세 보기
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="pm-content-card" onclick="openPmModal(4)">
+              <div class="pm-content-card-icon">🏃</div>
+              <div class="pm-content-card-badge">PoC</div>
+              <h3>운동성 검사</h3>
+              <p>화상 기반 자세 수업과 MR 오브젝트 상호작용을 연결한 1:1 구조의 PoC 콘텐츠. 실제 서비스 확장 가능성을 검토.</p>
+              <div class="pm-content-card-footer">
+                <span class="pm-content-card-link">
+                  설계 상세 보기
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="pm-divider"></div>
+
+      <!-- ⑦ 운영 시스템 -->
+      <section class="pm-section" id="pmLauncher">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">Operations System</div>
+          <h2 class="pm-section-title">교수자 / 훈련자 런처</h2>
+          <p class="pm-section-desc">런처는 단순한 시작 화면이 아니라, 현장에서 반복적으로 세션을 운영하기 위한 핵심 시스템이었습니다. 콘텐츠가 아무리 좋아도 운영자가 매번 진입 과정에서 헤매면 실제 사용성은 급격히 떨어집니다.</p>
+
+          <div class="pm-before-after">
+            <div class="pm-ba-card pm-ba-before">
+              <div class="pm-ba-label">Before</div>
+              <ul>
+                <li>교수자/훈련자 depth가 지나치게 깊음</li>
+                <li>정보 구조가 정리되지 않음</li>
+                <li>다른 기능 이동에 뒤로가기 반복</li>
+                <li>검사·훈련·결과 확인 흐름이 비직관적</li>
+              </ul>
+            </div>
+            <div class="pm-ba-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            <div class="pm-ba-card pm-ba-after">
+              <div class="pm-ba-label">After</div>
+              <ul>
+                <li>1~2 Depth 수준으로 과감하게 재정리</li>
+                <li>빠른 기능 진입, 검사/훈련 명확 분리</li>
+                <li>결과 데이터의 가독성 향상</li>
+                <li>반복 운영 편의성 중심 구성</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="pm-sub-heading">운영 흐름</h3>
+          <div class="pm-flow">
+            <div class="pm-flow-step">대상자 선택</div>
+            <div class="pm-flow-arrow">→</div>
+            <div class="pm-flow-step">초대</div>
+            <div class="pm-flow-arrow">→</div>
+            <div class="pm-flow-step">방 입장</div>
+            <div class="pm-flow-arrow">→</div>
+            <div class="pm-flow-step">훈련 설정</div>
+            <div class="pm-flow-arrow">→</div>
+            <div class="pm-flow-step">훈련 진행</div>
+            <div class="pm-flow-arrow">→</div>
+            <div class="pm-flow-step">결과 확인</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="pm-divider"></div>
+
+      <!-- ⑧ 기획자로서의 문제 해결 -->
+      <section class="pm-section" id="pmProblemSolving">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">Problem Solving</div>
+          <h2 class="pm-section-title">일정, 레거시, 관계 형성까지<br>함께 풀어야 했던 프로젝트</h2>
+          <div class="pm-text-block">
+            <p>이 프로젝트는 처음부터 새로 설계하는 일이 아니었습니다. 레거시 구조를 인수받은 상태에서 일정은 이미 불안정했고, 기능은 많았으며, 클라이언트와의 신뢰도는 아직 형성되지 않은 상황이었습니다.</p>
+            <p>저는 먼저 기존 자료를 전부 다시 읽고 구조화한 뒤, 다이어그램과 기획서를 새로 정리해 미팅에 들어갔습니다. 어디까지가 기존 합의인지, 어디부터 제가 개입해야 하는지를 명확히 질문했고, 기능 요청이 쌓일 때마다 최종적으로 무엇을 만들고 싶은지 엔드포인트를 다시 확인했습니다.</p>
+          </div>
+          <blockquote class="pm-quote">
+            "안 되는 이유"를 먼저 말하기보다, 어떻게 하면 구현 가능하게 만들 수 있는지, 그리고 완전히 같지는 않더라도 목적에 가장 가까운 대안을 어떻게 제안할 수 있는지를 먼저 고민하는 것이었습니다.
+          </blockquote>
+        </div>
+      </section>
+
+      <div class="pm-divider"></div>
+
+      <!-- ⑨ 성과 & 회고 -->
+      <section class="pm-section" id="pmResults">
+        <div class="pm-section-inner">
+          <div class="pm-section-label">Results & Reflection</div>
+          <h2 class="pm-section-title">성과</h2>
+          <div class="pm-metric-grid">
+            <div class="pm-metric-card">
+              <div class="pm-metric-icon">🏥</div>
+              <div class="pm-metric-label">임상 운영</div>
+              <p>실제 임상 환경에서 안정적으로 운영 가능한 XR 훈련 구조 구축</p>
+            </div>
+            <div class="pm-metric-card">
+              <div class="pm-metric-icon">🤝</div>
+              <div class="pm-metric-label">신뢰 확보</div>
+              <p>클라이언트가 지속 참여를 조건으로 차기 연차·예산 확대를 제안</p>
+            </div>
+            <div class="pm-metric-card">
+              <div class="pm-metric-icon">🔄</div>
+              <div class="pm-metric-label">기술이전</div>
+              <p>차기 연차 연계 및 기술이전 논의로 발전, 장기 협업 구조 확보</p>
+            </div>
+          </div>
+
+          <div class="pm-reflection">
+            <h3 class="pm-sub-heading">회고</h3>
+            <div class="pm-text-block">
+              <p>이 프로젝트는 저에게 "기획은 문서를 만드는 일이 아니라, 실제로 필요한 구조를 현실 안에서 작동하게 만드는 일"이라는 점을 더 분명하게 보여준 경험이었습니다.</p>
+              <p>고령자 사용성, 임상 데이터, 안전도, 운영 구조, 이해관계자 조율, 개발 현실성까지 함께 고려해야 했고, 그 안에서 가장 적절한 방향을 계속 판단해야 했습니다.</p>
+            </div>
+          </div>
+
+          <div class="pm-closing-quote">
+            <p>이 프로젝트를 통해 저는 XR 콘텐츠를 만든 것이 아니라,<br><strong>고령자에게 실제로 작동하는 XR 훈련 시스템을 설계하고<br>운영 가능한 구조로 정리하는 일</strong>을 했습니다.</p>
+          </div>
         </div>
       </section>
 
