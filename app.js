@@ -173,8 +173,10 @@ function switchPage(page) {
     const tab = document.querySelector(`.gnb-tab[data-page="${page}"]`);
     if (tab) tab.classList.add('active');
 
-    if (page === 'kisti') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (page === 'cyan') {
+        initCyanPage();
     }
 }
 
@@ -847,4 +849,94 @@ function closePmModal() {
     overlay.classList.remove('visible');
     document.body.style.overflow = '';
 }
+
+// ============================================================
+// Cyan Page — Editions: Chapter Nav + Stats Counter
+// ============================================================
+let cyanInitialized = false;
+let edChapterObserver = null;
+let edStatsObserver = null;
+
+function initCyanPage() {
+    if (cyanInitialized) return;
+    cyanInitialized = true;
+
+    // --- Chapter Nav Click → Scroll ---
+    document.querySelectorAll('.ed-chapnav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const chapterId = item.dataset.chapter;
+            const chapter = document.getElementById(chapterId);
+            if (!chapter) return;
+
+            const gnbH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gnb-height')) || 56;
+            window.scrollTo({
+                top: chapter.offsetTop - gnbH,
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // --- Intersection Observer for Active Chapter ---
+    const chapters = document.querySelectorAll('#page-cyan .ed-hero, #page-cyan .ed-chapter');
+    const navItems = document.querySelectorAll('.ed-chapnav-item');
+
+    if (chapters.length && navItems.length) {
+        edChapterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    navItems.forEach(item => {
+                        item.classList.toggle('active', item.dataset.chapter === id);
+                    });
+                }
+            });
+        }, {
+            rootMargin: '-20% 0px -70% 0px',
+            threshold: 0
+        });
+
+        chapters.forEach(ch => edChapterObserver.observe(ch));
+    }
+
+    // --- Stats Counter Animation ---
+    const resultsSection = document.getElementById('edChResults');
+    if (resultsSection) {
+        let statsCounted = false;
+        edStatsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !statsCounted) {
+                    statsCounted = true;
+                    animateCounters();
+                }
+            });
+        }, { threshold: 0.3 });
+
+        edStatsObserver.observe(resultsSection);
+    }
+}
+
+function animateCounters() {
+    document.querySelectorAll('.ed-stat-num[data-target]').forEach(el => {
+        const target = parseInt(el.dataset.target);
+        const duration = 1500;
+        const start = performance.now();
+
+        function update(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(eased * target);
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                el.textContent = target;
+            }
+        }
+
+        requestAnimationFrame(update);
+    });
+}
+
 
