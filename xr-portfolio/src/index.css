@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/* ========================================
+   XR Exhibition Portfolio — Design System
+   ======================================== */
+
+@theme {
+  --color-base: #080A0F;
+  --color-section: #0E121B;
+  --color-card: #141A26;
+  --color-surface: #1A2233;
+  --color-border: #263247;
+  --color-text-primary: #F3F6FB;
+  --color-text-secondary: #98A4BA;
+  --color-text-muted: #546178;
+}
+
+/* --- Base --- */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: #080A0F;
+  color: #F3F6FB;
+  font-family: 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(167, 139, 250, 0.25);
+  color: white;
+}
+
+/* --- Typography Scale --- */
+.text-display {
+  font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.text-headline {
+  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+}
+
+.text-subhead {
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.text-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.text-body {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: #98A4BA;
+}
+
+.text-caption {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #546178;
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }

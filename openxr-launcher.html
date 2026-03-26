@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenXR — 교수자 런처</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #f0f4f8;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f7f9fc;
+      --bg-elevated: #ffffff;
+      --border-subtle: rgba(0,0,0,0.06);
+      --border-medium: rgba(0,0,0,0.12);
+      --text-primary: #1a2332;
+      --text-secondary: #5a6a7e;
+      --text-tertiary: #9ca8b8;
+      --accent: #2563eb;
+      --accent-soft: rgba(37,99,235,0.08);
+      --accent-glow: rgba(37,99,235,0.18);
+      --success: #16a34a;
+      --success-soft: rgba(22,163,74,0.08);
+      --danger: #dc2626;
+      --danger-soft: rgba(220,38,38,0.08);
+      --warning: #d97706;
+      --warning-soft: rgba(217,119,6,0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px var(--border-subtle);
+      --shadow-elevated: 0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px var(--border-subtle);
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --font-sans: 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 88px;
+      background: #2e6bca;
+      border-right: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      gap: 4px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 20px;
+      box-shadow: none;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .sidebar-item {
+      width: 62px;
+      height: 60px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: var(--transition);
+      color: rgba(255,255,255,0.6);
+      border: none;
+      background: none;
+      font-family: var(--font-sans);
+      position: relative;
+    }
+
+    .sidebar-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+    .sidebar-item span { font-size: 10px; font-weight: 500; letter-spacing: -0.2px; }
+
+    .sidebar-item:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .sidebar-item.active {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    .sidebar-item.active::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      border-radius: 0 3px 3px 0;
+      background: #fff;
+    }
+
+    .sidebar-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .sidebar-bottom .sidebar-item { color: rgba(255,255,255,0.4); }
+    .sidebar-bottom .sidebar-item:hover { color: #fca5a5; }
+
+    .sidebar-version {
+      font-size: 9px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar {
+      height: 52px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .topbar-breadcrumb .sep { color: var(--text-tertiary); font-size: 11px; }
+    .topbar-breadcrumb .current { color: var(--text-primary); font-weight: 600; }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .topbar-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .topbar-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ===== CONTENT AREA ===== */
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .content::-webkit-scrollbar { width: 6px; }
+    .content::-webkit-scrollbar-track { background: transparent; }
+    .content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.10); border-radius: 3px; }
+
+    /* ===== TRAINEE TABLE SECTION ===== */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .panel-header {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title .count {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 1px 7px;
+      border-radius: 99px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* Groups */
+    .group-chips {
+      display: flex;
+      gap: 6px;
+    }
+
+    .group-chip {
+      padding: 5px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border-medium);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+
+    .group-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .group-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      padding: 8px 16px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      background: #f7f9fc;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: var(--transition);
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f7f9fc; }
+
+    tbody td {
+      padding: 8px 16px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .td-num { font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .td-name { font-weight: 500; color: var(--text-primary); }
+
+    .td-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: 4px;
+      cursor: pointer;
+      appearance: none;
+      background: transparent;
+      transition: var(--transition);
+    }
+    .td-checkbox:checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+
+    .status-badge.offline {
+      background: rgba(0,0,0,0.04);
+      color: var(--text-tertiary);
+    }
+
+    .status-badge.online {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Device icons */
+    .device-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .device-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      background: #f0f4f8;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .device-icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--text-tertiary);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .device-icon.connected svg { stroke: var(--success); }
+
+    .btn-outline {
+      padding: 5px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border-medium);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ===== BOTTOM SECTION ===== */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px 1fr;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* ===== SETTINGS PANEL ===== */
+    .settings-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .settings-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 6px;
+    }
+
+    .content-tab {
+      padding: 6px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-medium);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+
+    .content-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .content-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .settings-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .setting-label {
+      min-width: 80px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .setting-label svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--text-tertiary);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-setting {
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border-medium);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+      min-width: 32px;
+      text-align: center;
+    }
+
+    .btn-setting:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-setting.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-setting.input-btn {
+      background: rgba(0,0,0,0.02);
+      border-style: dashed;
+    }
+
+    /* Difficulty icon groups */
+    .difficulty-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .difficulty-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .difficulty-icon {
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .difficulty-icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--text-tertiary);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    /* ===== PRESET PANEL ===== */
+    .preset-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preset-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .preset-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .preset-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .preset-action-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-medium);
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .preset-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .preset-action-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+
+    .preset-body {
+      padding: 12px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .preset-item {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border-subtle);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: left;
+      font-family: var(--font-sans);
+      display: block;
+      width: 100%;
+    }
+
+    .preset-item:hover { background: #f7f9fc; border-color: var(--border-medium); }
+    .preset-item.active {
+      background: var(--accent-soft);
+      border-color: rgba(59,130,246,0.3);
+      color: var(--accent);
+    }
+
+    .preset-footer {
+      padding: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn-add-preset {
+      width: 100%;
+      padding: 8px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px dashed var(--border-medium);
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-add-preset:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-add-preset svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* Environment selector */
+    .env-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .env-icon { font-size: 16px; }
+
+    .env-select {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      background: #f7f9fc;
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.35)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 28px;
+    }
+
+    /* ===== STATUS PANEL ===== */
+    .status-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .status-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .status-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .status-table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .status-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .status-table thead th {
+      padding: 8px 12px;
+      font-size: 10px;
+      background: #f7f9fc;
+    }
+
+    .status-table tbody td {
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .status-table tbody tr { border-bottom: 1px solid var(--border-subtle); }
+    .status-table tbody tr:last-child { border-bottom: none; }
+
+    .empty-state {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+
+    .empty-state svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--text-tertiary);
+      fill: none;
+      stroke-width: 1;
+      margin-bottom: 8px;
+      opacity: 0.4;
+    }
+
+    /* ===== ACTION BAR ===== */
+    .status-actions {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn-action {
+      padding: 10px 24px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    .btn-end {
+      background: #fff;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-medium);
+    }
+    .btn-end:hover { background: var(--danger-soft); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+
+    .btn-start {
+      background: linear-gradient(135deg, var(--accent), #2563eb);
+      color: #fff;
+      box-shadow: 0 2px 16px rgba(59,130,246,0.3);
+    }
+    .btn-start:hover {
+      box-shadow: 0 4px 24px rgba(59,130,246,0.45);
+      transform: translateY(-1px);
+    }
+
+    /* ===== INVITE BUTTON ===== */
+    .btn-invite {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-medium);
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .btn-invite:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-invite svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ===== REFRESH BUTTON ===== */
+    .btn-refresh {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-medium);
+      background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .btn-refresh:hover { border-color: rgba(255,255,255,0.18); color: var(--text-secondary); }
+    .btn-refresh svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+    /* ===== SCROLLBAR ===== */
+    .settings-body::-webkit-scrollbar,
+    .preset-body::-webkit-scrollbar,
+    .status-table-wrap::-webkit-scrollbar {
+      width: 4px;
+    }
+    .settings-body::-webkit-scrollbar-track,
+    .preset-body::-webkit-scrollbar-track,
+    .status-table-wrap::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .settings-body::-webkit-scrollbar-thumb,
+    .preset-body::-webkit-scrollbar-thumb,
+    .status-table-wrap::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1200px) {
+      .bottom-grid {
+        grid-template-columns: 1fr 240px;
+      }
+    }
+
+    /* ===== PAGE VIEW SYSTEM ===== */
+    .page-view {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    .page-view.active {
+      display: flex;
+    }
+
+    /* ===== CLASS RECORDS ===== */
+    .class-record {
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .class-record:last-child { border-bottom: none; }
+    .class-record-detail {
+      display: none;
+    }
+    .class-record.expanded .class-record-detail {
+      display: block;
+    }
+    .class-row { cursor: pointer; }
+    .class-row:hover { background: #f7f9fc; }
+
+    /* ===== TRAINEE ROW ===== */
+    .trainee-row { cursor: pointer; transition: var(--transition); }
+    .trainee-row:hover { background: #f7f9fc; }
+    .trainee-row.active {
+      background: var(--accent-soft);
+    }
+    .trainee-row.active td {
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">XR</div>
+
+    <div class="sidebar-nav">
+      <button class="sidebar-item active" data-page="class-prep" title="수업준비">
+        <svg viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>수업준비</span>
+      </button>
+      <button class="sidebar-item" data-page="class-mgmt" title="수업관리">
+        <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        <span>수업관리</span>
+      </button>
+      <button class="sidebar-item" data-page="trainee-mgmt" title="훈련자 관리">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/></svg>
+        <span>훈련자 관리</span>
+      </button>
+      <button class="sidebar-item" title="설정">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        <span>설정</span>
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-item" title="로그아웃">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>로그아웃</span>
+      </button>
+      <button class="sidebar-item" title="런처종료">
+        <svg viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+        <span>런처종료</span>
+      </button>
+      <span class="sidebar-version">V.0.1.12</span>
+    </div>
+  </nav>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main">
+
+    <!-- ===== PAGE: 수업준비 ===== -->
+    <div class="page-view active" data-page="class-prep">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-breadcrumb">
+          <span>수업준비</span>
+          <span class="sep">/</span>
+          <span class="current">곤충 잡기</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-badge">교수자</span>
+        <div class="topbar-user">
+          <div class="topbar-avatar">대</div>
+          <span>대전교수자</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Trainee Table -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            훈련자 목록
+            <span class="count">4명</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="group-chips">
+              <button class="group-chip active">전체</button>
+              <button class="group-chip">KIOM</button>
+            </div>
+            <button class="btn-refresh" title="새로고침">
+              <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px;"></th>
+                <th>초대</th>
+                <th>번호</th>
+                <th>이름</th>
+                <th>로그인</th>
+                <th>디바이스 연결</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" class="td-checkbox"></td>
+                <td>
+                  <button class="btn-invite" title="초대"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg></button>
+                </td>
+                <td class="td-num">1</td>
+                <td class="td-name">대전_1</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+                <td><button class="btn-outline">조회</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="td-checkbox"></td>
+                <td>
+                  <button class="btn-invite" title="초대"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg></button>
+                </td>
+                <td class="td-num">2</td>
+                <td class="td-name">대전_2</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+                <td><button class="btn-outline">조회</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="td-checkbox"></td>
+                <td>
+                  <button class="btn-invite" title="초대"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg></button>
+                </td>
+                <td class="td-num">3</td>
+                <td class="td-name">대전_3</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon connected" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+                <td><button class="btn-outline">조회</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="td-checkbox"></td>
+                <td>
+                  <button class="btn-invite" title="초대"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg></button>
+                </td>
+                <td class="td-num">4</td>
+                <td class="td-name">대전_4</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+                <td><button class="btn-outline">조회</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom 3-column grid -->
+      <div class="bottom-grid">
+
+        <!-- Settings Panel -->
+        <div class="settings-panel">
+          <div class="settings-header">
+            <button class="content-tab active">곤충 잡기</button>
+            <button class="content-tab">공놀이</button>
+          </div>
+          <div class="settings-body">
+            <!-- 모드선택 -->
+            <div class="setting-row">
+              <div class="setting-label">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                모드선택
+              </div>
+              <div class="btn-group">
+                <button class="btn-setting active">1:1 경쟁</button>
+                <button class="btn-setting">2인 협동</button>
+                <button class="btn-setting">1:1:1:1 경쟁</button>
+                <button class="btn-setting">2:2 경쟁</button>
+                <button class="btn-setting">4인 활동</button>
+              </div>
+            </div>
+
+            <!-- 난이도 -->
+            <div class="setting-row" style="align-items: flex-start;">
+              <div class="setting-label" style="padding-top: 4px;">
+                <svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                난이도
+              </div>
+              <div class="difficulty-section">
+                <div class="difficulty-row">
+                  <div class="difficulty-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg>
+                  </div>
+                  <div class="btn-group">
+                    <button class="btn-setting active">1</button>
+                    <button class="btn-setting">2</button>
+                    <button class="btn-setting">3</button>
+                    <button class="btn-setting">4</button>
+                  </div>
+                </div>
+                <div class="difficulty-row">
+                  <div class="difficulty-icon">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                  <div class="btn-group">
+                    <button class="btn-setting">5</button>
+                    <button class="btn-setting">6</button>
+                  </div>
+                </div>
+                <div class="difficulty-row">
+                  <div class="difficulty-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div class="btn-group">
+                    <button class="btn-setting">7</button>
+                    <button class="btn-setting">8</button>
+                  </div>
+                </div>
+                <div class="difficulty-row">
+                  <div class="difficulty-icon">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+                  </div>
+                  <div class="btn-group">
+                    <button class="btn-setting">9</button>
+                    <button class="btn-setting">10</button>
+                    <button class="btn-setting">11</button>
+                    <button class="btn-setting">12</button>
+                    <button class="btn-setting">13</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 플레이 시간 -->
+            <div class="setting-row">
+              <div class="setting-label">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                플레이 시간
+              </div>
+              <div class="btn-group">
+                <button class="btn-setting">60</button>
+                <button class="btn-setting">120</button>
+                <button class="btn-setting active">180</button>
+                <button class="btn-setting input-btn">직접입력</button>
+              </div>
+            </div>
+
+            <!-- 횟수 -->
+            <div class="setting-row">
+              <div class="setting-label">
+                <svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+                횟수
+              </div>
+              <div class="btn-group">
+                <button class="btn-setting active">1</button>
+                <button class="btn-setting">2</button>
+                <button class="btn-setting">3</button>
+                <button class="btn-setting input-btn">직접입력</button>
+              </div>
+            </div>
+
+            <!-- 곤충높이 -->
+            <div class="setting-row">
+              <div class="setting-label">
+                <svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><path d="m8 8 4-4 4 4"/></svg>
+                곤충높이
+              </div>
+              <div class="btn-group">
+                <button class="btn-setting active">하</button>
+                <button class="btn-setting">중</button>
+                <button class="btn-setting">상</button>
+              </div>
+            </div>
+
+            <!-- 곤충속도 -->
+            <div class="setting-row">
+              <div class="setting-label">
+                <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                곤충속도
+              </div>
+              <div class="btn-group">
+                <button class="btn-setting active">하</button>
+                <button class="btn-setting">중</button>
+                <button class="btn-setting">상</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preset Panel -->
+        <div class="preset-panel">
+          <div class="preset-header">
+            <span class="preset-title">프리셋</span>
+            <div class="preset-actions">
+              <button class="preset-action-btn" title="삭제">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="preset-body">
+            <div class="env-selector">
+              <select class="env-select" style="flex:1;">
+                <option>숲</option>
+                <option>바다</option>
+                <option>초원</option>
+              </select>
+            </div>
+            <button class="preset-item active">기본</button>
+          </div>
+          <div class="preset-footer">
+            <button class="btn-add-preset">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              프리셋 추가
+            </button>
+          </div>
+        </div>
+
+        <!-- Status Panel -->
+        <div class="status-panel">
+          <div class="status-header">
+            <div class="status-title">훈련자 상태</div>
+          </div>
+          <div class="status-table-wrap">
+            <table class="status-table">
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>성명</th>
+                  <th>성별</th>
+                  <th>만나이</th>
+                  <th>교육연수</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Empty state -->
+              </tbody>
+            </table>
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <p>훈련자를 초대하면 여기에 표시됩니다</p>
+            </div>
+          </div>
+
+          <div style="padding: 10px 16px; border-top: 1px solid var(--border-subtle);">
+            <table class="status-table">
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>상태 (0/4)</th>
+                  <th>팀 구성 (2:2경쟁)</th>
+                  <th>강퇴</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="status-actions" style="justify-content: stretch;">
+            <button class="btn-action btn-end" style="flex:1; justify-content:center;">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              수업 종료
+            </button>
+            <button class="btn-action btn-start" style="flex:1; justify-content:center;">
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              VR 훈련시작
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    </div><!-- /page: class-prep -->
+
+    <!-- ===== PAGE: 수업관리 ===== -->
+    <div class="page-view" data-page="class-mgmt">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-breadcrumb">
+          <span class="current">수업관리</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-action btn-start" style="padding:7px 20px; font-size:12px;">알림 전송</button>
+        <span class="topbar-badge">교수자</span>
+        <div class="topbar-user">
+          <div class="topbar-avatar">대</div>
+          <span>대전교수자</span>
+        </div>
+      </div>
+    </header>
+    <div class="content">
+
+      <!-- 수업현황 그룹관리 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">수업현황 그룹관리</div>
+          <div class="group-chips">
+            <button class="group-chip">전체</button>
+            <button class="group-chip active">KIOM</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>훈련자 번호</th>
+                <th>이름</th>
+                <th>로그인</th>
+                <th>디바이스 연결</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-num">1</td>
+                <td class="td-name">대전_1</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-num">2</td>
+                <td class="td-name">대전_2</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-num">3</td>
+                <td class="td-name">대전_3</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="td-num">4</td>
+                <td class="td-name">대전_4</td>
+                <td><span class="status-badge offline"><span class="status-dot"></span>로그아웃</span></td>
+                <td>
+                  <div class="device-icons">
+                    <div class="device-icon" title="포스플레이트"><svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="12" rx="2"/><path d="M6 8V6m4 2V5m4 3V6m4 2V5"/></svg></div>
+                    <div class="device-icon" title="워치"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M12 10v2l1.5 1"/></svg></div>
+                    <div class="device-icon" title="VR HMD"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M12 7v10"/></svg></div>
+                    <div class="device-icon" title="캠"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                    <div class="device-icon" title="Kinect"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4"/><circle cx="12" cy="12" r="2"/><path d="M12 4v4m0 8v4"/></svg></div>
+                    <div class="device-icon" title="햅틱글러브"><svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6m4 0V4m-8 7v-.5a2 2 0 0 1 4 0V11m-4 0H5a2 2 0 0 0-2 2v1c0 4.97 4.03 9 9 9a9 9 0 0 0 9-9v-2a2 2 0 0 0-2-2h-1"/></svg></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 개설된 수업 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">개설된 수업</div>
+          <button class="btn-action btn-end" style="padding:7px 16px; font-size:12px;">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            수업 종료
+          </button>
+        </div>
+        <div style="padding:0;">
+          <!-- Class Record 1 (expanded) -->
+          <div class="class-record expanded">
+            <div class="class-record-header">
+              <table style="width:100%;">
+                <thead>
+                  <tr>
+                    <th style="width:30px;"></th>
+                    <th>기관</th>
+                    <th>교수자</th>
+                    <th>수업내용</th>
+                    <th>수업일시</th>
+                    <th>수업상태</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="class-row" onclick="this.closest('.class-record').classList.toggle('expanded')">
+                    <td style="color:var(--accent); cursor:pointer;">&#9660;</td>
+                    <td class="td-name">KIOM</td>
+                    <td>대전교수자</td>
+                    <td>Cam 수업</td>
+                    <td style="font-variant-numeric:tabular-nums;">2026-01-15 14:41:09</td>
+                    <td><span class="status-badge offline">종료</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="class-record-detail">
+              <div style="padding:8px 16px 12px 40px; font-size:12px; color:var(--text-secondary); background:#f7f9fc; border-top:1px solid var(--border-subtle);">
+                <span style="font-weight:600; color:var(--text-tertiary); margin-right:12px;">훈련자</span>
+                대전_1, 대전_2
+              </div>
+            </div>
+          </div>
+
+          <!-- Class Record 2 -->
+          <div class="class-record">
+            <div class="class-record-header">
+              <table style="width:100%;">
+                <thead><tr>
+                  <th style="width:30px;"></th><th>기관</th><th>교수자</th><th>수업내용</th><th>수업일시</th><th>수업상태</th>
+                </tr></thead>
+                <tbody>
+                  <tr class="class-row" onclick="this.closest('.class-record').classList.toggle('expanded')">
+                    <td style="color:var(--accent); cursor:pointer;">&#9654;</td>
+                    <td class="td-name">KIOM</td>
+                    <td>대전교수자</td>
+                    <td>Cam 수업</td>
+                    <td style="font-variant-numeric:tabular-nums;">2026-01-14 16:51:24</td>
+                    <td><span class="status-badge offline">종료</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="class-record-detail">
+              <div style="padding:8px 16px 12px 40px; font-size:12px; color:var(--text-secondary); background:#f7f9fc; border-top:1px solid var(--border-subtle);">
+                <span style="font-weight:600; color:var(--text-tertiary); margin-right:12px;">훈련자</span>
+                대전_1, 대전_3
+              </div>
+            </div>
+          </div>
+
+          <!-- Class Record 3 -->
+          <div class="class-record">
+            <div class="class-record-header">
+              <table style="width:100%;">
+                <thead><tr>
+                  <th style="width:30px;"></th><th>기관</th><th>교수자</th><th>수업내용</th><th>수업일시</th><th>수업상태</th>
+                </tr></thead>
+                <tbody>
+                  <tr class="class-row" onclick="this.closest('.class-record').classList.toggle('expanded')">
+                    <td style="color:var(--accent); cursor:pointer;">&#9654;</td>
+                    <td class="td-name">KIOM</td>
+                    <td>대전교수자</td>
+                    <td>Cam 수업</td>
+                    <td style="font-variant-numeric:tabular-nums;">2026-01-14 16:12:53</td>
+                    <td><span class="status-badge offline">종료</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="class-record-detail">
+              <div style="padding:8px 16px 12px 40px; font-size:12px; color:var(--text-secondary); background:#f7f9fc; border-top:1px solid var(--border-subtle);">
+                <span style="font-weight:600; color:var(--text-tertiary); margin-right:12px;">훈련자</span>
+                대전_2, 대전_4
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    </div><!-- /page: class-mgmt -->
+
+    <!-- ===== PAGE: 훈련자 관리 ===== -->
+    <div class="page-view" data-page="trainee-mgmt">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-breadcrumb">
+          <span class="current">훈련자 관리</span>
+        </div>
+        <div style="display:flex; gap:6px; margin-left:16px;">
+          <button class="btn-outline">그룹 추가</button>
+          <button class="btn-outline">그룹 삭제</button>
+          <button class="btn-outline">기관 추가</button>
+          <button class="btn-outline" style="background:var(--accent); color:#fff; border-color:var(--accent);">훈련자 추가</button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div style="display:flex; gap:6px; align-items:center;">
+          <input type="text" placeholder="검색" style="padding:6px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-medium); font-size:12px; font-family:var(--font-sans); background:#fff; color:var(--text-primary); width:140px;">
+          <button class="btn-outline" style="background:var(--accent); color:#fff; border-color:var(--accent);">검색</button>
+          <button class="btn-outline">검색 취소</button>
+        </div>
+        <span class="topbar-badge">교수자</span>
+        <div class="topbar-user">
+          <div class="topbar-avatar">대</div>
+          <span>대전교수자</span>
+        </div>
+      </div>
+    </header>
+    <div class="content" style="overflow:hidden; padding:12px; gap:10px;">
+
+      <!-- 훈련자 목록 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">훈련자 목록 <span class="count">4명</span></div>
+          <div class="group-chips">
+            <button class="group-chip">전체</button>
+            <button class="group-chip active">KIOM</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>이름</th>
+                <th>생년월일</th>
+                <th>관리 기관</th>
+                <th>최근 검사일</th>
+                <th>메모</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="trainee-row active">
+                <td class="td-num">1</td>
+                <td class="td-name">대전_1</td>
+                <td>1960-12-31</td>
+                <td>이트라이브</td>
+                <td>2025-11-06</td>
+                <td></td>
+              </tr>
+              <tr class="trainee-row">
+                <td class="td-num">2</td>
+                <td class="td-name">대전_2</td>
+                <td>2025-08-19</td>
+                <td>이트라이브</td>
+                <td>2025-11-06</td>
+                <td></td>
+              </tr>
+              <tr class="trainee-row">
+                <td class="td-num">3</td>
+                <td class="td-name">대전_3</td>
+                <td>1981-11-11</td>
+                <td>이트라이브</td>
+                <td>2025-09-25</td>
+                <td></td>
+              </tr>
+              <tr class="trainee-row">
+                <td class="td-num">4</td>
+                <td class="td-name">대전_4</td>
+                <td>2025-11-04</td>
+                <td>이트라이브</td>
+                <td>1000-01-01</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 훈련자 상세 패널 -->
+      <div class="panel" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+        <div class="panel-header">
+          <div style="display:flex; gap:6px;">
+            <button class="content-tab active">검사설정</button>
+            <button class="content-tab">훈련자 수정</button>
+            <button class="content-tab">메모 수정</button>
+            <button class="content-tab">아바타 변경</button>
+            <button class="content-tab">사용자 삭제</button>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-outline" style="background:var(--accent); color:#fff; border-color:var(--accent);">CSV 저장</button>
+            <button class="btn-outline" style="background:var(--accent); color:#fff; border-color:var(--accent);">PDF 저장</button>
+          </div>
+        </div>
+
+        <div style="padding:10px 16px; display:flex; flex-direction:column; gap:10px; flex:1; min-height:0;">
+          <!-- 훈련자 정보 -->
+          <div style="display:flex; gap:24px; flex-wrap:wrap; font-size:12px; padding:12px 16px; background:#f7f9fc; border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+            <div><span style="color:var(--text-tertiary); margin-right:6px;">훈련자번호</span><strong>1</strong></div>
+            <div><span style="color:var(--text-tertiary); margin-right:6px;">성명</span><strong>대전</strong></div>
+            <div><span style="color:var(--text-tertiary); margin-right:6px;">성별</span><strong>남자</strong></div>
+            <div><span style="color:var(--text-tertiary); margin-right:6px;">만나이</span><strong>65</strong></div>
+            <div><span style="color:var(--text-tertiary); margin-right:6px;">교육연수</span><strong>12</strong></div>
+            <div><span style="color:var(--text-tertiary); margin-right:6px;">그룹</span><strong>KIOM</strong></div>
+          </div>
+
+          <!-- 검사 형태 / 문제 타입 -->
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:12px; font-weight:500; color:var(--text-secondary); min-width:60px;">검사 형태</span>
+              <div class="btn-group">
+                <button class="btn-setting active">인지검사</button>
+                <button class="btn-setting">심혈관검사</button>
+                <button class="btn-setting">균형검사</button>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:12px; font-weight:500; color:var(--text-secondary); min-width:60px;">성별</span>
+              <div class="btn-group">
+                <button class="btn-setting active">남</button>
+                <button class="btn-setting">여</button>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:12px; font-weight:500; color:var(--text-secondary); min-width:60px;">문제 타입</span>
+              <div class="btn-group">
+                <button class="btn-setting active">촉각1</button>
+                <button class="btn-setting">촉각2</button>
+                <button class="btn-setting">촉각3</button>
+                <button class="btn-setting">비촉각1</button>
+                <button class="btn-setting">비촉각2</button>
+                <button class="btn-setting">비촉각3</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 하단 2컨텐츠: 테이블 + 차트 -->
+          <div style="display:grid; grid-template-columns:3fr 1fr; gap:12px; flex:1; min-height:0;">
+            <!-- 좌측: 인지검사 테이블 + 사이드 탭 -->
+            <div style="display:flex; gap:0; min-height:0; overflow:hidden;">
+              <!-- 사이드 탭 -->
+              <div style="display:flex; flex-direction:column; gap:2px; min-width:100px; flex:0 0 auto; height:100%;">
+                <button class="content-tab active" style="text-align:left; border-radius:var(--radius-sm) 0 0 var(--radius-sm); border-right:none; flex:1; display:flex; align-items:center;">인지 검사</button>
+                <button class="content-tab" style="text-align:left; border-radius:var(--radius-sm) 0 0 var(--radius-sm); border-right:none; flex:1; display:flex; align-items:center;">심혈관 검사</button>
+                <button class="content-tab" style="text-align:left; border-radius:var(--radius-sm) 0 0 var(--radius-sm); border-right:none; flex:1; display:flex; align-items:center;">균형 검사</button>
+                <button class="content-tab" style="text-align:left; border-radius:var(--radius-sm) 0 0 var(--radius-sm); border-right:none; flex:1; display:flex; align-items:center;">곤충채집</button>
+                <button class="content-tab" style="text-align:left; border-radius:var(--radius-sm) 0 0 var(--radius-sm); border-right:none; flex:1; display:flex; align-items:center;">공놀이</button>
+              </div>
+              <!-- 데이터 테이블 -->
+              <div style="flex:1; border:1px solid var(--border-subtle); border-radius:0 var(--radius-md) var(--radius-md) 0; overflow:auto;">
+                <table class="status-table" style="font-size:11px; text-align:center; border-collapse:collapse; height:100%;" cellpadding="0" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th rowspan="2" style="background:var(--accent); color:#fff; text-align:center; border:1px solid rgba(0,0,0,0.1); padding:4px 6px; font-size:10px;">항목</th>
+                      <th rowspan="2" style="background:var(--accent); color:#fff; text-align:center; border:1px solid rgba(0,0,0,0.1); padding:4px 6px;"></th>
+                      <th colspan="2" style="text-align:center; background:var(--accent); color:#fff; border:1px solid rgba(0,0,0,0.1); padding:4px 6px; font-size:10px;">24회차 <span style="font-size:8px; opacity:0.8;">(25-07-02)</span></th>
+                      <th colspan="2" style="text-align:center; background:var(--accent); color:#fff; border:1px solid rgba(0,0,0,0.1); padding:4px 6px; font-size:10px;">23회차 <span style="font-size:8px; opacity:0.8;">(25-07-02)</span></th>
+                      <th colspan="2" style="text-align:center; background:var(--accent); color:#fff; border:1px solid rgba(0,0,0,0.1); padding:4px 6px; font-size:10px;">22회차 <span style="font-size:8px; opacity:0.8;">(25-07-01)</span></th>
+                    </tr>
+                    <tr>
+                      <th style="background:var(--accent-soft); font-size:9px; text-align:center; color:var(--accent); font-weight:600; border:1px solid rgba(0,0,0,0.08); padding:2px 6px;">점수</th><th style="background:var(--accent-soft); font-size:9px; text-align:center; color:var(--accent); font-weight:600; border:1px solid rgba(0,0,0,0.08); padding:2px 6px;">반응시간</th>
+                      <th style="background:var(--accent-soft); font-size:9px; text-align:center; color:var(--accent); font-weight:600; border:1px solid rgba(0,0,0,0.08); padding:2px 6px;">점수</th><th style="background:var(--accent-soft); font-size:9px; text-align:center; color:var(--accent); font-weight:600; border:1px solid rgba(0,0,0,0.08); padding:2px 6px;">반응시간</th>
+                      <th style="background:var(--accent-soft); font-size:9px; text-align:center; color:var(--accent); font-weight:600; border:1px solid rgba(0,0,0,0.08); padding:2px 6px;">점수</th><th style="background:var(--accent-soft); font-size:9px; text-align:center; color:var(--accent); font-weight:600; border:1px solid rgba(0,0,0,0.08); padding:2px 6px;">반응시간</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td rowspan="2" style="font-weight:600; text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">주의력</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">시각</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">2</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">25</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">12</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">2</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">17</td></tr>
+                    <tr><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">촉각</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">2</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">25</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">15</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">13</td></tr>
+                    <tr><td rowspan="2" style="font-weight:600; text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">기억력</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">기억 등록</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">0</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">0</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">0</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">0</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">0</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">0</td></tr>
+                    <tr><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">기억 인출</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">6</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">57</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">6</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">19</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">6</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">21</td></tr>
+                    <tr><td rowspan="2" style="font-weight:600; text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">시공간 기능</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">위치</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">1</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">84</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">29</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">6</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">39</td></tr>
+                    <tr><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">방향</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;"></td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;"></td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td></tr>
+                    <tr><td rowspan="2" style="font-weight:600; text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">언어기능</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">이름 대기</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">5</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">28</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">6</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">11</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">6</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">26</td></tr>
+                    <tr><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">이해력</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">27</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">3</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">13</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">2</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">13</td></tr>
+                    <tr style="font-weight:700; background:var(--accent-soft);"><td colspan="2" style="text-align:center; border:1px solid rgba(0,0,0,0.08); color:var(--accent); padding:3px 6px;">합계</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">24</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">370</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">31</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">115</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">30</td><td style="text-align:center; border:1px solid rgba(0,0,0,0.08); padding:3px 6px;">138</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 우측: 차트 영역 -->
+            <div style="border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:0;">
+              <div style="font-size:12px; font-weight:600; color:var(--text-primary); margin-bottom:12px;">점수</div>
+              <div style="display:flex; gap:16px; align-items:center; margin-bottom:16px;">
+                <div style="display:flex; align-items:center; gap:4px; font-size:11px; color:var(--accent);"><span style="width:12px; height:3px; background:var(--accent); border-radius:2px; display:inline-block;"></span> 평균 점수</div>
+                <div style="display:flex; align-items:center; gap:4px; font-size:11px; color:var(--success);"><span style="width:12px; height:3px; background:var(--success); border-radius:2px; display:inline-block;"></span> 평균 시간</div>
+              </div>
+              <!-- Simple bar chart representation -->
+              <div style="display:flex; gap:12px; align-items:flex-end; height:120px; width:100%;">
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                  <div style="width:100%; background:var(--accent-soft); border-radius:4px 4px 0 0; height:80px;"></div>
+                  <span style="font-size:9px; color:var(--text-tertiary);">24회차</span>
+                </div>
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                  <div style="width:100%; background:var(--accent-soft); border-radius:4px 4px 0 0; height:100px;"></div>
+                  <span style="font-size:9px; color:var(--text-tertiary);">23회차</span>
+                </div>
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                  <div style="width:100%; background:var(--accent-soft); border-radius:4px 4px 0 0; height:95px;"></div>
+                  <span style="font-size:9px; color:var(--text-tertiary);">22회차</span>
+                </div>
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                  <div style="width:100%; background:var(--accent-soft); border-radius:4px 4px 0 0; height:70px;"></div>
+                  <span style="font-size:9px; color:var(--text-tertiary);">21회차</span>
+                </div>
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+                  <div style="width:100%; background:var(--accent-soft); border-radius:4px 4px 0 0; height:60px;"></div>
+                  <span style="font-size:9px; color:var(--text-tertiary);">20회차</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    </div><!-- /page: trainee-mgmt -->
+
+  </div><!-- /main -->
+
+  <script>
+    // Toggle button groups
+    document.querySelectorAll('.btn-group').forEach(group => {
+      group.querySelectorAll('.btn-setting:not(.input-btn)').forEach(btn => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('.btn-setting').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    });
+
+    // Content tabs
+    document.querySelectorAll('.content-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Group chips
+    document.querySelectorAll('.group-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.group-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    // Sidebar items - page navigation
+    document.querySelectorAll('.sidebar-nav .sidebar-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.sidebar-nav .sidebar-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const targetPage = item.dataset.page;
+        if (targetPage) {
+          document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+          const page = document.querySelector(`.page-view[data-page="${targetPage}"]`);
+          if (page) page.classList.add('active');
+        }
+      });
+    });
+
+    // Trainee row selection
+    document.querySelectorAll('.trainee-row').forEach(row => {
+      row.addEventListener('click', () => {
+        row.closest('tbody').querySelectorAll('.trainee-row').forEach(r => r.classList.remove('active'));
+        row.classList.add('active');
+      });
+    });
+
+    // Preset items
+    document.querySelectorAll('.preset-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.preset-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
