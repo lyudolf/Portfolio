@@ -11,45 +11,49 @@ const TABS = [
 export default function Nav({ activeTab, onTabChange }) {
   return (
     <motion.nav
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{
-        background: 'rgba(8,10,15,0.92)',
-        backdropFilter: 'blur(30px) saturate(1.4)',
-        borderBottom: '1px solid rgba(38,50,71,0.3)',
-      }}
-      initial={{ y: -60, opacity: 0 }}
+      className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none"
+      initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: 0.7, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="max-w-6xl mx-auto px-8 h-12 flex items-center justify-between">
-        <span className="text-[13px] font-semibold" style={{ color: '#546178', letterSpacing: '-0.01em' }}>
-          류동현
-        </span>
-        <div className="flex">
-          {TABS.map(tab => (
+      <div
+        className="flex items-center gap-1 px-2 py-2 rounded-full pointer-events-auto"
+        style={{
+          background: 'rgba(12, 14, 20, 0.75)',
+          backdropFilter: 'blur(24px) saturate(1.6)',
+          border: '1px solid rgba(243, 200, 247, 0.22)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03) inset',
+        }}
+      >
+        {TABS.map(tab => {
+          const isActive = activeTab === tab.id;
+          return (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className="relative px-4 py-1.5 text-[11px] font-medium transition-colors duration-200"
+              className="relative px-10 py-2 text-[12px] font-medium rounded-full transition-colors duration-200"
               style={{
-                color: activeTab === tab.id ? '#F3F6FB' : '#546178',
+                color: isActive ? '#F3F6FB' : '#546178',
                 letterSpacing: '0.02em',
               }}
-              onMouseEnter={e => { if (activeTab !== tab.id) e.currentTarget.style.color = '#98A4BA'; }}
-              onMouseLeave={e => { if (activeTab !== tab.id) e.currentTarget.style.color = '#546178'; }}
+              onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = '#98A4BA'; }}
+              onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = '#546178'; }}
             >
-              {tab.label}
-              {activeTab === tab.id && (
+              {isActive && (
                 <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute -bottom-px left-3 right-3 h-px"
-                  style={{ background: 'rgba(243,246,251,0.4)' }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                  layoutId="pill-indicator"
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: 'rgba(167, 139, 250, 0.12)',
+                    border: '1px solid rgba(167, 139, 250, 0.2)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                 />
               )}
+              <span className="relative z-10">{tab.label}</span>
             </button>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </motion.nav>
   );

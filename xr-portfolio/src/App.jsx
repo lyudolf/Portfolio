@@ -24,7 +24,7 @@ export default function App() {
   return (
     <>
       <Nav activeTab={activeTab} onTabChange={handleTabChange} />
-      <main className="pt-12">
+      <main>
         <AnimatePresence mode="wait">
           <PageTransition tabKey={activeTab}>
             <Page />
