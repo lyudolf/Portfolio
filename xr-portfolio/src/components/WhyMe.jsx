@@ -58,7 +58,7 @@ export default function WhyMe() {
               저는 그 기획을 현실에서 작동하게 만드는 사람입니다."
             </blockquote>
             <div className="flex flex-col items-center gap-2">
-              <span className="text-sm font-bold" style={{ color: 'rgba(243,246,251,0.5)' }}>류동현</span>
+              <span className="text-sm font-bold" style={{ color: 'rgba(243,246,251,0.5)' }}>유희수</span>
               <span className="text-xs" style={{ color: '#546178' }}>XR Service Planner · PM</span>
             </div>
           </div>

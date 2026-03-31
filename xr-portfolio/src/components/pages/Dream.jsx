@@ -1,4 +1,16 @@
 import FadeIn from '../ui/FadeIn';
+import InfiniteGallery from '../ui/InfiniteGallery';
+
+const GALLERY_ITEMS = [
+  { src: '/images/dream/1.png', title: '꿈키 MARS — 우주 탐사 체험' },
+  { src: '/images/dream/2.png', title: '밀실사건수사대 — 증거 수집 장면' },
+  { src: '/images/dream/3.png', title: '꿈키 엔터테인먼트 — 리듬게임 UI' },
+  { src: '/images/dream/4.png', title: 'Vision Pro 핸드트래킹 인터랙션' },
+  { src: '/images/dream/5.png', title: '공간 UI 프로토타입 테스트' },
+  { src: '/images/dream/6.png', title: '사용자 체험 세션 현장' },
+  { src: '/images/dream/7.png', title: '아이트래킹 UX 검증' },
+  { src: '/images/dream/8.jpg', title: '세계관 컨셉 아트 — MARS' },
+];
 
 const WORLDS = [
   { name: '꿈키 MARS', desc: '허공에 주먹을 쥐면 조종간이 생성되고, 이를 통해 기기를 조작하는 방식. Vision Pro의 공간 인터랙션을 직업체험에 재해석했습니다.', jobs: '기계공학자 · 우주자원개발자 · 바이오식품공학자' },
@@ -63,6 +75,19 @@ export default function Dream() {
             Vision Pro는 팀 누구도 경험해 본 적 없는 디바이스였습니다.
             일정도, 대상도, 기술도 — 전부 재설계가 필요했습니다.
           </p>
+        </FadeIn>
+      </section>
+
+      <Divider />
+
+      {/* Gallery */}
+      <section className="max-w-4xl mx-auto px-8 py-20">
+        <FadeIn>
+          <p className="text-label mb-3" style={{ color: 'rgba(216,165,75,0.35)' }}>Gallery</p>
+          <h2 className="text-subhead mb-12" style={{ color: 'rgba(243,246,251,0.85)' }}>프로젝트 스크린샷</h2>
+        </FadeIn>
+        <FadeIn delay={0.05}>
+          <InfiniteGallery items={GALLERY_ITEMS} />
         </FadeIn>
       </section>
 

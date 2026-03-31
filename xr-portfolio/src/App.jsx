@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Nav from './components/Nav';
+import InterestModal from './components/ui/InterestModal';
 import PageTransition from './components/ui/PageTransition';
 import About from './components/pages/About';
 import Kisti from './components/pages/Kisti';
@@ -24,6 +25,7 @@ export default function App() {
   return (
     <>
       <Nav activeTab={activeTab} onTabChange={handleTabChange} />
+      <InterestModal />
       <main>
         <AnimatePresence mode="wait">
           <PageTransition tabKey={activeTab}>

@@ -74,7 +74,7 @@ export default function WhyMe() {
           </blockquote>
           <div className="flex items-center gap-4">
             <div>
-              <p className="text-sm font-semibold" style={{ color: 'rgba(243,246,251,0.55)' }}>류동현</p>
+              <p className="text-sm font-semibold" style={{ color: 'rgba(243,246,251,0.55)' }}>유희수</p>
               <p className="text-[11px]" style={{ color: '#546178' }}>XR Service Planner · PM</p>
             </div>
           </div>
