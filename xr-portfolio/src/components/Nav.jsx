@@ -5,6 +5,7 @@ const TABS = [
   { id: 'kisti', label: 'KISTI' },
   { id: 'dream', label: '꿈키올래' },
   { id: 'process', label: 'Process' },
+  { id: 'withai', label: 'with AI' },
   { id: 'whyme', label: 'Why Me' },
 ];
 
