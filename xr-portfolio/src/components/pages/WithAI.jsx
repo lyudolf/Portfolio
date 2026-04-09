@@ -23,7 +23,7 @@ const PROJECTS = [
     intro: '8,000개의 낙엽을 1인칭 시점으로 치우는 브라우저 3D 캐주얼 게임. InstancedMesh로 단일 드로우콜을 구현하고, ONNX 딥러닝 모델로 플레이어 행동을 예측하는 스나이퍼 AI를 탑재. 총 5스테이지, 7일 개발. Vercel 라이브 배포 중.',
     duration: '7일',
     language: 'JavaScript',
-    thumbnail: null,
+    thumbnail: '/withai/leaf/leaf.jpg',
     award: null,
     detailPage: 'leaf-detail',
   },
