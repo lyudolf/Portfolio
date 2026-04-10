@@ -24,6 +24,7 @@ const TROUBLESHOOTING_ITEMS = [
       { term: 'InstancedMesh 렌더링', desc: '8,000개의 개별 오브젝트를 하나의 메시로 통합하여 드로우콜(Draw Call)을 8,000회 → 1회로 최적화.' },
       { term: '수면(Sleep) 시스템', desc: '정지한 낙엽의 물리 계산을 스킵하고 외부 힘이 가해질 때만 활성화. 평균 70%의 객체를 수면 상태로 유지하여 CPU 부하를 극적으로 절감.' },
     ],
+    video: '/withai/leaf/render.mp4',
     mediaTag: 'InstancedMesh + Sleep System Demo',
     flip: false,
   },
@@ -37,22 +38,11 @@ const TROUBLESHOOTING_ITEMS = [
       { term: 'ONNX 기반 적대적 AI', desc: '플레이어의 시선 방향과 낙엽 밀도 맵을 분석하는 324차원 입력 딥러닝 모델을 브라우저에 직접 탑재. 이동 경로를 예측해 선제 타겟팅.' },
       { term: 'FSM 기반 NPC 도우미', desc: 'IDLE ↔ MOVING ↔ CARRYING 상태를 갖는 유한 상태 머신으로 AI 도우미를 설계. 수집·운반 자동화 분업 시스템 구현.' },
     ],
+    video: '/withai/leaf/mole.mp4',
     mediaTag: 'ONNX Sniper Mole Targeting Demo',
     flip: true,
   },
-  {
-    id: 'physics-env',
-    category: '환경 변수 제어',
-    title: '벡터 필드(Vector Field) 기반의\n동적 물리 환경 구축',
-    problem:
-      '고정형 장애물로는 동적인 3D 환경의 난이도 조절 및 변수 창출에 한계가 있었습니다. 오브젝트의 이동 방향을 실시간으로 제어하는 물리 시스템이 필요했습니다.',
-    bullets: [
-      { term: '비선형 물리 로직 설계', desc: '중심점을 향하는 구심력과 상승 벡터를 수학적으로 계산하여, 수백 개의 객체가 자연스럽게 휩쓸리는 토네이도 기믹 구현.' },
-      { term: '전역/국지 풍향 제어', desc: '특정 구역 진입 시 물리 엔진에 방향 벡터를 더해 플레이어와 오브젝트의 이동을 통제하는 Wind Zone 시스템 설계.' },
-    ],
-    mediaTag: 'Tornado Vector Field & Wind Zone Demo',
-    flip: false,
-  },
+
   {
     id: 'modularity',
     category: '시스템 모듈화',
@@ -63,6 +53,7 @@ const TROUBLESHOOTING_ITEMS = [
       { term: '컴포넌트 패턴 적용', desc: '충돌 범위(Raycast/Box)와 물리적 힘(밀기/당기기)을 모듈화하여, 신규 장비 추가 시 기존 코드 수정 없이 데이터 주입만으로 동작하도록 설계.' },
       { term: '물리 연산 분리', desc: '장비 특성(Kinematic, 전역 인력 등)에 맞춘 독립적인 연산 파이프라인을 매핑하여 퍼포먼스 드랍 방지.' },
     ],
+    video: '/withai/leaf/tool.mp4',
     mediaTag: 'Modular Tool Architecture Diagram',
     flip: true,
   },
@@ -76,6 +67,7 @@ const TROUBLESHOOTING_ITEMS = [
       { term: '단계적 코어 루프', desc: '\'수집 → 봉투 생성(100단위) → 판매 → 업그레이드\'로 이어지는 명확한 경제 보상 파이프라인 구축.' },
       { term: '난이도 곡선 제어', desc: '5개 스테이지에 걸쳐 도구와 환경 변수를 점진적으로 해금하여 사용자 학습 곡선(Learning Curve) 최적화.' },
     ],
+    video: '/withai/leaf/level.mp4',
     mediaTag: 'Core Loop & Economy System Demo',
     flip: false,
   },
@@ -518,25 +510,38 @@ function TroubleshootingBlock({ item, index }) {
         className={isFlipped ? 'md:order-1' : 'md:order-2'}
       >
         <div
-          className="aspect-video rounded-xl flex items-center justify-center"
+          className="aspect-video rounded-xl overflow-hidden"
           style={{
             background: 'rgba(255,255,255,0.03)',
             border: '1px solid rgba(255,255,255,0.07)',
           }}
         >
-          <div className="text-center px-6">
-            <div
-              className="w-10 h-10 mx-auto mb-3 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.15)' }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,0.5)" strokeWidth="1.5">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
+          {item.video ? (
+            <video
+              src={item.video}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center px-6">
+                <div
+                  className="w-10 h-10 mx-auto mb-3 rounded-full flex items-center justify-center"
+                  style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.15)' }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(74,222,128,0.5)" strokeWidth="1.5">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                </div>
+                <p className="text-[12px]" style={{ color: '#546178' }}>
+                  {item.mediaTag}
+                </p>
+              </div>
             </div>
-            <p className="text-[12px]" style={{ color: '#546178' }}>
-              {item.mediaTag}
-            </p>
-          </div>
+          )}
         </div>
       </motion.div>
     </motion.div>
