@@ -2,10 +2,10 @@ import FadeIn from './ui/FadeIn';
 import SectionLabel from './ui/SectionLabel';
 
 const PROBLEMS = [
-  { num: '01', title: '과도한 시각적 정보량', desc: '무한하게 펼쳐진 공간형 씬은 시각적 정보량이 과했고, 목표 오브젝트에 집중하기 어려웠습니다.' },
-  { num: '02', title: '높은 멀미·적응 부담', desc: 'VR 환경에 익숙하지 않은 고령자에게는 공간 적응과 멀미 부담이 컸습니다.' },
-  { num: '03', title: '깊은 Depth의 운영 구조', desc: '교수자/훈련자 depth가 지나치게 깊고, 정보 구조가 정리되어 있지 않았습니다.' },
-  { num: '04', title: '불안정한 레거시 구조', desc: '기존 업체의 코드와 구조를 인수받은 상태에서 일정은 이미 불안정했습니다.' },
+  { num: '01', title: '과도한 시각적 정보량', desc: '시점 고정 + 핵심 오브젝트 중심 씬 재설계, 집중도 향상' },
+  { num: '02', title: '높은 멀미·적응 부담', desc: '고정 시점·확대 콜라이더 도입, 고령자 5명 파일럿 테스트 통과' },
+  { num: '03', title: '깊은 Depth의 운영 구조', desc: '교수자/훈련자 2-depth 플랫 구조로 재정의, 실 운영 채택' },
+  { num: '04', title: '불안정한 레거시 구조', desc: '인수 코드 재구조화, 임상 센터 3곳 안정 운영 중' },
 ];
 
 const SOLUTIONS = [
