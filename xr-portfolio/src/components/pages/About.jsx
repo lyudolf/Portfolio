@@ -20,13 +20,11 @@ export default function About() {
           </motion.p>
           <motion.h1 className="text-display mb-8"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}>
-            <span style={{ color: '#F3F6FB' }}>실제로 작동하는</span><br />
-            <span style={{ color: 'rgba(167,139,250,0.7)' }}>XR 경험을 설계합니다</span>
+            <span style={{ color: '#F3F6FB' }}>test data</span>
           </motion.h1>
           <motion.p className="text-body max-w-md" style={{ color: '#546178' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.6 }}>
-            임상 현장의 고령자 인지훈련 시스템부터,<br />
-            Apple Vision Pro 기반 몰입형 직업체험 콘텐츠까지.
+            데이터를 기반으로 시스템의 병목을 찾아 효율화하는 역량
           </motion.p>
         </div>
       </section>
