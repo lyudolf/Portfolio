@@ -16,15 +16,15 @@ export default function About() {
         <div className="relative z-10 max-w-3xl mx-auto px-8">
           <motion.p className="text-label mb-10" style={{ color: 'rgba(167,139,250,0.45)' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
-            XR Service Planner · PM
+            Service Planner · PM
           </motion.p>
           <motion.h1 className="text-display mb-8"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}>
-            <span style={{ color: '#F3F6FB' }}>test data</span>
+            <span style={{ color: '#F3F6FB' }}>'Why'로 문제를 정의하고,<br />실현 가능한 'How'를 설계합니다</span>
           </motion.h1>
           <motion.p className="text-body max-w-md" style={{ color: '#546178' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.6 }}>
-            데이터를 기반으로 시스템의 병목을 찾아 효율화하는 역량
+            기술 이해와 AI로 실행 속도를 높이는 서비스 기획자
           </motion.p>
         </div>
       </section>
@@ -35,7 +35,7 @@ export default function About() {
           containerClassName="text-center mb-10"
           textClassName="font-bold text-white"
         >
-          test data
+          About
         </ScrollFloat>
 
         <MagicBento gridClassName="grid grid-cols-4 gap-3" gridStyle={{ gridAutoRows: '160px' }}>

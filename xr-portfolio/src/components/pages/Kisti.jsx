@@ -7,7 +7,7 @@ import { motion, useMotionValue, useTransform, useScroll } from 'framer-motion';
 
 const META_BADGES = [
   { label: '서비스 기획 PM' },
-  { label: '2024 — 2025' },
+  { label: '2024 — 현재' },
   { label: 'Unity · VR' },
   { label: 'SSO · Force Plate' },
   { label: 'Meta Quest 3' },
@@ -23,19 +23,19 @@ const PROBLEMS = [
   {
     id: 'motion',
     title: '높은 멀미·적응 부담',
-    result: '고정 시점·확대 콜라이더 도입, 고령자 5명 파일럿 테스트 통과',
+    result: '카메라 이동 완전 제거·콜라이더 확대로 멀미·실패 경험 최소화',
     body: 'VR 환경에 익숙하지 않은 고령자에게는 공간 적응과 멀미 부담이 컸습니다. 카메라 이동을 완전히 제거하고 콜라이더를 확대하여 핸드트래킹 오차를 흡수했습니다.',
   },
   {
     id: 'depth',
     title: '깊은 Depth의 운영 구조',
-    result: '교수자/훈련자 2-depth 플랫 구조로 재정의, 실 운영 채택',
-    body: '진입 depth가 4~5단계에 달해 교수자와 훈련자 모두 혼란을 겪었습니다. 대상자 선택부터 결과 확인까지 단일 흐름의 2-depth 구조로 과감히 단축했습니다.',
+    result: '진입 6단계 → 1~2 depth로 단축, 현장 운영 흐름으로 채택',
+    body: '진입 depth가 6단계에 달해 교수자와 훈련자 모두 혼란을 겪었습니다. 대상자 선택부터 결과 확인까지 단일 흐름의 1~2 depth 구조로 과감히 단축했습니다.',
   },
   {
     id: 'legacy',
     title: '불안정한 레거시 구조',
-    result: '인수 코드 재구조화, 임상 센터 3곳 안정 운영 중',
+    result: '인수 코드 재구조화로 반복 세션 안정화 — 1년 용역이 3년차까지 연장',
     body: '기존 업체가 작성한 코드를 인수받아 시작한 프로젝트라, 구조와 일정 모두 불안정한 상태였습니다. 코드를 재구조화하고 안정적인 세션 반복 운영이 가능한 시스템을 구축했습니다.',
   },
 ];
@@ -367,8 +367,9 @@ function ImpactSection() {
       {/* Impact cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { icon: '📈', title: '핵심 성과', desc: '차기 연차 연계 및 기술이전 논의 단계로 발전. 클라이언트가 계속 참여하는 조건으로 예산 확대를 제안.' },
-          { icon: '🏗️', title: '운영 구조', desc: '임상 환경에서 실제 운영 가능한 구조 구축 완료. 안정적인 세션 반복 운영이 가능한 시스템 완성.' },
+          { icon: '📈', title: '핵심 성과', desc: '1년 용역이 신뢰를 얻어 3년차까지 연장(5·6년차 논의 중). 박사가 직접 방문해 "합류 조건으로 사업비 증액·차기 연차 연계"를 제안.' },
+          { icon: '🩺', title: '임상 검증', desc: '1차 임상 60명을 크리티컬 이슈 없이 완료(목표 120명, 2차 진행 중). 정확성·품질을 입증해 기관 신뢰를 확보.' },
+          { icon: '🏗️', title: '운영 구조', desc: '기준·PM 프로세스가 부재한 R&D 환경에서 측정 지표와 운영 구조를 신규 정의. 반복 세션이 안정적으로 굴러가는 시스템을 구축.' },
         ].map((item, i) => (
           <motion.div key={item.title}
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}

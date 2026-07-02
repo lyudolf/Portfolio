@@ -4,18 +4,6 @@ import FadeIn from '../ui/FadeIn';
 /* ── 프로젝트 카드 데이터 ── */
 const PROJECTS = [
   {
-    id: 'etribe-20th',
-    title: 'ETRIBE 20주년 기념 영상 제작',
-    tools: ['Midjourney', 'Runway Gen-2', 'After Effects'],
-    link: null,
-    intro: 'AI 이미지 생성과 모션 합성을 활용하여 기획부터 최종 편집까지 전 과정을 자체 제작한 사내 공모전 1위 수상작. 기존 외주 대비 약 70% 리소스를 절감하며 크리에이티브 프로덕션의 새로운 가능성을 검증했습니다.',
-    duration: '2일',
-    language: 'Korean',
-    thumbnail: null,
-    award: '1st Prize',
-    detailPage: 'etribe-detail',
-  },
-  {
     id: 'leaf-it-alone',
     title: 'Leaf-it-alone (Web 3D Game)',
     tools: ['React Three Fiber', 'ONNX Runtime', 'Vercel'],
@@ -26,6 +14,18 @@ const PROJECTS = [
     thumbnail: '/withai/leaf/leaf.jpg',
     award: null,
     detailPage: 'leaf-detail',
+  },
+  {
+    id: 'etribe-20th',
+    title: 'ETRIBE 20주년 기념 영상 제작',
+    tools: ['Midjourney', 'Runway Gen-2', 'After Effects'],
+    link: null,
+    intro: 'AI 이미지 생성과 모션 합성을 활용하여 기획부터 최종 편집까지 전 과정을 자체 제작한 사내 공모전 1위 수상작. 기존 외주 대비 약 70% 리소스를 절감하며 크리에이티브 프로덕션의 새로운 가능성을 검증했습니다.',
+    duration: '2일',
+    language: 'Korean',
+    thumbnail: null,
+    award: '1st Prize',
+    detailPage: 'etribe-detail',
   },
 ];
 
