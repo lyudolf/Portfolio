@@ -17,6 +17,10 @@ export default function InterestModal() {
 
   const handleSubmit = async () => {
     if (!form.company || !form.portfolioScore || !form.personScore) return;
+    if (!supabase) {
+      setError('제출에 실패했습니다. 다시 시도해주세요.');
+      return;
+    }
     setLoading(true);
     setError(null);
 

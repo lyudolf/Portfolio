@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import InfiniteGallery from '../ui/InfiniteGallery';
+import AtAGlance from '../ui/AtAGlance';
 
 /* ══════════════════════════════════════════
    DATA
@@ -8,7 +9,7 @@ import InfiniteGallery from '../ui/InfiniteGallery';
 
 const META_BADGES = [
   { label: 'PM · 기획 · 컨셉 설계 · QA' },
-  { label: '2025.09 — 2025.11' },
+  { label: '2025.09 — 2025.12' },
   { label: 'Apple Vision Pro' },
   { label: 'Unity · visionOS' },
 ];
@@ -385,6 +386,15 @@ export default function Dream() {
       />
 
       <HeroSection />
+      <AtAGlance
+        accent="rgba(216,165,75,0.85)"
+        items={[
+          { num: '9종', label: 'XR 직업체험 콘텐츠', sub: '3컨셉 × 3직업 프레임워크화' },
+          { num: '2개월', label: '실개발 기간', sub: '초기 기획 폐기 → 병렬 파이프라인 전환' },
+          { num: '40~50분', label: '통합 체험 플로우', sub: '로비 → 3컨셉 선택 → 체험 → 진로정보' },
+          { num: '후속 제안', label: '클라이언트 재요청', sub: '퀄리티·디테일 평가로 이어진 신뢰' },
+        ]}
+      />
       <ChallengeSection />
       <WorldsSection />
       <GallerySection />

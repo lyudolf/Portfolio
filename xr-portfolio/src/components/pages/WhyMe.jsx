@@ -9,6 +9,7 @@ const CARDS = [
     title: 'Technical PM',
     subtitle: '엔지니어링 해상도를 갖춘 기획',
     body: '단순히 요구사항(What)을 나열하는 것에 그치지 않고, 시스템의 동작 원리와 기술적 구현 가능성(Feasibility)을 기획 초기부터 함께 고민합니다. 프론트엔드 렌더링이나 데이터 파이프라인 등 개발 생태계의 맥락을 이해하고 문서를 작성하여, 기획과 개발 사이의 인지적 간극을 줄이고 협업 과정의 병목을 최소화합니다.',
+    proof: 'CS 전공 + React/Spring Boot 실무 경험 — 개발 일정 산정과 기술 검증을 직접 수행해, 1년 XR 임상 용역을 3년차 운영까지 연장시켰습니다.',
     col: 'md:col-span-2',
     accent: 'rgba(99,179,237,0.12)',
     border: 'rgba(99,179,237,0.18)',
@@ -20,6 +21,7 @@ const CARDS = [
     title: 'Impact-Driven',
     subtitle: '본질에 집중하는 MVP',
     body: '불필요한 개발 리소스가 낭비되는 기능 팽창(Feature Creep)을 경계합니다. 비즈니스 목표와 유저의 핵심 과제 해결에만 집중하여, 시장 검증이 가능한 최소 기능 제품(MVP)을 명확히 정의합니다.',
+    proof: '초기 기획 전면 폐기 후 프레임워크화 — XR 직업체험 9종을 2개월 만에 딜리버리.',
     col: 'md:col-span-1',
     accent: 'rgba(74,222,128,0.10)',
     border: 'rgba(74,222,128,0.18)',
@@ -31,6 +33,7 @@ const CARDS = [
     title: 'Agile Prototyping',
     subtitle: 'AI 툴을 활용한 빠른 검증',
     body: '기획의 타당성을 문서에만 머물게 하지 않고, AI 어시스턴트(Cursor, v0 등)를 활용해 빠르게 테스트합니다. 아이디어를 실제 동작하는 수준의 프로토타입으로 시각화하여 팀 내 불확실성을 줄이고 의사결정 속도를 극대화합니다.',
+    proof: '웹 3D 게임(Leaf It Alone)을 7일 만에 단독 개발·배포 — 8천 객체 최적화와 ONNX 딥러닝 AI 포함. 토스 앱인토스 미니앱 3종도 기획부터 출시까지 단독 수행.',
     col: 'md:col-span-3',
     accent: 'rgba(168,85,247,0.08)',
     border: 'rgba(168,85,247,0.18)',
@@ -120,6 +123,19 @@ function BentoCard({ card, index }) {
           >
             {card.body}
           </p>
+
+          {card.proof && (
+            <p
+              className="text-[12px] font-semibold mt-4 px-3 py-2 rounded-lg inline-block"
+              style={{
+                color: 'rgba(111,216,255,0.8)',
+                background: 'rgba(111,216,255,0.06)',
+                maxWidth: card.wide ? '520px' : '100%',
+              }}
+            >
+              → {card.proof}
+            </p>
+          )}
         </div>
 
         {/* Tags */}

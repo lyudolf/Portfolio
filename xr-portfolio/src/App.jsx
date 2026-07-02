@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Nav from './components/Nav';
+import Footer from './components/Footer';
 import InterestModal from './components/ui/InterestModal';
 import PageTransition from './components/ui/PageTransition';
 import About from './components/pages/About';
@@ -11,6 +13,7 @@ import WhyMe from './components/pages/WhyMe';
 import WithAI from './components/pages/WithAI';
 import EtribeDetail from './components/pages/EtribeDetail';
 import LeafDetail from './components/pages/LeafDetail';
+import { TAB_PATHS, PATH_TABS, PAGE_META, SITE_URL } from './lib/site';
 
 const PAGES = { about: About, kisti: Kisti, dream: Dream, process: Process, withai: WithAI, whyme: WhyMe, 'etribe-detail': EtribeDetail, 'leaf-detail': LeafDetail };
 
@@ -18,19 +21,38 @@ const PAGES = { about: About, kisti: Kisti, dream: Dream, process: Process, with
 const DETAIL_PAGES = new Set(['etribe-detail', 'leaf-detail']);
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('about');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  /* 경로 → 탭 (매칭 실패 시 about으로 폴백) */
+  const activeTab = PATH_TABS[location.pathname] ?? 'about';
 
   const handleTabChange = (tab) => {
     if (tab === activeTab) return;
-    setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    navigate(TAB_PATHS[tab] ?? '/');
   };
+
+  /* 라우트 변경 시 스크롤 최상단 */
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
 
   const Page = PAGES[activeTab];
   const isDetailPage = DETAIL_PAGES.has(activeTab);
+  const meta = PAGE_META[activeTab];
+  const canonical = `${SITE_URL}${TAB_PATHS[activeTab]}`;
 
   return (
     <>
+      {/* React 19가 head로 호이스팅하는 페이지별 SEO 메타 */}
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={meta.title} />
+      <meta property="og:description" content={meta.description} />
+      <meta property="og:url" content={canonical} />
+      <link rel="canonical" href={canonical} />
+
       {!isDetailPage && <Nav activeTab={activeTab} onTabChange={handleTabChange} />}
       <InterestModal />
       <main>
@@ -40,6 +62,7 @@ export default function App() {
           </PageTransition>
         </AnimatePresence>
       </main>
+      {!isDetailPage && <Footer />}
     </>
   );
 }

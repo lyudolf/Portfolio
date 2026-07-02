@@ -29,6 +29,37 @@ const PROJECTS = [
   },
 ];
 
+/* ── Shipped Products — 토스 앱인토스 출시 미니앱 ── */
+const SHIPPED = [
+  {
+    id: 'quizking',
+    name: '성격유형 퀴즈왕',
+    status: 'Live',
+    statusColor: 'rgba(74,222,128,0.85)',
+    statusBg: 'rgba(74,222,128,0.08)',
+    desc: '성격유형별 상식 퀴즈. 12개 카테고리 × 3,600문제, 난이도 시스템, 유형별 랭킹, 리워드 광고 BM까지 설계.',
+    meta: '토스 앱인토스 · 2026.06 출시',
+  },
+  {
+    id: 'coffee-slot',
+    name: '오늘은 누가 쏠래?',
+    status: 'Approved',
+    statusColor: 'rgba(111,216,255,0.85)',
+    statusBg: 'rgba(111,216,255,0.08)',
+    desc: '커피 내기 슬롯머신. 균등 1/N 추첨 + 스포트라이트 연출로 "내기의 재미"를 UX로 번역.',
+    meta: '토스 앱인토스 · 심사 승인, 공개 준비',
+  },
+  {
+    id: 'spending-test',
+    name: '소비유형 테스트',
+    status: 'In Review',
+    statusColor: 'rgba(216,165,75,0.85)',
+    statusBg: 'rgba(216,165,75,0.08)',
+    desc: '2지선다 밸런스게임으로 소비 성향 진단. 테스트 유니버스를 모듈로 확장하는 구조 설계.',
+    meta: '토스 앱인토스 · 심사 진행 중',
+  },
+];
+
 /* ── Pipeline / Protocol 데이터 (보류 — 기존 유지) ── */
 const PIPELINE_STEPS = [
   {
@@ -289,6 +320,53 @@ export default function WithAI({ onNavigate }) {
         <div className="flex flex-col gap-6">
           {PROJECTS.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i} onNavigate={onNavigate} />
+          ))}
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* ── Section 2.5: Shipped Products ── */}
+      <section className="mx-auto px-8 py-20" style={{ maxWidth: '1400px' }}>
+        <FadeIn>
+          <p className="text-label mb-3" style={{ color: 'rgba(111, 216, 255, 0.35)' }}>
+            Shipped Products
+          </p>
+          <h2 className="text-subhead mb-4" style={{ color: 'rgba(243,246,251,0.85)' }}>
+            기획부터 출시까지, 혼자서
+          </h2>
+          <p className="text-caption mb-12 max-w-lg">
+            토스 앱인토스 미니앱 3종을 기획·개발·심사·출시까지 단독 수행.
+            문서가 아니라 스토어에 올라간 제품으로 실행력을 증명합니다.
+          </p>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {SHIPPED.map((app, i) => (
+            <FadeIn key={app.id} delay={i * 0.08}>
+              <div
+                className="h-full p-7 rounded-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-[17px] font-bold" style={{ color: 'rgba(243,246,251,0.9)' }}>
+                    {app.name}
+                  </h3>
+                  <span
+                    className="flex-shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase"
+                    style={{ background: app.statusBg, color: app.statusColor, border: `1px solid ${app.statusBg.replace('0.08', '0.2')}` }}
+                  >
+                    {app.status}
+                  </span>
+                </div>
+                <p className="text-[13px] leading-[1.8] flex-1" style={{ color: 'rgba(243,246,251,0.45)' }}>
+                  {app.desc}
+                </p>
+                <p className="text-[11px] font-semibold mt-5 pt-4" style={{ color: '#546178', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+                  {app.meta}
+                </p>
+              </div>
+            </FadeIn>
           ))}
         </div>
       </section>

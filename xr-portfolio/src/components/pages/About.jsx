@@ -106,13 +106,34 @@ export default function About() {
 
           </MagicBento>
 
+        {/* Key Results — 검증된 정량성과 */}
+        <div className="mt-20 w-full">
+          <FadeIn>
+            <p className="text-label mb-6 text-center" style={{ color: 'rgba(111,216,255,0.45)' }}>Key Results</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { num: '3배+', label: '팀 매출 성장 견인', desc: '3.8억 → 11.5억 (전년 대비), B2G XR 사업 기획·PM 총괄' },
+                { num: '3년차', label: '1년 용역 → 계속 연장', desc: '1차 임상 60명 무이슈 완료, 클라이언트 신뢰로 5·6년차 논의 중' },
+                { num: '금상', label: '웹어워드 코리아 수상', desc: 'B2B 웹 구축 기획 주도, 신규 제안 수주 100% 기여' },
+              ].map(item => (
+                <div key={item.label} className="p-6 rounded-2xl text-center"
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <p className="text-[28px] font-extrabold mb-1" style={{ color: 'rgba(111,216,255,0.85)' }}>{item.num}</p>
+                  <p className="text-sm font-semibold mb-2" style={{ color: 'rgba(243,246,251,0.85)' }}>{item.label}</p>
+                  <p className="text-caption leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+
         {/* Profile */}
-        <div className="mt-20">
+        <div className="mt-16">
           <FadeIn>
             <div className="flex flex-col md:flex-row gap-12">
               {[
-                { label: '역할', value: 'PM · 기획 · UX 설계' },
-                { label: '경험', value: 'XR · VR · Vision Pro' },
+                { label: '역할', value: 'PM · 서비스 기획 · UX 설계' },
+                { label: '도메인', value: 'XR · B2B 웹 · B2G' },
                 { label: '특기', value: '구조 설계 · 제약 해결' },
               ].map(item => (
                 <div key={item.label}>

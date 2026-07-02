@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll } from 'framer-motion';
+import AtAGlance from '../ui/AtAGlance';
 
 /* ══════════════════════════════════════════
    DATA
@@ -403,6 +404,15 @@ export default function Kisti() {
       />
 
       <HeroSection />
+      <AtAGlance
+        accent="rgba(111,216,255,0.85)"
+        items={[
+          { num: '60명', label: '1차 임상 무이슈 완료', sub: '목표 120명, 2차 진행 중' },
+          { num: '3년차', label: '1년 용역 → 계속 연장', sub: '5·6년차 연장 논의 중' },
+          { num: '3배+', label: '팀 매출 성장 견인', sub: '3.8억 → 11.5억 (전년 대비)' },
+          { num: '1~2', label: '운영 Depth 단축', sub: '진입 6단계 → 1~2 depth 재설계' },
+        ]}
+      />
       <ProblemSection />
       <PrinciplesSection />
       <SolutionsSection />
