@@ -16,7 +16,7 @@ export default function About() {
         <div className="relative z-10 max-w-3xl mx-auto px-8">
           <motion.p className="text-label mb-10" style={{ color: 'rgba(167,139,250,0.45)' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
-            Service Planner · PM
+            유희수 · Service Planner · PM
           </motion.p>
           <motion.h1 className="text-display mb-8"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}>

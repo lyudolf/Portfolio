@@ -1,6 +1,6 @@
 /* 사이트 전역 메타 정보.
    ⚠️ SITE_URL은 실제 배포 도메인으로 교체 필요 (sitemap.xml, robots.txt에도 동일 반영). */
-export const SITE_URL = 'https://xr-portfolio.vercel.app';
+export const SITE_URL = 'https://lyuheesu.com';
 
 export const SITE_NAME = '유희수 포트폴리오';
 
