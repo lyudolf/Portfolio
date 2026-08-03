@@ -1,34 +1,237 @@
-import { motion } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 import FadeIn from '../ui/FadeIn';
 import MagicBento from '../ui/MagicBento';
-import Orb from '../ui/Orb';
 import ScrollFloat from '../ui/ScrollFloat';
 import ScrollFloatWrapper from '../ui/ScrollFloatWrapper';
+import HeroLanding from '../HeroLanding';
 
-export default function About() {
+/* 히어로 아래 프로젝트 섹션 3개 — 각각 캡슐 → 펼침 → 다시 캡슐로 축소되는 스크롤 모프.
+   TODO: image는 프로젝트별 실제 비주얼로 교체 (현재 임시 공용 이미지). */
+const MORPH_PROJECTS = [
+  {
+    tab: 'kisti',
+    eyebrow: 'Clinical XR',
+    title: 'KISTI',
+    period: '2024 — 현재',
+    subtitle: '고령자 인지·운동 XR 훈련',
+    highlight: '1차 임상 60명 · 3년차 연장',
+    tagline: '기준이 없던 곳에, 기준을 세우다.',
+    image: '/hero-bg.jpg',
+    summary: [
+      { head: '문제 정의', items: ['무한 씬의 과도한 시각 부하', 'VR 멀미·공간 적응 부담', '진입 depth 6단계의 혼란'] },
+      { head: '해결', items: ['시점 고정 + 공간 대폭 축소', '콜라이더 확대·교수자 중앙 제어', '1~2 depth 단일 흐름 재설계'] },
+      { head: '성과', items: ['1차 임상 60명 무이슈 완료', '1년 용역 → 3년차 연장', '사업비 증액·차기 연차 제안'] },
+    ],
+  },
+  {
+    tab: 'dream',
+    eyebrow: 'Apple Vision Pro',
+    title: '꿈키올래',
+    period: '2025.09 — 2025.12',
+    subtitle: 'XR 직업체험 콘텐츠 9종',
+    highlight: '2개월 실개발 · 9종 납품',
+    tagline: '불가능한 일정을, 구조로 풀다.',
+    image: '/hero-bg.jpg',
+    summary: [
+      { head: '문제 정의', items: ['9종을 2개월 안에 만들어야 함', '경험 없는 Vision Pro 디바이스', '초등~고등, 넓어진 타깃 연령'] },
+      { head: '해결', items: ['3컨셉 × 3직업 프레임워크로 재설계', '폭포수 → 애자일 병렬 파이프라인', '나레이션+자막 이중 가드레일'] },
+      { head: '성과', items: ['9종 전량 납기 내 완성', '이전 업체 대비 완성도 호평', '클라이언트 후속 제안 요청'] },
+    ],
+  },
+  {
+    tab: 'withai',
+    eyebrow: 'with AI',
+    title: 'with AI',
+    period: '2026 — 진행 중',
+    subtitle: 'AI를 쓰는 기획·실행 사이클',
+    highlight: '기획서가 아닌, 출시된 제품으로',
+    tagline: '만들어서 증명한다.',
+    image: '/hero-bg.jpg',
+    summary: [
+      { head: '방식', items: ['인간이 설계, AI가 생산, 인간이 검증', '프롬프트로 문서화·소통 가속', '프로토타입으로 불확실성 제거'] },
+      { head: '결과물', items: ['웹 3D 게임 7일 단독 개발·배포', '토스 미니앱 3종 출시·심사 진행', 'AI 영상 사내 공모전 1위'] },
+      { head: '의미', items: ['기술 feasibility를 직접 검증', '아이디어 → 실물 사이클 단축', '개발팀과의 언어 간극 축소'] },
+    ],
+  },
+];
+
+/* 빠른 타이핑 훅 — active 되면 delay 후 글자가 차라락 생성 */
+function useTyped(text, active, delay) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!active) { setN(0); return; }
+    let i = 0; let iv;
+    const to = setTimeout(() => {
+      iv = setInterval(() => {
+        i += 1; setN(i);
+        if (i >= text.length) clearInterval(iv);
+      }, 12);
+    }, delay);
+    return () => { clearTimeout(to); clearInterval(iv); };
+  }, [active, text, delay]);
+  return text.slice(0, n);
+}
+
+/* 타이핑 텍스트 — 남은 글자를 투명으로 미리 렌더해 레이아웃 밀림 방지 */
+function TypedText({ text, active, delay }) {
+  const shown = useTyped(text, active, delay);
   return (
-    <div style={{ background: '#080A0F' }}>
-      {/* Hero */}
-      <section className="relative min-h-[100vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Orb hue={240} hoverIntensity={0.3} rotateOnHover={true} forceHoverState={false} backgroundColor="#080A0F" />
-        </div>
-        <div className="relative z-10 max-w-3xl mx-auto px-8">
-          <motion.p className="text-label mb-10" style={{ color: 'rgba(167,139,250,0.45)' }}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
-            유희수 · Service Planner · PM
-          </motion.p>
-          <motion.h1 className="text-display mb-8"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}>
-            <span style={{ color: '#F3F6FB' }}>'Why'로 문제를 정의하고,<br />실현 가능한 'How'를 설계합니다</span>
-          </motion.h1>
-          <motion.p className="text-body max-w-md" style={{ color: '#546178' }}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.6 }}>
-            기술 이해와 AI로 실행 속도를 높이는 서비스 기획자
-          </motion.p>
-        </div>
-      </section>
+    <>
+      {shown}
+      <span style={{ opacity: 0 }}>{text.slice(shown.length)}</span>
+    </>
+  );
+}
 
+/* 섹션 2 — 스크롤 모프: 중앙 캡슐이 스크롤에 따라 우측으로 펼쳐지며 정리된 내용 표시 */
+function ProjectMorphSection({ data, onNavigate }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
+
+  /* 캡슐(처음부터 표시) → 확장(1180×640) → 유지 → 가운데로 줄어들며 페이드아웃 */
+  const width = useTransform(scrollYProgress, [0.15, 0.35, 0.78, 0.93], [330, 1180, 1180, 330]);
+  const height = useTransform(scrollYProgress, [0.15, 0.35, 0.78, 0.93], [620, 640, 640, 620]);
+  const radius = useTransform(scrollYProgress, [0.15, 0.35, 0.78, 0.93], [165, 28, 28, 165]);
+
+  /* 레이어 전환은 state로 제어 (MotionValue opacity는 일부 환경에서 갱신 누락) */
+  const [visible, setVisible] = useState(true);
+  const [expanded, setExpanded] = useState(false);
+  const [typing, setTyping] = useState(false);
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    setVisible(v <= 0.84);            // 줄어드는 중에 서서히 사라짐
+    setExpanded(v > 0.3 && v < 0.78); // 축소 시작하면 캡슐 레이어로 복귀
+    setTyping(v > 0.36 && v < 0.78);
+  });
+
+  const capsule = data;
+
+  return (
+    <section ref={ref} className="relative" style={{ height: '220vh' }}>
+      <div className="sticky top-0 h-screen flex items-center justify-center px-5 pointer-events-none">
+        <motion.div
+          className={`relative overflow-hidden ${visible ? 'pointer-events-auto' : ''}`}
+          style={{
+            width, height, borderRadius: radius, maxWidth: '94vw',
+            opacity: visible ? 1 : 0,
+            transition: 'opacity .45s ease',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%)',
+            backdropFilter: 'blur(22px) saturate(1.15)',
+            WebkitBackdropFilter: 'blur(22px) saturate(1.15)',
+            border: '1px solid rgba(255,255,255,0.4)',
+            boxShadow: '0 30px 70px rgba(0,0,0,0.3)',
+          }}>
+
+          {/* 레이어 A — 캡슐 요약 */}
+          <div
+            style={{ opacity: expanded ? 0 : 1, transition: 'opacity .35s ease' }}
+            className="absolute inset-0 flex flex-col items-center text-center px-6 pt-[18px] pointer-events-none">
+            <div className="overflow-hidden flex-shrink-0" style={{ width: 278, height: 278, borderRadius: '50%' }}>
+              <img src={capsule.image} alt={`${capsule.title} ${capsule.subtitle}`} className="w-full h-full object-cover" />
+            </div>
+            <p className="mt-8 text-[13px] tracking-wide" style={{ color: 'rgba(255,255,255,0.6)' }}>{capsule.eyebrow}</p>
+            <h2 className="mt-1 font-medium" style={{ fontSize: 44, color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.01em', lineHeight: 1.1 }}>
+              {capsule.title}
+            </h2>
+            <p className="mt-4 text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.68)' }}>
+              {capsule.period}<br />{capsule.subtitle}
+            </p>
+            <p className="mt-5 text-[14px] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>
+              {capsule.highlight}
+            </p>
+            <p className="mt-6 text-[12px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{capsule.tagline}</p>
+          </div>
+
+          {/* 레이어 B — 좌: 캡슐 요약 고정 / 우: 타이핑으로 차라락 생성되는 내용 */}
+          <div
+            key={data.tab}
+            style={{ opacity: expanded ? 1 : 0, transition: 'opacity .4s ease' }}
+            className={`absolute inset-0 flex flex-col md:flex-row items-stretch gap-6 md:gap-12 p-7 md:p-12 ${typing ? '' : 'pointer-events-none'}`}>
+
+            {/* 좌측 상단 — 캡슐에 있던 요약이 왼쪽 위로 정착 */}
+            <div className="hidden md:flex flex-col items-start text-left flex-shrink-0" style={{ width: 240 }}>
+              <div className="overflow-hidden" style={{ width: 150, height: 150, borderRadius: '50%' }}>
+                <img src={data.image} alt={`${data.title} ${data.subtitle}`} className="w-full h-full object-cover" />
+              </div>
+              <p className="mt-5 text-[13px] tracking-wide" style={{ color: 'rgba(255,255,255,0.6)' }}>{data.eyebrow}</p>
+              <h3 className="mt-0.5 font-medium" style={{ fontSize: 36, color: 'rgba(255,255,255,0.95)', lineHeight: 1.1 }}>{data.title}</h3>
+              <p className="mt-3 text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.68)' }}>
+                {data.period}<br />{data.subtitle}
+              </p>
+              <p className="mt-3 text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                {data.highlight}
+              </p>
+              <p className="mt-4 text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{data.tagline}</p>
+            </div>
+
+            {/* 세로 디바이더 — 좌/우 구역 분리 */}
+            <div className="hidden md:block w-px flex-shrink-0 self-stretch" style={{ background: 'rgba(255,255,255,0.18)' }} />
+
+            {/* 우측 — 문제 → 해결 → 성과 (빠른 타이핑 생성) */}
+            <div className="flex-1 w-full flex flex-col justify-start">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-9">
+                {data.summary.map((col, ci) => (
+                  <div key={col.head}>
+                    <p className="text-[14px] font-semibold tracking-wide mb-4 pb-2.5"
+                      style={{ color: 'rgba(255,255,255,0.92)', borderBottom: '1px solid rgba(255,255,255,0.22)' }}>
+                      <TypedText text={col.head} active={typing} delay={ci * 90} />
+                    </p>
+                    <ul className="flex flex-col gap-3">
+                      {col.items.map((it, ii) => (
+                        <li key={it} className="flex items-start gap-2.5 text-[13px] leading-relaxed"
+                          style={{ color: 'rgba(255,255,255,0.75)' }}>
+                          <span className="mt-[8px] w-1 h-1 rounded-full flex-shrink-0" style={{ background: 'rgba(255,255,255,0.5)' }} />
+                          <span><TypedText text={it} active={typing} delay={300 + (ci * 3 + ii) * 160} /></span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-auto pt-8 flex justify-end">
+                <button
+                  onClick={() => onNavigate?.(data.tab)}
+                  className="rounded-full px-7 py-3 text-[14px] font-semibold cursor-pointer transition-opacity"
+                  style={{ background: '#1d211e', color: '#ffffff' }}
+                  onMouseOver={(e) => { e.currentTarget.style.opacity = '0.82'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.opacity = '1'; }}>
+                  자세히 보기 →
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+export default function About({ onNavigate }) {
+  return (
+    <div style={{
+      /* 이끼 배경(1:2 세로형)이 페이지 상단부터 스크롤 따라 이어지고,
+         섹션 4를 지나며 다크로 페이드 → 하단 다크 콘텐츠 연결. */
+      backgroundColor: '#080A0F',
+      backgroundImage:
+        "linear-gradient(180deg, rgba(8,10,15,0) 0%, rgba(8,10,15,0.18) 160vh, rgba(8,10,15,0.4) 420vh, rgba(8,10,15,0.82) 680vh, #080A0F 800vh), url('/hero-bg.jpg')",
+      backgroundSize: 'auto, 100% auto',
+      backgroundPosition: 'top center',
+      backgroundRepeat: 'no-repeat',
+    }}>
+      {/* Hero — 3D 자연 오브 랜딩 (섹션 1) */}
+      <HeroLanding onNavigate={onNavigate} />
+
+      {/* 섹션 2~4 — 프로젝트마다 캡슐 → 확장 → 사라짐 한 세트 */}
+      {MORPH_PROJECTS.map((p) => (
+        <ProjectMorphSection key={p.tab} data={p} onNavigate={onNavigate} />
+      ))}
+
+      {/* 이끼 존 → 다크 존 전환 */}
+      <div style={{ height: '18vh', background: 'linear-gradient(180deg, rgba(8,10,15,0) 0%, #080A0F 100%)' }} />
+
+      {/* 다크 존 — 기존 벤토/Key Results/Profile (다크 스타일 유지) */}
+      <div style={{ background: '#080A0F' }}>
       {/* Sector 2 — Bento Grid with ScrollFloat title */}
       <section className="min-h-[100vh] flex flex-col items-center justify-center max-w-5xl mx-auto px-8">
         <ScrollFloat
@@ -145,6 +348,7 @@ export default function About() {
           </FadeIn>
         </div>
       </section>
+      </div>
     </div>
   );
 }

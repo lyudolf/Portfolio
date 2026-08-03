@@ -56,15 +56,16 @@ export default function InterestModal() {
         onClick={() => setIsOpen(true)}
         className="fixed top-6 right-8 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full text-[12px] font-semibold cursor-pointer"
         style={{
-          background: 'rgba(167, 139, 250, 0.12)',
-          border: '1px solid rgba(167, 139, 250, 0.25)',
-          color: 'rgba(167, 139, 250, 0.9)',
-          backdropFilter: 'blur(16px)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%)',
+          border: '1px solid rgba(255,255,255,0.4)',
+          color: 'rgba(255,255,255,0.92)',
+          backdropFilter: 'blur(18px) saturate(1.15)',
+          WebkitBackdropFilter: 'blur(18px) saturate(1.15)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
           letterSpacing: '0.02em',
         }}
         whileHover={{
-          background: 'rgba(167, 139, 250, 0.2)',
-          border: '1px solid rgba(167, 139, 250, 0.4)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.14) 100%)',
           scale: 1.03,
         }}
         whileTap={{ scale: 0.97 }}
