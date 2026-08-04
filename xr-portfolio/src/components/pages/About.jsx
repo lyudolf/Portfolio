@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import FadeIn from '../ui/FadeIn';
 import MagicBento from '../ui/MagicBento';
 import ScrollFloat from '../ui/ScrollFloat';
@@ -85,34 +85,59 @@ function TypedText({ text, active, delay }) {
 }
 
 /* 섹션 2 — 스크롤 모프: 중앙 캡슐이 스크롤에 따라 우측으로 펼쳐지며 정리된 내용 표시 */
-function ProjectMorphSection({ data, onNavigate }) {
+function ProjectMorphSection({ data, overlap, onActive, onNavigate }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
 
-  /* 캡슐(처음부터 표시) → 확장(1180×640) → 유지 → 가운데로 줄어들며 페이드아웃 */
-  const width = useTransform(scrollYProgress, [0.15, 0.35, 0.78, 0.93], [330, 1180, 1180, 330]);
-  const height = useTransform(scrollYProgress, [0.15, 0.35, 0.78, 0.93], [620, 640, 640, 620]);
-  const radius = useTransform(scrollYProgress, [0.15, 0.35, 0.78, 0.93], [165, 28, 28, 165]);
+  /* 스크롤을 스프링으로 보간 — 휠의 계단식 입력을 부드러운 연속 동작으로 */
+  const sp = useSpring(scrollYProgress, { stiffness: 110, damping: 26, mass: 0.5, restDelta: 0.0005 });
+
+  /* 캡슐(처음부터 표시) → 확장(1180×640) → 유지(길게, 읽는 구간) → 좌측 네비로 흡입 */
+  const width = useTransform(sp, [0.05, 0.22], [330, 1180]);
+  const height = useTransform(sp, [0.05, 0.22], [620, 640]);
+  const radius = useTransform(sp, [0.05, 0.22, 0.84, 0.97], [165, 28, 28, 60]);
+
+  /* 흡입 연출: 네비 아이템 좌표를 측정해 그 방향으로 이동+축소.
+     좌표 도착 전에 페이드가 끝나도록 페이드를 먼저 시작. */
+  const suckTarget = useRef({ x: 0, y: 0 });
+  const suck = useTransform(sp, [0.84, 0.97], [0, 1]);
+  const x = useTransform(suck, (t) => t * suckTarget.current.x);
+  const y = useTransform(suck, (t) => t * suckTarget.current.y);
+  const scale = useTransform(suck, (t) => 1 - t * 0.94);
 
   /* 레이어 전환은 state로 제어 (MotionValue opacity는 일부 환경에서 갱신 누락) */
   const [visible, setVisible] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [typing, setTyping] = useState(false);
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    setVisible(v <= 0.84);            // 줄어드는 중에 서서히 사라짐
-    setExpanded(v > 0.3 && v < 0.78); // 축소 시작하면 캡슐 레이어로 복귀
-    setTyping(v > 0.36 && v < 0.78);
+    setVisible(v <= 0.9);             // 흡입 이동 중에 페이드 시작 → 도착 전에 사라짐
+    setExpanded(v > 0.16);            // 흡입 중에도 펼친 내용 유지(통째로 빨려들어감)
+    setTyping(v > 0.24 && v < 0.84);
+    onActive?.(v > 0.02 && v < 0.98); // 좌측 네비 활성 표시용
+    /* 흡입 직전에 네비 아이템 위치 측정 (뷰포트 중앙 기준 오프셋) */
+    if (v > 0.7 && v < 0.98) {
+      const el = document.getElementById(`morph-nav-${data.tab}`);
+      if (el) {
+        const r = el.getBoundingClientRect();
+        suckTarget.current = {
+          x: r.left + r.width / 2 - window.innerWidth / 2,
+          y: r.top + r.height / 2 - window.innerHeight / 2,
+        };
+      }
+    }
   });
 
   const capsule = data;
 
   return (
-    <section ref={ref} className="relative" style={{ height: '220vh' }}>
+    <section ref={ref} id={`morph-sec-${data.tab}`} className="relative"
+      style={{ height: '170vh', marginTop: overlap ? '-18vh' : 0 }}>
       <div className="sticky top-0 h-screen flex items-center justify-center px-5 pointer-events-none">
         <motion.div
           className={`relative overflow-hidden ${visible ? 'pointer-events-auto' : ''}`}
           style={{
             width, height, borderRadius: radius, maxWidth: '94vw',
+            x, y, scale,
             opacity: visible ? 1 : 0,
             transition: 'opacity .45s ease',
             background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%)',
@@ -207,6 +232,62 @@ function ProjectMorphSection({ data, onNavigate }) {
   );
 }
 
+/* 모프 존 — 좌측 고정 네비 + 프로젝트 모프 섹션 3개.
+   카드가 사라질 때 해당 네비 텍스트 위치로 빨려들어간다. */
+function MorphZone({ items, onNavigate }) {
+  const [activeSet, setActiveSet] = useState(() => new Set());
+  const setActive = (i, inView) => {
+    setActiveSet((prev) => {
+      const nxt = new Set(prev);
+      if (inView) nxt.add(i); else nxt.delete(i);
+      return nxt;
+    });
+  };
+  const current = Math.min(...(activeSet.size ? [...activeSet] : [Infinity]));
+
+  return (
+    <div className="relative">
+      {/* 좌측 고정 네비 — 상시 노출 */}
+      <div className="fixed left-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-6">
+        {items.map((p, i) => {
+          const isActive = i === current;
+          return (
+            <button
+              key={p.tab}
+              id={`morph-nav-${p.tab}`}
+              onClick={() => document.getElementById(`morph-sec-${p.tab}`)?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex items-center gap-3 text-left cursor-pointer transition-all duration-300">
+              {/* 가로선 인디케이터 — 활성 시 길어짐 */}
+              <span className="flex-shrink-0 transition-all duration-300"
+                style={{
+                  width: isActive ? 36 : 18, height: 2,
+                  background: isActive ? '#ffffff' : 'rgba(255,255,255,0.7)',
+                  boxShadow: isActive ? '0 0 12px rgba(255,255,255,0.8)' : '0 1px 6px rgba(0,0,0,0.4)',
+                }} />
+              <span className="transition-colors duration-300"
+                style={{
+                  fontSize: isActive ? 17 : 15,
+                  fontWeight: isActive ? 700 : 600,
+                  letterSpacing: '0.02em',
+                  color: isActive ? '#ffffff' : 'rgba(255,255,255,0.72)',
+                  textShadow: '0 2px 10px rgba(0,0,0,0.6)',
+                }}>
+                {p.title}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {items.map((p, i) => (
+        <ProjectMorphSection key={p.tab} data={p} overlap={i > 0}
+          onActive={(inView) => setActive(i, inView)}
+          onNavigate={onNavigate} />
+      ))}
+    </div>
+  );
+}
+
 export default function About({ onNavigate }) {
   return (
     <div style={{
@@ -214,7 +295,7 @@ export default function About({ onNavigate }) {
          섹션 4를 지나며 다크로 페이드 → 하단 다크 콘텐츠 연결. */
       backgroundColor: '#080A0F',
       backgroundImage:
-        "linear-gradient(180deg, rgba(8,10,15,0) 0%, rgba(8,10,15,0.18) 160vh, rgba(8,10,15,0.4) 420vh, rgba(8,10,15,0.82) 680vh, #080A0F 800vh), url('/hero-bg.jpg')",
+        "linear-gradient(180deg, rgba(8,10,15,0) 0%, rgba(8,10,15,0.18) 150vh, rgba(8,10,15,0.4) 330vh, rgba(8,10,15,0.82) 520vh, #080A0F 590vh), url('/hero-bg.jpg')",
       backgroundSize: 'auto, 100% auto',
       backgroundPosition: 'top center',
       backgroundRepeat: 'no-repeat',
@@ -222,10 +303,8 @@ export default function About({ onNavigate }) {
       {/* Hero — 3D 자연 오브 랜딩 (섹션 1) */}
       <HeroLanding onNavigate={onNavigate} />
 
-      {/* 섹션 2~4 — 프로젝트마다 캡슐 → 확장 → 사라짐 한 세트 */}
-      {MORPH_PROJECTS.map((p) => (
-        <ProjectMorphSection key={p.tab} data={p} onNavigate={onNavigate} />
-      ))}
+      {/* 섹션 2~4 — 좌측 고정 네비 + 캡슐 → 확장 → 네비로 흡입 사이클 */}
+      <MorphZone items={MORPH_PROJECTS} onNavigate={onNavigate} />
 
       {/* 이끼 존 → 다크 존 전환 */}
       <div style={{ height: '18vh', background: 'linear-gradient(180deg, rgba(8,10,15,0) 0%, #080A0F 100%)' }} />

@@ -9,11 +9,11 @@ const MODEL_URL = '/models/hero-orb.glb';
 /* 배경 이미지는 About 페이지 루트에서 페이지 전체로 깔림(스크롤 연속).
    이 컴포넌트는 투명 배경 위에 오브·글래스 패널만 얹는다. */
 
-/* 오브 위 진입 핫스팟 — 대표 프로젝트로 이동 (색상 = 섹션 액센트와 통일) */
+/* 오브 위 진입 핫스팟 — 대표 프로젝트로 이동 (이끼 배경 위 밝은 액센트) */
 const HOTSPOTS = [
-  { tab: 'kisti', label: 'KISTI', sub: '임상 XR', dir: [1.0, 0.55, 0.9], color: '#2b7db0' },
-  { tab: 'dream', label: '꿈키올래', sub: 'Vision Pro', dir: [-1.15, 0.25, 0.75], color: '#b2812f' },
-  { tab: 'withai', label: 'with AI', sub: 'AI 프로덕션', dir: [0.15, -1.05, 0.95], color: '#1f8f77' },
+  { tab: 'kisti', label: 'KISTI', sub: '임상 XR', dir: [1.0, 0.55, 0.9], color: '#6fd8ff' },
+  { tab: 'dream', label: '꿈키올래', sub: 'Vision Pro', dir: [-1.15, 0.25, 0.75], color: '#d8a54b' },
+  { tab: 'withai', label: 'with AI', sub: 'AI 프로덕션', dir: [0.15, -1.05, 0.95], color: '#7ef1d6' },
 ];
 
 const NAV = [
@@ -67,11 +67,12 @@ function Hotspot({ data, orbRef, onNavigate }) {
           className="flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 cursor-pointer"
           style={{
             transform: `translateY(-24px) scale(${hovered ? 1.06 : 1})`,
-            background: 'rgba(255,255,255,0.88)',
-            backdropFilter: 'blur(6px)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.1) 100%)',
+            backdropFilter: 'blur(10px) saturate(1.15)',
+            WebkitBackdropFilter: 'blur(10px) saturate(1.15)',
             border: `1px solid ${data.color}`,
-            boxShadow: hovered ? `0 4px 16px ${data.color}55` : '0 2px 10px rgba(40,60,45,0.12)',
-            color: '#1c231e', fontSize: 11, fontWeight: 600, transition: 'all .18s',
+            boxShadow: hovered ? `0 4px 18px ${data.color}66` : '0 4px 14px rgba(0,0,0,0.25)',
+            color: 'rgba(255,255,255,0.92)', fontSize: 11, fontWeight: 600, transition: 'all .18s',
           }}
         >
           <span style={{ width: 5, height: 5, borderRadius: 99, background: data.color }} />
@@ -144,23 +145,23 @@ export default function HeroLanding({ onNavigate }) {
       </div>
 
       {/* 글래스 패널 — 좌측 */}
-      <div className="relative z-20 flex min-h-screen items-center px-5 md:px-10 pointer-events-none">
+      <div className="relative z-20 flex min-h-screen items-center px-5 md:px-10 md:pl-36 pointer-events-none">
         <div className="pointer-events-auto w-full md:w-[46%] md:max-w-[520px] p-8 md:p-10"
           style={{
-            background: 'rgba(255,255,255,0.55)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%)',
             backdropFilter: 'blur(22px) saturate(1.15)',
             WebkitBackdropFilter: 'blur(22px) saturate(1.15)',
-            border: '1px solid rgba(30,40,32,0.1)',
+            border: '1px solid rgba(255,255,255,0.4)',
             borderRadius: 28,
-            boxShadow: '0 24px 60px rgba(40,60,45,0.12)',
+            boxShadow: '0 30px 70px rgba(0,0,0,0.3)',
           }}>
           <p className="text-[11px] font-semibold tracking-[0.3em] uppercase mb-8"
-            style={{ color: '#5f6b60' }}>
+            style={{ color: 'rgba(255,255,255,0.6)' }}>
             유희수 · Service Planner · PM
           </p>
 
           {/* 볼드+라이트 대비 디스플레이 */}
-          <h1 className="mb-5" style={{ color: '#171c18', letterSpacing: '-0.02em', lineHeight: 1.08 }}>
+          <h1 className="mb-5" style={{ color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.02em', lineHeight: 1.08 }}>
             <span style={{ display: 'block', fontWeight: 300, fontSize: 'clamp(20px,2.4vw,26px)', opacity: 0.85 }}>
               'Why'로 문제를 정의하고,
             </span>
@@ -172,7 +173,7 @@ export default function HeroLanding({ onNavigate }) {
             </span>
           </h1>
 
-          <p className="text-[14px] leading-relaxed mb-8" style={{ color: '#5a635c' }}>
+          <p className="text-[14px] leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.68)' }}>
             기술 이해와 AI로 실행 속도를 높이는 서비스 기획자.
           </p>
 
@@ -182,12 +183,12 @@ export default function HeroLanding({ onNavigate }) {
               <button key={n.tab} onClick={() => onNavigate?.(n.tab)}
                 className="rounded-full px-4 py-2 text-[13px] font-medium transition-all"
                 style={{
-                  color: '#242c26',
-                  background: 'rgba(255,255,255,0.5)',
-                  border: '1px solid rgba(30,40,32,0.32)',
+                  color: 'rgba(255,255,255,0.9)',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(255,255,255,0.4)',
                 }}
-                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(30,40,32,0.08)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.5)'; }}>
+                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.24)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}>
                 {n.label}
               </button>
             ))}
