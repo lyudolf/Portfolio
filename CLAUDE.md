@@ -64,3 +64,14 @@ Vite 규칙상 클라이언트에 노출하려면 변수명이 반드시 `VITE_`
 - 컴포넌트는 함수형 + 기본 export. 파일명 PascalCase(`.jsx`).
 - 주석/UI 텍스트는 한국어.
 - 커밋 메시지: `feat:` / `chore:` 등 Conventional Commits 접두사 사용.
+
+## 작업 이어하기 (다른 PC에서 시작할 때)
+
+- **최신 작업은 `feat/hero-redesign` 브랜치에 있음** (main 아님). 히어로 3D 오브 랜딩 + 프로젝트 모프 섹션 + `/resume` 이력서 페이지가 여기 들어있고, main 머지 전임.
+
+```bash
+git checkout feat/hero-redesign && cd xr-portfolio && npm install && npm run dev
+```
+
+- 남은 작업 목록·프로젝트 배경 자료는 **별도 비공개 저장소 `claude-memory-backup`의 `TODO.md`** 참고 (Claude 메모리 폴더에 clone해서 사용).
+- 알려진 미완: `public/resume-profile.jpg`가 임시 이미지라 실사진 교체 필요.
