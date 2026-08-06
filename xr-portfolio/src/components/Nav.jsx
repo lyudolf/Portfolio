@@ -7,6 +7,7 @@ const TABS = [
   { id: 'process', label: 'Process' },
   { id: 'withai', label: 'with AI' },
   { id: 'whyme', label: 'Why Me' },
+  { id: 'resume', label: '이력서' },
 ];
 
 export default function Nav({ activeTab, onTabChange }) {

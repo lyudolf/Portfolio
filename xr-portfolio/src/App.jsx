@@ -13,12 +13,13 @@ import WhyMe from './components/pages/WhyMe';
 import WithAI from './components/pages/WithAI';
 import EtribeDetail from './components/pages/EtribeDetail';
 import LeafDetail from './components/pages/LeafDetail';
+import Resume from './components/pages/Resume';
 import { TAB_PATHS, PATH_TABS, PAGE_META, SITE_URL } from './lib/site';
 
-const PAGES = { about: About, kisti: Kisti, dream: Dream, process: Process, withai: WithAI, whyme: WhyMe, 'etribe-detail': EtribeDetail, 'leaf-detail': LeafDetail };
+const PAGES = { about: About, kisti: Kisti, dream: Dream, process: Process, withai: WithAI, whyme: WhyMe, 'etribe-detail': EtribeDetail, 'leaf-detail': LeafDetail, resume: Resume };
 
 /* 하단 네비게이션을 숨길 페이지 */
-const DETAIL_PAGES = new Set(['etribe-detail', 'leaf-detail']);
+const DETAIL_PAGES = new Set(['etribe-detail', 'leaf-detail', 'resume']);
 
 export default function App() {
   const location = useLocation();

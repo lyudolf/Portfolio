@@ -14,6 +14,7 @@ export const TAB_PATHS = {
   whyme: '/why-me',
   'etribe-detail': '/etribe',
   'leaf-detail': '/leaf',
+  resume: '/resume',
 };
 
 export const PATH_TABS = Object.fromEntries(
@@ -59,5 +60,10 @@ export const PAGE_META = {
     title: 'Leaf It Alone — 7일 만에 만든 웹 3D 게임 | 유희수',
     description:
       'React Three Fiber로 7일 단독 개발·배포. 8,000개 객체 단일 드로우콜 최적화, ONNX 딥러닝 적 AI 직접 구현.',
+  },
+  resume: {
+    title: '이력서 — 해상도를 높이는 기획자, 유희수',
+    description:
+      "모호한 문제(Why)를 선명한 실행(How)으로. 서비스 기획자 유희수의 이력서 — 팀 매출 3배 성장, 임상 XR 3년 운영, 웹어워드 금상.",
   },
 };
