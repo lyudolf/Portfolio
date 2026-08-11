@@ -1,7 +1,12 @@
-import { useRef, useState, useCallback, useSyncExternalStore, Suspense } from 'react';
+import { useRef, useState, useMemo, useCallback, useSyncExternalStore, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Html, ContactShadows, Float } from '@react-three/drei';
+import { OrbitControls, Html, ContactShadows, Float, useGLTF } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
+import * as THREE from 'three';
+
+/* Draco 디코더는 public/draco/ 에 동봉 (외부 CDN 의존 없음) */
+const DRACO = '/draco/';
+const R = 1.15; // 모델 정규화 반지름 — 어떤 크기의 GLB가 와도 이 반지름으로 맞춘다
 
 /* ══════════════════════════════════════════
    프로젝트 쇼케이스
@@ -29,11 +34,11 @@ const PROJECTS = [
     bg: '#0e3145',
     bgSoft: '#154a66',
     accent: '#6fd8ff',
-    model: null,
+    model: '/models/obj-kisti.glb',
     hotspots: [
-      { pos: [0.62, 0.34, 0.42], title: 'HMD는 스스로 로그인하지 않는다', desc: '헤드셋 안에서 계정을 입력하는 건 고령 훈련자에게 비현실적. 교수자가 PC에서 기기와 계정을 연결하면 자동 로그인된다.' },
-      { pos: [-0.58, 0.16, 0.5], title: '진행 권한은 교수자 PC에', desc: '생성·미션·시간·기록을 한곳에 모아, 문제가 생겨도 교수자가 그 자리에서 수습할 수 있게 했다.' },
-      { pos: [0.05, -0.52, 0.62], title: 'VR은 무대, 측정은 장비가', desc: '검사 4종 중 VR이 직접 재는 건 인지검사뿐. 균형·심혈관·운동성은 검증된 장비가 측정한다.' },
+      { dir: [1.0, 0.5, 0.85], title: 'HMD는 스스로 로그인하지 않는다', desc: '헤드셋 안에서 계정을 입력하는 건 고령 훈련자에게 비현실적. 교수자가 PC에서 기기와 계정을 연결하면 자동 로그인된다.' },
+      { dir: [-1.1, 0.25, 0.7], title: '진행 권한은 교수자 PC에', desc: '생성·미션·시간·기록을 한곳에 모아, 문제가 생겨도 교수자가 그 자리에서 수습할 수 있게 했다.' },
+      { dir: [0.1, -0.95, 0.9], title: 'VR은 무대, 측정은 장비가', desc: '검사 4종 중 VR이 직접 재는 건 인지검사뿐. 균형·심혈관·운동성은 검증된 장비가 측정한다.' },
     ],
   },
   {
@@ -52,11 +57,11 @@ const PROJECTS = [
     bg: '#3a2a10',
     bgSoft: '#5a4218',
     accent: '#e8bd6d',
-    model: null,
+    model: '/models/obj-dream.glb',
     hotspots: [
-      { pos: [0.42, 0.72, 0.36], title: '3컨셉 × 3직업 프레임워크', desc: '아홉 종을 각각 설계하는 대신 같은 뼈대를 공유하게 묶어, 기획·개발·검수가 반복 가능해졌다.' },
-      { pos: [-0.46, 0.05, 0.44], title: '추리를 데이터로', desc: '증거를 변수로, 용의자를 속성 집합으로 정의해 범인 특정을 교집합 문제로 바꿨다.' },
-      { pos: [0.34, -0.6, 0.42], title: '생성 모델 우회', desc: '악기별 분리 생성이 안 되자 완성곡을 만든 뒤 트랙을 분리해, 엔진에서 켜고 끄는 순서로 뒤집었다.' },
+      { dir: [1.0, 0.5, 0.85], title: '3컨셉 × 3직업 프레임워크', desc: '아홉 종을 각각 설계하는 대신 같은 뼈대를 공유하게 묶어, 기획·개발·검수가 반복 가능해졌다.' },
+      { dir: [-1.1, 0.25, 0.7], title: '추리를 데이터로', desc: '증거를 변수로, 용의자를 속성 집합으로 정의해 범인 특정을 교집합 문제로 바꿨다.' },
+      { dir: [0.1, -0.95, 0.9], title: '생성 모델 우회', desc: '악기별 분리 생성이 안 되자 완성곡을 만든 뒤 트랙을 분리해, 엔진에서 켜고 끄는 순서로 뒤집었다.' },
     ],
   },
   {
@@ -75,18 +80,51 @@ const PROJECTS = [
     bg: '#3b1428',
     bgSoft: '#5c1f3d',
     accent: '#f9a8d4',
-    model: null,
+    model: '/models/obj-kocca.glb',
     hotspots: [
-      { pos: [0.5, 0.46, 0.44], title: '매번 새로 생성되는 사건', desc: '교사가 한 줄 프롬프트를 넣으면 배경·용의자·범인·단서가 생성된다. 같은 시나리오도 매 플레이가 다르다.' },
-      { pos: [-0.52, 0.2, 0.4], title: 'LLM은 제안, 코드가 보증', desc: '정답 유일성과 배치 유효성은 코드가 최종 검증. 실패 시 보정 → 재생성 → 폴백으로 플레이가 멈추지 않는다.' },
-      { pos: [0.1, -0.55, 0.55], title: '난이도를 값으로', desc: '용의자 수·시간·훼손율로 난이도를 정의한 초기 기획이, 생성 슬롯 파라미터의 전신이 됐다.' },
+      { dir: [1.0, 0.5, 0.85], title: '매번 새로 생성되는 사건', desc: '교사가 한 줄 프롬프트를 넣으면 배경·용의자·범인·단서가 생성된다. 같은 시나리오도 매 플레이가 다르다.' },
+      { dir: [-1.1, 0.25, 0.7], title: 'LLM은 제안, 코드가 보증', desc: '정답 유일성과 배치 유효성은 코드가 최종 검증. 실패 시 보정 → 재생성 → 폴백으로 플레이가 멈추지 않는다.' },
+      { dir: [0.1, -0.95, 0.9], title: '난이도를 값으로', desc: '용의자 수·시간·훼손율로 난이도를 정의한 초기 기획이, 생성 슬롯 파라미터의 전신이 됐다.' },
     ],
   },
 ];
 
 /* ══════════════════════════════════════════
-   임시 오브젝트 — GLB 도착 시 교체
+   GLB 모델 — 크기가 제각각이라 바운딩 스피어 기준으로 정규화한다.
+   (헤드셋과 데스크톱의 실제 크기 차이가 15배라 이 과정이 필수)
    ══════════════════════════════════════════ */
+function Model({ url }) {
+  const { scene } = useGLTF(url, DRACO);
+  const { object, scale, center } = useMemo(() => {
+    const clone = scene.clone(true);
+    clone.traverse((o) => {
+      if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
+    });
+    const sphere = new THREE.Box3().setFromObject(clone).getBoundingSphere(new THREE.Sphere());
+    return { object: clone, scale: R / sphere.radius, center: sphere.center };
+  }, [scene]);
+
+  return (
+    <group scale={scale}>
+      <primitive object={object} position={[-center.x, -center.y, -center.z]} />
+    </group>
+  );
+}
+PROJECTS.forEach((p) => p.model && useGLTF.preload(p.model, DRACO));
+
+/* 로딩 중 표시 */
+function LoadingOrb({ accent }) {
+  const ref = useRef();
+  useFrame((_, d) => { if (ref.current) ref.current.rotation.y += d * 1.5; });
+  return (
+    <mesh ref={ref}>
+      <icosahedronGeometry args={[0.5, 0]} />
+      <meshBasicMaterial color={accent} wireframe transparent opacity={0.4} />
+    </mesh>
+  );
+}
+
+/* 임시 오브젝트 — 모델 경로가 없을 때만 사용 */
 function PlaceholderModel({ id, accent }) {
   if (id === 'kisti') {
     /* VR 헤드셋 + 받침 */
@@ -172,8 +210,12 @@ function PlaceholderModel({ id, accent }) {
 
 /* 오브젝트에 붙는 핫스팟 */
 function Hotspot({ data, accent, open, onToggle }) {
+  const pos = useMemo(
+    () => new THREE.Vector3(...data.dir).normalize().multiplyScalar(R * 1.04),
+    [data.dir]
+  );
   return (
-    <group position={data.pos}>
+    <group position={pos}>
       <mesh onClick={(e) => { e.stopPropagation(); onToggle(); }}>
         <sphereGeometry args={[0.055, 14, 14]} />
         <meshBasicMaterial color={open ? accent : '#ffffff'} />
@@ -227,7 +269,11 @@ function Stage({ project, reduced, openIdx, setOpenIdx }) {
       <directionalLight position={[-4, 1.5, -3]} intensity={0.5} color={project.accent} />
       <Float speed={reduced ? 0 : 1.2} rotationIntensity={0} floatIntensity={reduced ? 0 : 0.4}>
         <group ref={spin}>
-          <PlaceholderModel id={project.id} accent={project.accent} />
+          <Suspense fallback={<LoadingOrb accent={project.accent} />}>
+            {project.model
+              ? <Model url={project.model} />
+              : <PlaceholderModel id={project.id} accent={project.accent} />}
+          </Suspense>
           {project.hotspots.map((h, i) => (
             <Hotspot
               key={i} data={h} accent={project.accent}

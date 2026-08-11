@@ -21,3 +21,6 @@ desktop.ini
 
 # RL 원본 미디어 (선별본만 xr-portfolio/public/withai/rl에 복사)
 Reinforcement Learning/
+
+# 3D 원본 에셋 (최적화본만 public/models 에 배포)
+3d-source/
