@@ -7,8 +7,10 @@ export const SITE_NAME = '유희수 포트폴리오';
 /* 탭 key ↔ URL 경로 매핑 (App.jsx 라우팅 + SEO 메타 공용) */
 export const TAB_PATHS = {
   about: '/',
+  work: '/work',
   kisti: '/kisti',
   dream: '/dream',
+  'kocca-detail': '/kocca',
   process: '/process',
   withai: '/with-ai',
   whyme: '/why-me',
@@ -28,6 +30,16 @@ export const PAGE_META = {
     title: "유희수 — 서비스 기획자 · PM 포트폴리오",
     description:
       "'Why'로 문제를 정의하고 실현 가능한 'How'를 설계하는 서비스 기획자. 팀 매출 3배 성장 견인, 임상 XR 시스템 3년 운영, 웹어워드 코리아 금상.",
+  },
+  work: {
+    title: 'Work — 프로젝트 | 유희수',
+    description:
+      '임상 XR 훈련 시스템(KISTI), Apple Vision Pro 직업체험 9종(꿈키올래), LLM 생성형 국가과제(한국콘텐츠진흥원). 기획이 현장에서 작동하는 상태까지 만든 프로젝트 3선.',
+  },
+  'kocca-detail': {
+    title: '한콘진 AI 직업체험 — LLM 생성형 과학수사 체험 | 유희수',
+    description:
+      '한국콘텐츠진흥원 국가과제. 매 플레이마다 LLM이 사건을 새로 생성하는 과학수사 직업체험 — 꿈키올래 세계관과 난이도 파라미터 설계가 출발점이 된 초기 기획 참여.',
   },
   kisti: {
     title: 'KISTI 임상 XR — 고령자 인지·운동 훈련 시스템 | 유희수',

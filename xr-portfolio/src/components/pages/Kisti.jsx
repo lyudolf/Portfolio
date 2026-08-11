@@ -534,7 +534,25 @@ function ImpactSection() {
 /* ══════════════════════════════════════════
    PAGE
    ══════════════════════════════════════════ */
-export default function Kisti() {
+function BackToWork({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="fixed top-6 left-6 z-30 flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold cursor-pointer transition-all"
+      style={{ background: 'rgba(255,255,255,0.75)', border: `1px solid ${C.border}`, color: C.text60, backdropFilter: 'blur(12px)' }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.95)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.75)'; }}
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <line x1="19" y1="12" x2="5" y2="12" />
+        <polyline points="12 19 5 12 12 5" />
+      </svg>
+      Work
+    </button>
+  );
+}
+
+export default function Kisti({ onNavigate }) {
   return (
     <div
       className="relative w-full overflow-x-hidden"
@@ -554,6 +572,7 @@ export default function Kisti() {
         style={{ background: 'linear-gradient(90deg, transparent, rgba(23,118,166,0.25), transparent)' }}
       />
 
+      <BackToWork onClick={() => onNavigate?.('work')} />
       <HeroSection />
       <AtAGlance
         accent="rgba(111,216,255,0.85)"

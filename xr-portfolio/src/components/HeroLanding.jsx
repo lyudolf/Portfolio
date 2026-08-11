@@ -9,16 +9,13 @@ const MODEL_URL = '/models/hero-orb.glb';
 /* 배경 이미지는 About 페이지 루트에서 페이지 전체로 깔림(스크롤 연속).
    이 컴포넌트는 투명 배경 위에 오브·글래스 패널만 얹는다. */
 
-/* 오브 위 진입 핫스팟 — 대표 프로젝트로 이동 (이끼 배경 위 밝은 액센트) */
+/* 오브 위 진입 핫스팟 — Work 카테고리 하나로 통합 (이끼 배경 위 밝은 액센트) */
 const HOTSPOTS = [
-  { tab: 'kisti', label: 'KISTI', sub: '임상 XR', dir: [1.0, 0.55, 0.9], color: '#6fd8ff' },
-  { tab: 'dream', label: '꿈키올래', sub: 'Vision Pro', dir: [-1.15, 0.25, 0.75], color: '#d8a54b' },
-  { tab: 'withai', label: 'with AI', sub: 'AI 프로덕션', dir: [0.15, -1.05, 0.95], color: '#7ef1d6' },
+  { tab: 'work', label: 'Work', sub: '프로젝트 3선', dir: [1.0, 0.45, 0.9], color: '#6fd8ff' },
 ];
 
 const NAV = [
-  { tab: 'kisti', label: 'KISTI' },
-  { tab: 'dream', label: '꿈키올래' },
+  { tab: 'work', label: 'Work' },
   { tab: 'withai', label: 'with AI' },
   { tab: 'whyme', label: 'Why Me' },
   { tab: 'process', label: 'Process' },

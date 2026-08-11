@@ -2,15 +2,25 @@ import { motion } from 'framer-motion';
 
 const TABS = [
   { id: 'about', label: 'About' },
-  { id: 'kisti', label: 'KISTI' },
-  { id: 'dream', label: '꿈키올래' },
+  { id: 'work', label: 'Work' },
   { id: 'process', label: 'Process' },
   { id: 'withai', label: 'with AI' },
   { id: 'whyme', label: 'Why Me' },
   { id: 'resume', label: '이력서' },
 ];
 
+/* 하위 상세 페이지에 있을 때 어느 상위 탭을 활성 표시할지 */
+const PARENT_TAB = {
+  kisti: 'work',
+  dream: 'work',
+  'kocca-detail': 'work',
+  'leaf-detail': 'withai',
+  'etribe-detail': 'withai',
+  'rl-detail': 'withai',
+};
+
 export default function Nav({ activeTab, onTabChange }) {
+  const current = PARENT_TAB[activeTab] ?? activeTab;
   return (
     <motion.nav
       className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none"
@@ -28,7 +38,7 @@ export default function Nav({ activeTab, onTabChange }) {
         }}
       >
         {TABS.map(tab => {
-          const isActive = activeTab === tab.id;
+          const isActive = current === tab.id;
           return (
             <button
               key={tab.id}
