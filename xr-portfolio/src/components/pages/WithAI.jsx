@@ -27,6 +27,18 @@ const PROJECTS = [
     award: '1st Prize',
     detailPage: 'etribe-detail',
   },
+  {
+    id: 'hidenseek-rl',
+    title: 'Hide & Seek 강화학습 재현 (Unity ML-Agents)',
+    tools: ['Unity ML-Agents', 'PPO Self-Play', 'LSTM', 'ONNX'],
+    link: 'https://github.com/lyudolf/hideNseek_ML',
+    intro: 'OpenAI Hide & Seek을 Unity ML-Agents로 재현한 개인 실험. 술래·도망자 셀프플레이 누적 2,700만 step, 보상 설계 5회 개편. 벽 비비기·물리 버그 착취 같은 보상 해킹을 관측했고, 중간 보상을 전량 걷어낸 뒤에야 가르친 적 없는 입구 봉쇄 전략이 창발. 강화학습이 아니라 인센티브 설계를 배운 실험 로그.',
+    duration: '2026.02',
+    language: 'C# · Python',
+    thumbnail: '/withai/rl/thumb.png',
+    award: null,
+    detailPage: 'rl-detail',
+  },
 ];
 
 /* ── Shipped Products — 토스 앱인토스 출시 미니앱 ── */
@@ -372,6 +384,7 @@ export default function WithAI({ onNavigate }) {
       </section>
 
       <Divider />
+
 
       {/* ── Section 3: Smart Workflow Pipeline (보류) ── */}
       <section className="mx-auto px-8 py-20" style={{ maxWidth: '1400px' }}>

@@ -14,6 +14,7 @@ export const TAB_PATHS = {
   whyme: '/why-me',
   'etribe-detail': '/etribe',
   'leaf-detail': '/leaf',
+  'rl-detail': '/hide-n-seek',
   resume: '/resume',
 };
 
@@ -60,6 +61,11 @@ export const PAGE_META = {
     title: 'Leaf It Alone — 7일 만에 만든 웹 3D 게임 | 유희수',
     description:
       'React Three Fiber로 7일 단독 개발·배포. 8,000개 객체 단일 드로우콜 최적화, ONNX 딥러닝 적 AI 직접 구현.',
+  },
+  'rl-detail': {
+    title: 'Hide & Seek RL — 강화학습으로 배운 인센티브 설계 | 유희수',
+    description:
+      'Unity ML-Agents로 OpenAI Hide & Seek 재현. 2,700만 step, 보상 설계 5회 개편 — 보상 해킹과 창발 전략을 관측한 실험 로그.',
   },
   resume: {
     title: '이력서 — 해상도를 높이는 기획자, 유희수',

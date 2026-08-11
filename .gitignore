@@ -18,3 +18,6 @@ desktop.ini
 
 # Temp extraction scripts
 /tmp/
+
+# RL 원본 미디어 (선별본만 xr-portfolio/public/withai/rl에 복사)
+Reinforcement Learning/
