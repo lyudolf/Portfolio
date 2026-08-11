@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import ProjectDiorama from '../ui/ProjectDiorama';
+import ProjectShowcase from '../ui/ProjectShowcase';
 
 /* ══════════════════════════════════════════
    DATA — Work 인덱스 (프로젝트 3종)
@@ -254,12 +254,12 @@ export default function Work({ onNavigate }) {
         </motion.p>
       </section>
 
-      {/* 3D 디오라마 — 프로젝트를 공간으로 설명 */}
+      {/* 3D 쇼케이스 — 대표 오브젝트 + 핫스팟으로 설명 */}
       <section className="px-8 pb-16" style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.18 }}>
-          <ProjectDiorama onNavigate={onNavigate} />
+          <ProjectShowcase onNavigate={onNavigate} />
         </motion.div>
       </section>
 
