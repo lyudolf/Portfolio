@@ -1,275 +1,322 @@
 import { useRef, useState, useMemo, useCallback, useSyncExternalStore, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, RoundedBox, Html, Line, Float, ContactShadows } from '@react-three/drei';
+import { OrbitControls, RoundedBox, Html, Float, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 
 /* ══════════════════════════════════════════
-   프로젝트 디오라마
-   — 외부 3D 에셋 없이 절차적 지오메트리로 구성.
-     각 프로젝트를 하나의 섬(slab)으로 만들고,
-     공간 좌표에 앵커된 글래스 카드로 핵심 설명을 띄운다.
+   프로젝트 디오라마 — 하나의 섬, 세 구역
+   기본: 전체 조망 + 각 구역에 라벨 말풍선
+   클릭: 해당 구역으로 확대 + 상세 패널 전개
+
+   ⚠️ GLB 교체 지점: <Terrain /> 컴포넌트만 갈아끼우면 된다.
+      앵커 좌표(anchor)와 카메라 위치(camPos)는 모델 스케일에 맞춰 재조정.
    ══════════════════════════════════════════ */
 
-/* ── 프로젝트별 구성 ── */
-const DIORAMAS = [
+const OVERVIEW = { camPos: [0.2, 3.1, 6.4], target: [0, 0, 0] };
+
+const ZONES = [
   {
     id: 'kisti',
     tab: 'kisti',
     label: 'KISTI',
-    caption: '임상 XR 훈련 시스템',
+    tagline: '임상 데이터가 실제로 쌓이는 훈련 시스템',
+    anchor: [-1.75, 0.55, 0.35],
+    camPos: [-2.5, 1.7, 2.6],
+    period: '2024 — 현재 · 단독 기획 · PM',
+    desc: '고령자 인지·운동 훈련 VR. 교수자 PC와 VR 앱 두 종이 서버를 사이에 두고 움직이는 구조를 기획 단계에서 정의하고, 임상 데이터가 수집되는 운영 체계까지 설계했습니다.',
+    stats: [
+      { num: '60명', label: '1차 임상 무이슈' },
+      { num: '3년차', label: '용역 연장' },
+      { num: '1~2', label: '운영 depth' },
+    ],
     accent: '#1776a6',
     accentLight: '#6fd8ff',
-    slab: '#8d9a92',
-    /* 슬래브 위 오브젝트 */
-    props: [
-      { type: 'panel', pos: [-1.15, 0.42, 0.15], size: [0.8, 0.5, 0.05], tint: '#6fd8ff', label: '교수자 PC' },
-      { type: 'panel', pos: [0.35, 0.36, -0.55], size: [0.42, 0.3, 0.05], tint: '#7ef1d6', label: '훈련자 HMD' },
-      { type: 'panel', pos: [1.25, 0.36, 0.35], size: [0.42, 0.3, 0.05], tint: '#a78bfa', label: '검사 HMD' },
-      { type: 'server', pos: [0.1, -0.62, 0.1], size: [0.55, 0.5, 0.4], tint: '#1776a6' },
-    ],
-    /* 노드 간 연결선 */
-    links: [
-      [[-1.15, 0.2, 0.15], [0.1, -0.4, 0.1]],
-      [[0.35, 0.2, -0.55], [0.1, -0.4, 0.1]],
-      [[1.25, 0.2, 0.35], [0.1, -0.4, 0.1]],
-    ],
-    /* 공간에 떠 있는 설명 카드 */
-    cards: [
-      { pos: [-1.15, 0.95, 0.15], title: 'HMD는 스스로 로그인하지 않는다', desc: '고령 훈련자가 헤드셋 안에서 계정을 입력하는 건 비현실적. 교수자가 PC에서 기기와 계정을 연결하면 자동 로그인된다.' },
-      { pos: [1.25, 0.85, 0.35], title: 'VR은 무대, 측정은 장비가', desc: '검사 4종 중 VR이 직접 재는 건 인지검사뿐. 균형·심혈관·운동성은 검증된 장비가 측정한다.' },
-      { pos: [0.15, -0.78, 0.85], title: '진행 권한은 교수자 PC에', desc: '생성·미션·시간·기록을 한곳에 모아, 문제가 생겨도 교수자가 그 자리에서 수습할 수 있게 했다.' },
-    ],
   },
   {
     id: 'dream',
     tab: 'dream',
     label: '꿈키올래',
-    caption: 'Vision Pro 직업체험 9종',
+    tagline: '두 달에 아홉 종, 버리는 속도로 만든 결과',
+    anchor: [0.15, 0.75, -0.3],
+    camPos: [0.3, 1.9, 2.3],
+    period: '2025.09 — 12 · PM · 기획 · QA',
+    desc: 'Apple Vision Pro 직업체험 9종. 세 세계관 아래 세 직업이 같은 흐름을 공유하는 프레임워크로 재설계해, 불가능한 일정을 구조로 해결했습니다.',
+    stats: [
+      { num: '9종', label: '체험 콘텐츠' },
+      { num: '2개월', label: '실개발' },
+      { num: '후속 제안', label: '재요청' },
+    ],
     accent: '#9e6a16',
     accentLight: '#d8a54b',
-    slab: '#a2957c',
-    props: [
-      { type: 'pedestal', pos: [-1.2, 0.28, 0.1], tint: '#e06c4f', label: 'MARS' },
-      { type: 'pedestal', pos: [0.05, 0.28, -0.35], tint: '#8c6dd8', label: '수사대' },
-      { type: 'pedestal', pos: [1.25, 0.28, 0.25], tint: '#f472b6', label: '엔터' },
-      { type: 'orbit', pos: [0.05, 0.75, -0.35], tint: '#d8a54b' },
-    ],
-    links: [
-      [[-1.2, 0.4, 0.1], [0.05, 0.4, -0.35]],
-      [[0.05, 0.4, -0.35], [1.25, 0.4, 0.25]],
-    ],
-    cards: [
-      { pos: [-1.2, 1.0, 0.1], title: '3컨셉 × 3직업 프레임워크', desc: '아홉 종을 각각 설계하는 대신 같은 뼈대를 공유하게 묶어, 두 달에 아홉 종을 냈다.' },
-      { pos: [0.05, -0.72, 0.9], title: '추리를 데이터로', desc: '증거를 변수로, 용의자를 속성 집합으로 정의해 범인 특정을 교집합 문제로 바꿨다.' },
-      { pos: [1.25, 0.95, 0.25], title: '생성 모델 우회', desc: '악기별 분리 생성이 안 되자 완성곡을 만든 뒤 트랙을 분리해 엔진에서 켜고 끄는 순서로 뒤집었다.' },
-    ],
   },
   {
     id: 'kocca',
     tab: 'kocca-detail',
     label: '한콘진',
-    caption: 'LLM 생성형 직업체험',
+    tagline: '내 기획 구조가 생성 엔진의 뼈대가 됐다',
+    anchor: [1.8, 0.55, 0.3],
+    camPos: [2.6, 1.7, 2.5],
+    period: '2026.04 — 진행 중 · 초기 기획',
+    desc: '한국콘텐츠진흥원 국가과제. 매 플레이마다 LLM이 사건·증거·NPC 대사를 새로 생성합니다. 꿈키올래의 세계관과 난이도 파라미터 설계가 출발점이 됐습니다.',
+    stats: [
+      { num: 'LLM', label: '실시간 생성' },
+      { num: '34개', label: '테이블 모델' },
+      { num: '7.5개월', label: '과제 기간' },
+    ],
     accent: '#a63666',
     accentLight: '#f9a8d4',
-    slab: '#9a8b90',
-    props: [
-      { type: 'panel', pos: [0, 0.55, -0.75], size: [1.5, 0.85, 0.05], tint: '#f9a8d4', label: 'AI 생성' },
-      { type: 'marker', pos: [-1.1, 0.24, 0.35], tint: '#f472b6' },
-      { type: 'marker', pos: [-0.4, 0.24, 0.6], tint: '#f472b6' },
-      { type: 'marker', pos: [0.55, 0.24, 0.45], tint: '#f472b6' },
-      { type: 'marker', pos: [1.2, 0.24, 0.15], tint: '#f472b6' },
-    ],
-    links: [
-      [[0, 0.2, -0.75], [-1.1, 0.24, 0.35]],
-      [[0, 0.2, -0.75], [-0.4, 0.24, 0.6]],
-      [[0, 0.2, -0.75], [0.55, 0.24, 0.45]],
-      [[0, 0.2, -0.75], [1.2, 0.24, 0.15]],
-    ],
-    cards: [
-      { pos: [0, 1.15, -0.75], title: '매번 새로 생성되는 사건', desc: '교사가 한 줄 프롬프트를 넣으면 LLM이 배경·용의자·범인·단서를 생성한다. 같은 시나리오도 매 플레이가 다르다.' },
-      { pos: [-1.1, 0.85, 0.35], title: 'LLM은 제안, 코드가 보증', desc: '정답 유일성과 배치 유효성은 코드가 최종 검증. 실패 시 보정 → 재생성 → 폴백으로 플레이가 멈추지 않는다.' },
-      { pos: [1.2, 0.8, 0.15], title: '난이도를 값으로', desc: '용의자 수·시간·훼손율로 난이도를 정의한 초기 기획이, 생성 슬롯 파라미터의 전신이 됐다.' },
-    ],
   },
 ];
 
-/* ── 개별 오브젝트 ── */
-function Prop({ p }) {
-  if (p.type === 'panel') {
-    return (
-      <group position={p.pos}>
-        <RoundedBox args={p.size} radius={0.02} smoothness={3} castShadow>
-          <meshStandardMaterial color="#2b3138" roughness={0.35} metalness={0.2} />
-        </RoundedBox>
-        {/* 화면 발광면 */}
-        <mesh position={[0, 0, p.size[2] / 2 + 0.005]}>
-          <planeGeometry args={[p.size[0] * 0.88, p.size[1] * 0.82]} />
-          <meshBasicMaterial color={p.tint} transparent opacity={0.55} />
+/* ══════════════════════════════════════════
+   지형 — GLB 도착 시 이 컴포넌트만 교체
+   ══════════════════════════════════════════ */
+function Terrain() {
+  return (
+    <group>
+      {/* 섬 본체 */}
+      <RoundedBox args={[5.4, 0.42, 3.2]} radius={0.12} smoothness={4} receiveShadow>
+        <meshStandardMaterial color="#8f9a8c" roughness={0.9} metalness={0.04} />
+      </RoundedBox>
+      <mesh position={[0, 0.216, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[5.34, 3.14]} />
+        <meshStandardMaterial color="#dfe5d8" roughness={0.95} />
+      </mesh>
+
+      {/* ── 구역 1: 공상과학 (좌) ── */}
+      <group position={[-1.75, 0.22, 0.35]}>
+        <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.95, 32]} />
+          <meshStandardMaterial color="#cfe4e6" roughness={0.7} />
         </mesh>
-        {/* 지지대 */}
-        <mesh position={[0, -p.size[1] / 2 - 0.09, 0]}>
-          <cylinderGeometry args={[0.03, 0.045, 0.18, 12]} />
+        <RoundedBox args={[0.62, 0.36, 0.05]} radius={0.02} position={[0, 0.34, -0.15]} castShadow>
+          <meshStandardMaterial color="#2b3138" roughness={0.35} metalness={0.25} />
+        </RoundedBox>
+        <mesh position={[0, 0.34, -0.12]}>
+          <planeGeometry args={[0.54, 0.29]} />
+          <meshBasicMaterial color="#6fd8ff" transparent opacity={0.5} />
+        </mesh>
+        <mesh position={[0, 0.1, 0.2]}>
+          <cylinderGeometry args={[0.22, 0.24, 0.06, 24]} />
           <meshStandardMaterial color="#3c434a" roughness={0.5} />
         </mesh>
-      </group>
-    );
-  }
-  if (p.type === 'server') {
-    return (
-      <group position={p.pos}>
-        <RoundedBox args={p.size} radius={0.04} smoothness={3}>
-          <meshStandardMaterial color="#252b31" roughness={0.4} metalness={0.3} />
-        </RoundedBox>
-        {[0.12, 0, -0.12].map((y) => (
-          <mesh key={y} position={[0, y, p.size[2] / 2 + 0.004]}>
-            <planeGeometry args={[p.size[0] * 0.7, 0.035]} />
-            <meshBasicMaterial color={p.tint} transparent opacity={0.85} />
+        {[-0.6, 0.6].map((x) => (
+          <mesh key={x} position={[x, 0.26, 0.35]}>
+            <coneGeometry args={[0.13, 0.5, 7]} />
+            <meshStandardMaterial color="#8fc7ae" roughness={0.8} />
           </mesh>
         ))}
       </group>
-    );
-  }
-  if (p.type === 'pedestal') {
-    return (
-      <group position={p.pos}>
-        <mesh castShadow>
-          <cylinderGeometry args={[0.3, 0.34, 0.2, 28]} />
-          <meshStandardMaterial color="#2f3339" roughness={0.45} />
+
+      {/* ── 구역 2: 화성 (중앙) ── */}
+      <group position={[0.15, 0.22, -0.3]}>
+        <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.8, 32]} />
+          <meshStandardMaterial color="#c0714a" roughness={0.95} />
         </mesh>
-        <mesh position={[0, 0.115, 0]}>
-          <cylinderGeometry args={[0.27, 0.27, 0.02, 28]} />
-          <meshBasicMaterial color={p.tint} transparent opacity={0.65} />
+        <mesh position={[0, 0.14, 0]} castShadow>
+          <sphereGeometry args={[0.42, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#a85536" roughness={0.95} />
         </mesh>
-        <mesh position={[0, 0.3, 0]}>
-          <icosahedronGeometry args={[0.16, 0]} />
-          <meshStandardMaterial color={p.tint} roughness={0.25} metalness={0.35} />
+        <mesh position={[0, 0.5, 0]} castShadow>
+          <cylinderGeometry args={[0.05, 0.07, 0.42, 12]} />
+          <meshStandardMaterial color="#e8e4dd" roughness={0.4} />
+        </mesh>
+        <mesh position={[0, 0.74, 0]}>
+          <coneGeometry args={[0.05, 0.14, 12]} />
+          <meshStandardMaterial color="#d8a54b" roughness={0.35} metalness={0.3} />
         </mesh>
       </group>
-    );
-  }
-  if (p.type === 'orbit') {
-    return (
-      <mesh position={p.pos} rotation={[Math.PI / 2.6, 0, 0]}>
-        <torusGeometry args={[0.55, 0.012, 12, 64]} />
-        <meshBasicMaterial color={p.tint} transparent opacity={0.5} />
-      </mesh>
-    );
-  }
-  /* marker — 증거 표식 */
-  return (
-    <group position={p.pos}>
-      <mesh castShadow>
-        <coneGeometry args={[0.1, 0.22, 4]} />
-        <meshStandardMaterial color={p.tint} roughness={0.4} />
-      </mesh>
+
+      {/* ── 구역 3: 수사 현장 (우) ── */}
+      <group position={[1.8, 0.22, 0.3]}>
+        <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.9, 32]} />
+          <meshStandardMaterial color="#8d8189" roughness={0.9} />
+        </mesh>
+        <mesh position={[-0.15, 0.16, -0.1]} rotation={[0, 0.3, 0.55]} castShadow>
+          <boxGeometry args={[0.2, 0.55, 0.2]} />
+          <meshStandardMaterial color="#cfc7c0" roughness={0.8} />
+        </mesh>
+        {[[-0.5, 0.25], [0.3, 0.4], [0.55, -0.25]].map(([x, z], i) => (
+          <mesh key={i} position={[x, 0.11, z]} castShadow>
+            <coneGeometry args={[0.07, 0.18, 4]} />
+            <meshStandardMaterial color="#f472b6" roughness={0.5} />
+          </mesh>
+        ))}
+        {[-0.75, 0.75].map((x) => (
+          <mesh key={x} position={[x, 0.28, 0.45]}>
+            <sphereGeometry args={[0.19, 12, 10]} />
+            <meshStandardMaterial color="#a8574e" roughness={0.85} />
+          </mesh>
+        ))}
+      </group>
     </group>
   );
 }
 
-/* ── 공간 앵커 카드 ── */
-function AnchorCard({ card, accent, index, onOpen }) {
+/* ══════════════════════════════════════════
+   카메라 리그 — 확대/복귀 보간
+   ══════════════════════════════════════════ */
+function CameraRig({ focus, controlsRef }) {
+  const destPos = useRef(new THREE.Vector3());
+  const destTarget = useRef(new THREE.Vector3());
+
+  useFrame((state, delta) => {
+    const p = focus ? focus.camPos : OVERVIEW.camPos;
+    const t = focus ? focus.anchor : OVERVIEW.target;
+    destPos.current.set(p[0], p[1], p[2]);
+    destTarget.current.set(t[0], t[1], t[2]);
+
+    const k = 1 - Math.pow(0.0015, delta); // 프레임레이트 독립 보간
+    state.camera.position.lerp(destPos.current, k);
+    if (controlsRef.current) {
+      controlsRef.current.target.lerp(destTarget.current, k);
+      controlsRef.current.update();
+    }
+  });
+  return null;
+}
+
+/* ══════════════════════════════════════════
+   구역 라벨 / 상세 패널
+   ══════════════════════════════════════════ */
+function ZoneMarker({ zone, focused, dimmed, onSelect, onClose, onNavigate }) {
   const [hovered, setHovered] = useState(false);
+
   return (
-    <group position={card.pos}>
+    <group position={zone.anchor}>
       {/* 앵커 점 */}
       <mesh>
-        <sphereGeometry args={[0.035, 12, 12]} />
-        <meshBasicMaterial color={accent} />
+        <sphereGeometry args={[0.032, 12, 12]} />
+        <meshBasicMaterial color={zone.accent} transparent opacity={dimmed ? 0.25 : 1} />
       </mesh>
-      <Html center distanceFactor={7} zIndexRange={[20, 0]} style={{ pointerEvents: 'auto' }}>
-        <button
-          onClick={onOpen}
-          onPointerOver={() => setHovered(true)}
-          onPointerOut={() => setHovered(false)}
-          className="text-left rounded-2xl cursor-pointer"
-          style={{
-            width: 218,
-            padding: '12px 14px',
-            transform: `translateY(-58px) scale(${hovered ? 1.03 : 1})`,
-            background: hovered
-              ? 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.92) 100%)'
-              : 'linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.82) 100%)',
-            backdropFilter: 'blur(14px) saturate(1.2)',
-            WebkitBackdropFilter: 'blur(14px) saturate(1.2)',
-            border: `1px solid ${accent}44`,
-            boxShadow: hovered ? `0 14px 34px rgba(20,28,24,0.28)` : '0 8px 24px rgba(20,28,24,0.18)',
-            transition: 'all .2s',
-          }}
-        >
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <span style={{ width: 5, height: 5, borderRadius: 99, background: accent, flexShrink: 0 }} />
-            <span style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: '0.16em', color: `${accent}cc` }}>
-              0{index + 1}
-            </span>
+
+      <Html center distanceFactor={6.5} zIndexRange={[30, 0]} style={{ pointerEvents: dimmed ? 'none' : 'auto' }}>
+        {focused ? (
+          /* ── 확대 시: 상세 패널 ── */
+          <div
+            className="rounded-2xl text-left"
+            style={{
+              width: 300,
+              padding: '16px 18px',
+              transform: 'translateY(-96px)',
+              background: 'rgba(255,255,255,0.97)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: `1px solid ${zone.accent}33`,
+              boxShadow: '0 18px 44px rgba(20,28,24,0.3)',
+            }}
+          >
+            <div className="flex items-start justify-between gap-2 mb-1">
+              <p style={{ fontSize: 16, fontWeight: 800, color: 'rgba(20,28,24,0.92)', letterSpacing: '-0.01em' }}>
+                {zone.label}
+              </p>
+              <button
+                onClick={onClose}
+                aria-label="닫기"
+                className="cursor-pointer"
+                style={{
+                  width: 22, height: 22, borderRadius: 99, flexShrink: 0,
+                  background: 'rgba(20,28,24,0.06)', color: 'rgba(20,28,24,0.5)',
+                  fontSize: 13, lineHeight: '20px', textAlign: 'center',
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <p style={{ fontSize: 10, fontWeight: 600, color: `${zone.accent}cc`, marginBottom: 9 }}>
+              {zone.period}
+            </p>
+            <p style={{ fontSize: 11.5, lineHeight: 1.75, color: 'rgba(20,28,24,0.62)', marginBottom: 12 }}>
+              {zone.desc}
+            </p>
+            <div className="flex gap-3 mb-3" style={{ paddingTop: 10, borderTop: '1px solid rgba(20,28,24,0.08)' }}>
+              {zone.stats.map((s) => (
+                <div key={s.label} style={{ flex: 1 }}>
+                  <p style={{ fontSize: 14, fontWeight: 800, color: zone.accent, lineHeight: 1, marginBottom: 3 }}>
+                    {s.num}
+                  </p>
+                  <p style={{ fontSize: 9, color: 'rgba(20,28,24,0.45)', lineHeight: 1.3 }}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => onNavigate?.(zone.tab)}
+              className="w-full cursor-pointer"
+              style={{
+                padding: '9px 0', borderRadius: 99, background: zone.accent,
+                color: '#fff', fontSize: 12, fontWeight: 800,
+              }}
+            >
+              자세히 보기 →
+            </button>
           </div>
-          <p style={{ fontSize: 12.5, fontWeight: 800, lineHeight: 1.32, color: 'rgba(20,28,24,0.92)', marginBottom: 5 }}>
-            {card.title}
-          </p>
-          <p style={{ fontSize: 10.5, lineHeight: 1.6, color: 'rgba(20,28,24,0.6)' }}>
-            {card.desc}
-          </p>
-        </button>
+        ) : (
+          /* ── 기본: 라벨 말풍선 ── */
+          <button
+            onClick={onSelect}
+            onPointerOver={() => setHovered(true)}
+            onPointerOut={() => setHovered(false)}
+            className="text-left rounded-full cursor-pointer whitespace-nowrap"
+            style={{
+              padding: '7px 14px',
+              transform: `translateY(-42px) scale(${hovered ? 1.05 : 1})`,
+              background: hovered ? 'rgba(255,255,255,0.99)' : 'rgba(255,255,255,0.93)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: `1px solid ${zone.accent}40`,
+              boxShadow: hovered ? '0 12px 28px rgba(20,28,24,0.28)' : '0 6px 18px rgba(20,28,24,0.18)',
+              opacity: dimmed ? 0.2 : 1,
+              transition: 'all .2s',
+            }}
+          >
+            <span className="flex items-center gap-1.5">
+              <span style={{ width: 6, height: 6, borderRadius: 99, background: zone.accent }} />
+              <span style={{ fontSize: 12.5, fontWeight: 800, color: 'rgba(20,28,24,0.9)' }}>{zone.label}</span>
+            </span>
+            <span style={{ display: 'block', fontSize: 10, color: 'rgba(20,28,24,0.55)', marginTop: 2 }}>
+              {zone.tagline}
+            </span>
+          </button>
+        )}
       </Html>
     </group>
   );
 }
 
-/* ── 하나의 섬 ── */
-function Island({ data, reduced, onOpen }) {
-  const group = useRef();
-  const t = useRef(0);
-
-  /* 전환 시 살짝 솟아오르며 등장 */
-  useFrame((_, delta) => {
-    if (!group.current) return;
-    t.current = Math.min(1, t.current + delta * 2.2);
-    const e = 1 - Math.pow(1 - t.current, 3);
-    group.current.scale.setScalar(0.9 + 0.1 * e);
-    group.current.position.y = -0.3 - 0.25 * (1 - e);
-    group.current.rotation.y = (1 - e) * -0.25;
-  });
-
-  const linePts = useMemo(
-    () => data.links.map((l) => l.map((p) => new THREE.Vector3(...p))),
-    [data.links]
-  );
+/* ══════════════════════════════════════════
+   씬
+   ══════════════════════════════════════════ */
+function Scene({ focusId, setFocusId, onNavigate, reduced, controlsRef }) {
+  const focus = useMemo(() => ZONES.find((z) => z.id === focusId) ?? null, [focusId]);
 
   return (
-    <group ref={group}>
-      <Float speed={reduced ? 0 : 1.1} rotationIntensity={reduced ? 0 : 0.12} floatIntensity={reduced ? 0 : 0.35}>
-        {/* 지반 슬래브 */}
-        <RoundedBox args={[3.9, 0.36, 2.5]} radius={0.09} smoothness={4} position={[0, 0, 0]} receiveShadow>
-          <meshStandardMaterial color={data.slab} roughness={0.85} metalness={0.05} />
-        </RoundedBox>
-        {/* 상부 표면 */}
-        <mesh position={[0, 0.185, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-          <planeGeometry args={[3.86, 2.46]} />
-          <meshStandardMaterial color="#e9ece7" roughness={0.95} />
-        </mesh>
-        {/* 표면 격자 */}
-        <gridHelper
-          args={[3.86, 14, data.accent, '#c9cfc7']}
-          position={[0, 0.19, 0]}
-          material-transparent
-          material-opacity={0.28}
-        />
+    <>
+      <hemisphereLight args={['#ffffff', '#c4cfc2', 1.05]} />
+      <directionalLight position={[3.5, 6, 4]} intensity={1.2} castShadow shadow-mapSize={[1024, 1024]} />
+      <directionalLight position={[-4, 2.5, -3]} intensity={0.3} color="#bfe4ff" />
 
-        {/* 오브젝트 */}
-        {data.props.map((p, i) => <Prop key={i} p={p} />)}
-
-        {/* 연결선 */}
-        {linePts.map((pts, i) => (
-          <Line key={i} points={pts} color={data.accentLight} lineWidth={1.6} transparent opacity={0.55} dashed dashSize={0.08} gapSize={0.06} />
-        ))}
-
-        {/* 설명 카드 */}
-        {data.cards.map((c, i) => (
-          <AnchorCard key={i} card={c} accent={data.accent} index={i} onOpen={onOpen} />
-        ))}
+      <Float speed={reduced || focusId ? 0 : 0.9} rotationIntensity={0} floatIntensity={reduced || focusId ? 0 : 0.28}>
+        <group position={[0, -0.25, 0]}>
+          <Terrain />
+          {ZONES.map((z) => (
+            <ZoneMarker
+              key={z.id}
+              zone={z}
+              focused={focusId === z.id}
+              dimmed={!!focusId && focusId !== z.id}
+              onSelect={() => setFocusId(z.id)}
+              onClose={() => setFocusId(null)}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </group>
       </Float>
 
-      <ContactShadows position={[0, -0.55, 0]} opacity={0.35} scale={7} blur={2.6} far={3} color="#1d2a22" />
-    </group>
+      <ContactShadows position={[0, -0.62, 0]} opacity={0.34} scale={9} blur={2.8} far={3.5} color="#1d2a22" />
+      <CameraRig focus={focus} controlsRef={controlsRef} />
+    </>
   );
 }
 
@@ -287,87 +334,70 @@ function useMedia(query) {
    MAIN
    ══════════════════════════════════════════ */
 export default function ProjectDiorama({ onNavigate }) {
-  const [active, setActive] = useState(0);
+  const [focusId, setFocusId] = useState(null);
   const reduced = useMedia('(prefers-reduced-motion: reduce)');
   const isMobile = useMedia('(max-width: 767px)');
-  const data = DIORAMAS[active];
+  const controlsRef = useRef(null);
 
   return (
     <div className="w-full">
-      {/* 프로젝트 전환 */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        {DIORAMAS.map((d, i) => {
-          const on = i === active;
-          return (
-            <button
-              key={d.id}
-              onClick={() => setActive(i)}
-              className="px-4 py-2 rounded-full text-[13px] font-bold cursor-pointer transition-all"
-              style={{
-                background: on ? d.accent : 'rgba(255,255,255,0.6)',
-                color: on ? '#fff' : 'rgba(24,32,27,0.6)',
-                border: `1px solid ${on ? d.accent : 'rgba(24,32,27,0.1)'}`,
-              }}
-            >
-              {d.label}
-            </button>
-          );
-        })}
-        <span className="ml-auto text-[11px] hidden md:block" style={{ color: 'rgba(24,32,27,0.4)' }}>
-          드래그해서 각도를 바꿔보세요 · 카드를 누르면 프로젝트로 이동합니다
-        </span>
+      <div className="flex items-baseline justify-between mb-3 gap-4">
+        <p className="text-[11px] font-bold tracking-[0.25em] uppercase" style={{ color: 'rgba(24,32,27,0.45)' }}>
+          Explore
+        </p>
+        <p className="text-[11px] text-right" style={{ color: 'rgba(24,32,27,0.4)' }}>
+          {focusId ? '닫기를 누르면 전체 보기로 돌아갑니다' : '라벨을 누르면 해당 프로젝트로 확대됩니다'}
+        </p>
       </div>
 
-      {/* 3D 무대 */}
       <div
-        className="w-full rounded-3xl overflow-hidden"
+        className="relative w-full rounded-3xl overflow-hidden"
         style={{
-          height: isMobile ? 380 : 520,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.24) 100%)',
+          height: isMobile ? 420 : 660,
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.22) 100%)',
           border: '1px solid rgba(24,32,27,0.08)',
-          boxShadow: '0 10px 34px rgba(24,32,27,0.07)',
+          boxShadow: '0 12px 38px rgba(24,32,27,0.08)',
           touchAction: 'pan-y',
         }}
       >
-        <Canvas
-          key={data.id}
-          camera={{ position: [0, 2.1, 5.2], fov: 38 }}
-          dpr={[1, 1.6]}
-          shadows
-          gl={{ antialias: true, alpha: true }}
-        >
+        <Canvas camera={{ position: OVERVIEW.camPos, fov: 38 }} dpr={[1, 1.6]} shadows gl={{ antialias: true, alpha: true }}>
           <Suspense fallback={null}>
-            <hemisphereLight args={['#ffffff', '#c8d2c6', 1.1]} />
-            <directionalLight position={[3, 6, 4]} intensity={1.15} castShadow
-              shadow-mapSize={[1024, 1024]} />
-            <directionalLight position={[-4, 2, -3]} intensity={0.35} color={data.accentLight} />
-            <Island data={data} reduced={reduced} onOpen={() => onNavigate?.(data.tab)} />
+            <Scene
+              focusId={focusId}
+              setFocusId={setFocusId}
+              onNavigate={onNavigate}
+              reduced={reduced}
+              controlsRef={controlsRef}
+            />
             <OrbitControls
+              ref={controlsRef}
               enableZoom={false}
               enablePan={false}
-              enableRotate={!isMobile}
-              autoRotate={!reduced && !isMobile}
-              autoRotateSpeed={0.35}
-              minPolarAngle={Math.PI / 5}
-              maxPolarAngle={Math.PI / 2.15}
-              rotateSpeed={0.5}
+              enableRotate={!isMobile && !focusId}
+              minPolarAngle={Math.PI / 6}
+              maxPolarAngle={Math.PI / 2.3}
+              rotateSpeed={0.45}
             />
           </Suspense>
         </Canvas>
-      </div>
 
-      {/* 캡션 */}
-      <div className="flex items-center justify-between mt-3">
-        <p className="text-[13px] font-semibold" style={{ color: data.accent }}>
-          {data.label} — {data.caption}
-        </p>
-        <button
-          onClick={() => onNavigate?.(data.tab)}
-          className="text-[12px] font-bold cursor-pointer transition-opacity"
-          style={{ color: data.accent }}
-        >
-          자세히 보기 →
-        </button>
+        {/* 전체 보기 복귀 — 레퍼런스의 Close view 버튼 위치 */}
+        {focusId && (
+          <button
+            onClick={() => setFocusId(null)}
+            className="absolute left-1/2 -translate-x-1/2 bottom-5 flex items-center gap-2 px-4 py-2.5 rounded-full text-[12.5px] font-bold cursor-pointer"
+            style={{
+              background: 'rgba(255,255,255,0.94)',
+              border: '1px solid rgba(24,32,27,0.1)',
+              color: 'rgba(24,32,27,0.75)',
+              boxShadow: '0 8px 24px rgba(24,32,27,0.18)',
+              backdropFilter: 'blur(12px)',
+            }}
+          >
+            <span style={{ fontSize: 14, lineHeight: 1 }}>×</span>
+            전체 보기
+          </button>
+        )}
       </div>
     </div>
   );
