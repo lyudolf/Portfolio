@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useMotionValue, useTransform, useScroll } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useReducedMotion } from 'framer-motion';
 import AtAGlance from '../ui/AtAGlance';
 
 /* ══════════════════════════════════════════
@@ -47,32 +47,32 @@ const PRINCIPLES = [
     icon: '👁️',
     title: '시인성 최우선',
     desc: 'UI를 해치지 않는 선에서 텍스트를 충분히 크게, 교수자가 크기·수치를 제어',
-    accent: 'rgba(111,216,255,0.12)',
-    border: 'rgba(111,216,255,0.18)',
+    accent: 'rgba(111,216,255,0.22)',
+    border: 'rgba(23,118,166,0.28)',
   },
   {
     id: 'accuracy',
     icon: '🎯',
     title: '조작 정확도',
     desc: '핸드트래킹 민감도 상향, 콜라이더 확대로 작은 오차에도 성공 경험 유도',
-    accent: 'rgba(74,222,128,0.10)',
-    border: 'rgba(74,222,128,0.18)',
+    accent: 'rgba(74,222,128,0.2)',
+    border: 'rgba(34,150,80,0.3)',
   },
   {
     id: 'fatigue',
     icon: '⚡',
     title: '피로도 최소화',
     desc: '시점 전환과 카메라 이동을 제거, 고정 공간 내에서 상호작용 설계',
-    accent: 'rgba(168,85,247,0.10)',
-    border: 'rgba(168,85,247,0.18)',
+    accent: 'rgba(168,85,247,0.16)',
+    border: 'rgba(126,58,192,0.28)',
   },
   {
     id: 'control',
     icon: '🔒',
     title: '중앙 제어 강화',
     desc: '교수자가 모든 설정과 진행을 중앙에서 관리, 훈련자 부담 최소화',
-    accent: 'rgba(244,162,63,0.10)',
-    border: 'rgba(244,162,63,0.18)',
+    accent: 'rgba(244,162,63,0.18)',
+    border: 'rgba(180,116,35,0.3)',
   },
 ];
 
@@ -97,99 +97,155 @@ const SOLUTIONS = [
   },
 ];
 
+/* 시스템 구성 — 기기 3종 + 서버. 내부 문서에서 발췌하되 IP·키·코드 위치 등은 배제 */
+const SYSTEM_NODES = [
+  { id: 'pc', name: '교수자 PC', sub: '런처 + 서브모니터', desc: '수업 개설 · 진행 조종 · 모니터링 · 기록 열람' },
+  { id: 'hmd', name: '훈련자 HMD', sub: 'VR 수업 앱', desc: '곤충채집 · 공놀이 훈련 플레이' },
+  { id: 'eval', name: '검사용 HMD', sub: 'VR 임상검사 앱', desc: '인지 · 균형 · 심혈관 · 운동성 검사' },
+];
+
+const SYSTEM_DECISIONS = [
+  {
+    id: 'device',
+    title: 'HMD는 스스로 로그인하지 않습니다',
+    body: '고령 훈련자가 헤드셋 안에서 아이디와 비밀번호를 입력하는 것은 비현실적이라고 판단했습니다. 헤드셋은 켜지면 서버에 스스로 기기 등록만 하고, 교수자가 PC에서 기기와 훈련자 계정을 연결하는 순간 자동 로그인됩니다. "누가 어느 헤드셋을 쓰는가"를 교수자가 결정하는 구조입니다.',
+  },
+  {
+    id: 'master',
+    title: '진행 권한은 항상 교수자 PC에 있습니다',
+    body: '게임 생성, 미션 결정, 시간과 라운드 관리, 기록 저장은 모두 교수자 런처가 맡습니다. HMD는 손으로 잡고 담는 판정과 점수 보고만 담당합니다. 진행 중 문제가 생겨도 교수자가 그 자리에서 수습할 수 있도록, 권한을 한곳에 모았습니다.',
+  },
+  {
+    id: 'stage',
+    title: 'VR은 무대, 측정은 검증된 장비가 합니다',
+    body: '검사 4종 중 VR이 직접 측정하는 것은 인지검사 하나뿐입니다. 균형은 발판 압력 센서, 심혈관은 스마트워치, 운동성은 웹캠 관절 추적이 측정하고, VR은 검사 상황을 연출하고 시작·종료 신호를 보내는 역할에 집중합니다. 임상 데이터의 정확도가 필요한 곳에는 검증된 장비를 썼습니다.',
+  },
+  {
+    id: 'recenter',
+    title: '시야 보정을 직접 만들었습니다',
+    body: '고령 훈련자는 헤드셋 기본 제공되는 화면 재정렬 조작을 쓰기 어려웠습니다. 그래서 검사 직전 "다음" 버튼을 누르는 순간의 머리 방향을 기준으로 화면 중앙을 다시 맞추는 자체 보정을 설계했습니다. 버튼 하나로 끝나는, 훈련자가 배울 필요 없는 보정입니다.',
+  },
+];
+
 /* ── Animation variants ── */
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.1, 0.25, 1] } } };
-const stagger = { visible: { transition: { staggerChildren: 0.06 } } };
 
-/* ── Color tokens ── */
+/* ── Color tokens — 라이트(이끼·포슬린) 테마. 히어로의 밝은 톤을 상세까지 연장 ── */
 const C = {
-  accent: 'rgba(111,216,255,0.55)',
-  accentDim: 'rgba(111,216,255,0.35)',
-  text92: 'rgba(243,246,251,0.92)',
-  text60: 'rgba(243,246,251,0.6)',
-  text45: 'rgba(243,246,251,0.45)',
-  text35: 'rgba(243,246,251,0.35)',
-  border: 'rgba(255,255,255,0.06)',
-  cardBg: 'rgba(255,255,255,0.03)',
-  cardBorder: 'rgba(255,255,255,0.07)',
+  accent: 'rgba(23,118,166,0.95)',      // 딥 시안 (밝은 배경용 텍스트 액센트)
+  accentDim: 'rgba(23,118,166,0.6)',
+  accentSoft: 'rgba(111,216,255,0.16)', // 파스텔 필 (히어로 핫스팟 #6fd8ff 계열)
+  text92: 'rgba(24,32,27,0.92)',
+  text60: 'rgba(24,32,27,0.65)',
+  text45: 'rgba(24,32,27,0.52)',
+  text35: 'rgba(24,32,27,0.4)',
+  border: 'rgba(24,32,27,0.08)',
+  cardBg: 'rgba(255,255,255,0.6)',
+  cardBorder: 'rgba(24,32,27,0.08)',
+  cardShadow: '0 8px 24px rgba(24,32,27,0.05)',
 };
 
 /* ══════════════════════════════════════════
    COMPONENTS
    ══════════════════════════════════════════ */
 
-/* ── HeroSection (auto curtain reveal) ── */
+/* ── HeroSection — 이끼 배경 위 글래스 패널 (메인 히어로 문법 공유) ──
+   커튼은 연출용 오버레이. 본문은 뒤에 이미 렌더되어 있고,
+   모션 최소화 설정에서는 커튼 없이 즉시 보인다. */
 function HeroSection() {
+  const reduceMotion = useReducedMotion();
+  const CURTAIN_DELAY = 0.25;
+  const CURTAIN_DURATION = 0.7;
+
+  const curtain = (side) => ({
+    initial: { x: '0%' },
+    animate: { x: side === 'left' ? '-100%' : '100%' },
+    transition: { duration: CURTAIN_DURATION, delay: CURTAIN_DELAY, ease: [0.76, 0, 0.24, 1] },
+  });
+
   return (
     <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
-      {/* Curtain left */}
-      <motion.div
-        className="absolute inset-y-0 left-0 w-1/2 z-20 flex items-center justify-end pr-10"
-        initial={{ x: '0%' }}
-        animate={{ x: '-100%' }}
-        transition={{ duration: 1.0, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        style={{ background: '#090B10' }}
-      >
-        <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
-          style={{ color: 'rgba(111,216,255,0.7)' }}>
-          Clinical XR
-        </p>
-      </motion.div>
-      {/* Curtain right */}
-      <motion.div
-        className="absolute inset-y-0 right-0 w-1/2 z-20 flex items-center pl-10"
-        initial={{ x: '0%' }}
-        animate={{ x: '100%' }}
-        transition={{ duration: 1.0, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        style={{ background: '#090B10' }}
-      >
-        <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
-          style={{ color: 'rgba(111,216,255,0.7)' }}>
-          KISTi
-        </p>
-      </motion.div>
+      {!reduceMotion && (
+        <>
+          <motion.div
+            className="absolute inset-y-0 left-0 w-1/2 z-20 flex items-center justify-end pr-10"
+            {...curtain('left')}
+            style={{ background: '#e8eee7' }}
+          >
+            <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
+              style={{ color: 'rgba(23,118,166,0.75)' }}>
+              Clinical XR
+            </p>
+          </motion.div>
+          <motion.div
+            className="absolute inset-y-0 right-0 w-1/2 z-20 flex items-center pl-10"
+            {...curtain('right')}
+            style={{ background: '#e8eee7' }}
+          >
+            <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
+              style={{ color: 'rgba(23,118,166,0.75)' }}>
+              KISTi
+            </p>
+          </motion.div>
+        </>
+      )}
 
-      {/* Revealed content */}
-      <motion.div
-        className="relative z-10 px-8 w-full"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-        style={{ maxWidth: '1100px' }}
-      >
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            {/* Eyebrow */}
-            <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.3em] uppercase mb-6"
-              style={{ color: C.accent }}>
-              Clinical XR — KISTi
-            </motion.p>
+      {/* 글래스 패널 — 이끼 사진 위, 메인 히어로와 동일 질감 */}
+      <div className="relative z-10 px-5 md:px-8 w-full flex justify-center">
+        <motion.div
+          className="w-full p-8 md:p-12"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.06,
+                delayChildren: reduceMotion ? 0 : CURTAIN_DELAY + CURTAIN_DURATION * 0.7,
+              },
+            },
+          }}
+          style={{
+            maxWidth: '860px',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%)',
+            backdropFilter: 'blur(22px) saturate(1.15)',
+            WebkitBackdropFilter: 'blur(22px) saturate(1.15)',
+            border: '1px solid rgba(255,255,255,0.4)',
+            borderRadius: 28,
+            boxShadow: '0 30px 70px rgba(0,0,0,0.3)',
+          }}
+        >
+          {/* Eyebrow */}
+          <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.3em] uppercase mb-6"
+            style={{ color: '#6fd8ff' }}>
+            Clinical XR — KISTi
+          </motion.p>
 
-            {/* Headline */}
-            <motion.h1 variants={fadeUp}
-              className="text-[42px] md:text-[56px] font-extrabold leading-[1.08] tracking-tight mb-6"
-              style={{ color: C.text92, letterSpacing: '-0.02em' }}>
-              고령자를 위한 XR은 단순히<br />"재미있는 콘텐츠"로<br />완성되지 않습니다
-            </motion.h1>
+          {/* Headline */}
+          <motion.h1 variants={fadeUp}
+            className="text-[38px] md:text-[52px] font-extrabold leading-[1.12] tracking-tight mb-6"
+            style={{ color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.02em', textShadow: '0 2px 16px rgba(0,0,0,0.25)' }}>
+            고령자를 위한 XR은 단순히<br />"재미있는 콘텐츠"로<br />완성되지 않습니다
+          </motion.h1>
 
-            {/* Subtitle */}
-            <motion.p variants={fadeUp}
-              className="text-[16px] md:text-[18px] font-medium leading-relaxed mb-10"
-              style={{ color: C.text45, maxWidth: '520px' }}>
-              실제 임상 데이터가 수집되고, 현장 운영이 안정적으로 이어지는 '시스템'을 설계했습니다.
-            </motion.p>
+          {/* Subtitle */}
+          <motion.p variants={fadeUp}
+            className="text-[16px] md:text-[18px] font-medium leading-relaxed mb-10"
+            style={{ color: 'rgba(255,255,255,0.72)', maxWidth: '520px' }}>
+            실제 임상 데이터가 수집되고, 현장 운영이 안정적으로 이어지는 '시스템'을 설계했습니다.
+          </motion.p>
 
-            {/* Meta badges */}
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2.5">
-              {META_BADGES.map((b) => (
-                <span key={b.label}
-                  className="text-[12px] font-semibold px-3 py-1.5 rounded-md"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: C.text60 }}>
-                  {b.label}
-                </span>
-              ))}
-            </motion.div>
+          {/* Meta badges */}
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2.5">
+            {META_BADGES.map((b) => (
+              <span key={b.label}
+                className="text-[12px] font-semibold px-3 py-1.5 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>
+                {b.label}
+              </span>
+            ))}
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -226,14 +282,14 @@ function ProblemSection() {
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-3" style={{ color: C.accent }}>
                 0{i + 1}
               </p>
-              <h3 className="text-[18px] md:text-[20px] font-bold mb-2 leading-snug" style={{ color: 'rgba(243,246,251,0.88)' }}>
+              <h3 className="text-[18px] md:text-[20px] font-bold mb-2 leading-snug" style={{ color: 'rgba(24,32,27,0.88)' }}>
                 {p.title}
               </h3>
               <p className="text-[12px] font-semibold mb-3 px-2 py-1 rounded inline-block"
-                style={{ color: 'rgba(111,216,255,0.8)', background: 'rgba(111,216,255,0.06)' }}>
+                style={{ color: 'rgba(23,118,166,0.95)', background: 'rgba(111,216,255,0.16)' }}>
                 → {p.result}
               </p>
-              <div className="h-px w-full mb-4" style={{ background: 'rgba(255,255,255,0.05)' }} />
+              <div className="h-px w-full mb-4" style={{ background: 'rgba(24,32,27,0.08)' }} />
               <p className="text-[14px] leading-[2]"
                 style={{ color: C.text45, fontFamily: '"Noto Serif KR", serif' }}>
                 {p.body}
@@ -271,7 +327,7 @@ function PrincipleCard({ item, index }) {
         style={{ background: `radial-gradient(240px circle at ${glowX} ${glowY}, ${item.accent}, transparent 70%)` }} />
       <div className="relative z-10 p-6">
         <div className="text-2xl mb-3">{item.icon}</div>
-        <h4 className="text-[15px] font-bold mb-2" style={{ color: 'rgba(243,246,251,0.85)' }}>{item.title}</h4>
+        <h4 className="text-[15px] font-bold mb-2" style={{ color: 'rgba(24,32,27,0.85)' }}>{item.title}</h4>
         <p className="text-[13px] leading-relaxed" style={{ color: C.text45 }}>{item.desc}</p>
       </div>
     </motion.div>
@@ -323,12 +379,12 @@ function SolutionsSection() {
             transition={{ duration: 0.5, delay: i * 0.1 }}
             className="relative p-7 rounded-2xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col group overflow-hidden"
             style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}` }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(111,216,255,0.2)'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(23,118,166,0.35)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.cardBorder; }}>
             <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-4" style={{ color: C.accentDim }}>
               {s.badge}
             </p>
-            <h4 className="text-[16px] font-bold mb-3" style={{ color: 'rgba(243,246,251,0.85)' }}>{s.title}</h4>
+            <h4 className="text-[16px] font-bold mb-3" style={{ color: 'rgba(24,32,27,0.85)' }}>{s.title}</h4>
             <p className="text-[13px] leading-[1.85] flex-1"
               style={{ color: C.text45, fontFamily: '"Noto Serif KR", serif' }}>
               {s.desc}
@@ -336,6 +392,93 @@ function SolutionsSection() {
           </motion.div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/* ── SystemSection — 시스템 구성도 + 설계 결정 ── */
+function SystemSection() {
+  const connectorText = { color: C.text35, fontSize: '11px', letterSpacing: '0.08em' };
+  return (
+    <section className="px-8 py-24 border-b" style={{ maxWidth: '1100px', margin: '0 auto', borderColor: C.border }}>
+      <motion.p initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+        className="text-[11px] font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.accent }}>
+        System Architecture
+      </motion.p>
+      <motion.h2 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+        transition={{ delay: 0.06 }}
+        className="text-[26px] md:text-[30px] font-bold leading-snug mb-4"
+        style={{ color: C.text92, letterSpacing: '-0.01em' }}>
+        화면 뒤의 구조까지 설계했습니다
+      </motion.h2>
+      <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+        transition={{ delay: 0.12 }}
+        className="text-[14px] leading-relaxed mb-12" style={{ color: C.text45, maxWidth: '620px' }}>
+        교수자용 PC 프로그램 하나와 VR 헤드셋 앱 두 개가 서버를 사이에 두고 함께 움직이는 시스템입니다.
+        세 프로그램이 어떤 역할을 나눠 맡고 어디서 만나는지를 기획 단계에서 정의했습니다.
+      </motion.p>
+
+      {/* 구성도 */}
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.55 }}
+        className="mb-14 p-6 md:p-8 rounded-2xl"
+        style={{ background: 'rgba(255,255,255,0.5)', border: `1px solid ${C.cardBorder}`, boxShadow: C.cardShadow }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+          {SYSTEM_NODES.map((n) => (
+            <div key={n.id} className="p-5 rounded-xl text-center"
+              style={{ background: 'rgba(111,216,255,0.14)', border: '1px solid rgba(23,118,166,0.25)' }}>
+              <p className="text-[15px] font-bold mb-1" style={{ color: 'rgba(24,32,27,0.88)' }}>{n.name}</p>
+              <p className="text-[11px] font-semibold mb-2" style={{ color: C.accentDim }}>{n.sub}</p>
+              <p className="text-[12px] leading-relaxed" style={{ color: C.text45 }}>{n.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mb-2" style={connectorText}>▲ ▼ 계정 확인 · 수업 정보 · 기기 연결 · 결과 기록</div>
+        <div className="p-4 rounded-xl text-center mb-5"
+          style={{ background: 'rgba(111,216,255,0.22)', border: '1px solid rgba(23,118,166,0.32)' }}>
+          <p className="text-[14px] font-bold" style={{ color: 'rgba(24,32,27,0.88)' }}>백엔드 서버</p>
+          <p className="text-[12px]" style={{ color: C.text45 }}>계정 / 수업(세션) / 기기 / 검사 기록 보관</p>
+        </div>
+        <div className="text-center mb-2" style={connectorText}>그리고 수업 중에는 —</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="p-4 rounded-xl text-center" style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}` }}>
+            <p className="text-[13px] font-bold mb-1" style={{ color: 'rgba(24,32,27,0.8)' }}>실시간 게임 동기화</p>
+            <p className="text-[12px]" style={{ color: C.text45 }}>같은 게임 방에 모여 움직임·점수를 실시간 공유</p>
+          </div>
+          <div className="p-4 rounded-xl text-center" style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}` }}>
+            <p className="text-[13px] font-bold mb-1" style={{ color: 'rgba(24,32,27,0.8)' }}>화상 · 음성 통화</p>
+            <p className="text-[12px]" style={{ color: C.text45 }}>교수자와 훈련자가 수업 내내 얼굴을 보며 소통</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* 설계 결정 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+        {SYSTEM_DECISIONS.map((d, i) => (
+          <motion.div key={d.id}
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, delay: i * 0.07 }}
+            className="p-6 md:p-7 rounded-2xl"
+            style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}` }}>
+            <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-3" style={{ color: C.accentDim }}>
+              Decision 0{i + 1}
+            </p>
+            <h4 className="text-[16px] font-bold mb-3 leading-snug" style={{ color: 'rgba(24,32,27,0.88)' }}>
+              {d.title}
+            </h4>
+            <p className="text-[13px] leading-[1.9]" style={{ color: C.text45 }}>{d.body}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* 문서화 한 줄 */}
+      <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+        className="text-[14px] font-semibold leading-relaxed pl-4"
+        style={{ color: 'rgba(23,118,166,0.92)', borderLeft: '2px solid rgba(23,118,166,0.4)' }}>
+        이 구조 전체를 앱 3종 · 화면(씬) 30개 단위의 구조 문서로 정리해 두었습니다.
+        본문은 비개발자 기준으로 쓰고 개발 상세는 접이식으로 분리해, 기획·개발·운영이 같은 문서를 봅니다.
+      </motion.p>
     </section>
   );
 }
@@ -359,7 +502,7 @@ function ImpactSection() {
       <motion.blockquote initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         transition={{ delay: 0.15 }}
         className="relative pl-6 py-4 mb-14"
-        style={{ borderLeft: '2px solid rgba(111,216,255,0.25)' }}>
+        style={{ borderLeft: '2px solid rgba(23,118,166,0.35)' }}>
         <p className="text-[15px] italic leading-relaxed" style={{ color: C.text45 }}>
           "기획은 문서를 만드는 일이 아니라, 실제로 필요한 구조를 현실 안에서 작동하게 만드는 일임을 증명했습니다."
         </p>
@@ -379,7 +522,7 @@ function ImpactSection() {
             className="p-7 rounded-2xl"
             style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}` }}>
             <div className="text-2xl mb-3">{item.icon}</div>
-            <h4 className="text-[15px] font-bold mb-2" style={{ color: 'rgba(243,246,251,0.85)' }}>{item.title}</h4>
+            <h4 className="text-[15px] font-bold mb-2" style={{ color: 'rgba(24,32,27,0.85)' }}>{item.title}</h4>
             <p className="text-[13px] leading-relaxed" style={{ color: C.text45 }}>{item.desc}</p>
           </motion.div>
         ))}
@@ -395,12 +538,20 @@ export default function Kisti() {
   return (
     <div
       className="relative w-full overflow-x-hidden"
-      style={{ background: '#090B10', color: '#f3f6fb' }}
+      style={{
+        backgroundColor: '#eef2ec',
+        backgroundImage:
+          "linear-gradient(180deg, rgba(238,242,236,0) 0%, rgba(238,242,236,0.55) 70vh, rgba(238,242,236,0.94) 115vh, #eef2ec 150vh), url('/hero-bg.jpg')",
+        backgroundSize: 'auto, 100% auto',
+        backgroundPosition: 'top center',
+        backgroundRepeat: 'no-repeat',
+        color: '#1a231e',
+      }}
     >
       {/* Top glow line */}
       <div
         className="fixed top-0 left-0 right-0 h-px pointer-events-none z-10"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(111,216,255,0.15), transparent)' }}
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(23,118,166,0.25), transparent)' }}
       />
 
       <HeroSection />
@@ -416,6 +567,7 @@ export default function Kisti() {
       <ProblemSection />
       <PrinciplesSection />
       <SolutionsSection />
+      <SystemSection />
       <ImpactSection />
     </div>
   );

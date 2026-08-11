@@ -55,8 +55,8 @@ export default function InfiniteGallery({ items = [] }) {
         className="relative w-full overflow-hidden rounded-xl mb-4"
         style={{
           aspectRatio: '16 / 9',
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid rgba(255,255,255,0.06)',
+          background: 'rgba(24,32,27,0.05)',
+          border: '1px solid rgba(24,32,27,0.08)',
         }}
       >
         <AnimatePresence custom={direction} mode="wait">
@@ -84,7 +84,7 @@ export default function InfiniteGallery({ items = [] }) {
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.25 }}
           className="text-center text-sm font-semibold mb-6"
-          style={{ color: 'rgba(243,246,251,0.8)' }}
+          style={{ color: 'rgba(24,32,27,0.8)' }}
         >
           {items[activeIndex].title}
         </motion.p>
@@ -97,19 +97,19 @@ export default function InfiniteGallery({ items = [] }) {
           onClick={goPrev}
           className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer transition-all duration-200"
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'rgba(255,255,255,0.6)',
+            border: '1px solid rgba(24,32,27,0.1)',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.92)';
+            e.currentTarget.style.borderColor = 'rgba(24,32,27,0.22)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.6)';
+            e.currentTarget.style.borderColor = 'rgba(24,32,27,0.1)';
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(243,246,251,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(24,32,27,0.55)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
@@ -132,8 +132,8 @@ export default function InfiniteGallery({ items = [] }) {
                   width: isCenter ? 96 : 72,
                   height: isCenter ? 64 : 48,
                   border: isCenter
-                    ? '2px solid rgba(216,165,75,0.6)'
-                    : '1px solid rgba(255,255,255,0.06)',
+                    ? '2px solid rgba(158,106,22,0.65)'
+                    : '1px solid rgba(24,32,27,0.1)',
                   opacity: isCenter ? 1 : 0.45 + (1 - Math.abs(pos - half) / half) * 0.25,
                 }}
                 whileHover={{ opacity: 0.9, scale: 1.05 }}
@@ -154,19 +154,19 @@ export default function InfiniteGallery({ items = [] }) {
           onClick={goNext}
           className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer transition-all duration-200"
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'rgba(255,255,255,0.6)',
+            border: '1px solid rgba(24,32,27,0.1)',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.92)';
+            e.currentTarget.style.borderColor = 'rgba(24,32,27,0.22)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+            e.currentTarget.style.background = 'rgba(255,255,255,0.6)';
+            e.currentTarget.style.borderColor = 'rgba(24,32,27,0.1)';
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(243,246,251,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(24,32,27,0.55)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>

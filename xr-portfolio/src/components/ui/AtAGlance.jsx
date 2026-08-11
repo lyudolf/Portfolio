@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
  * 프로젝트 상세 상단 정량 지표 스트립.
  * items: [{ num, label, sub? }], accent: 강조 색상(rgba 문자열)
  */
-export default function AtAGlance({ items, accent = 'rgba(111,216,255,0.85)' }) {
+export default function AtAGlance({ items, accent = 'rgba(23,118,166,0.95)' }) {
   return (
     <section className="px-8 pb-4" style={{ maxWidth: '1100px', margin: '0 auto' }}>
       <motion.p
@@ -22,16 +22,16 @@ export default function AtAGlance({ items, accent = 'rgba(111,216,255,0.85)' }) 
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.5, delay: i * 0.07 }}
             className="p-5 rounded-2xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
+            style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(24,32,27,0.08)', boxShadow: '0 8px 24px rgba(24,32,27,0.05)' }}
           >
             <p className="text-[26px] md:text-[30px] font-extrabold leading-none mb-2" style={{ color: accent }}>
               {item.num}
             </p>
-            <p className="text-[13px] font-semibold mb-1" style={{ color: 'rgba(243,246,251,0.85)' }}>
+            <p className="text-[13px] font-semibold mb-1" style={{ color: 'rgba(24,32,27,0.85)' }}>
               {item.label}
             </p>
             {item.sub && (
-              <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(243,246,251,0.35)' }}>
+              <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(24,32,27,0.45)' }}>
                 {item.sub}
               </p>
             )}

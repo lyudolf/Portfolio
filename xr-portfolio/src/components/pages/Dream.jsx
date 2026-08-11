@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useReducedMotion } from 'framer-motion';
 import InfiniteGallery from '../ui/InfiniteGallery';
 import AtAGlance from '../ui/AtAGlance';
 
@@ -26,35 +26,53 @@ const GALLERY_ITEMS = [
 ];
 
 const CHALLENGE_POINTS = [
-  { num: '01', title: '불가능한 일정', result: '3개 컨셉 × 3개 직업 공통 프레임워크로 전환, 납기 내 9종 완성' },
-  { num: '02', title: '미지의 디바이스', result: 'Vision Pro 핸드트래킹·아이트래킹 기반 인터랙션 패턴 자체 정립' },
-  { num: '03', title: '넓은 타겟 연령', result: '초등 저학년~고등학생까지 커버하는 이중 가드레일 UX 설계' },
+  {
+    num: '01',
+    title: '불가능한 일정',
+    body: '아홉 종을 각각 설계하는 대신, 세 개의 세계관 아래 세 직업이 같은 흐름을 공유하도록 묶었습니다. 인트로 · 메인 미션 · 미니게임 · 진로 정보라는 뼈대를 고정하고, 직업마다 달라지는 부분만 새로 채웠습니다.',
+    result: '기획·개발·검수가 같은 틀 위에서 반복되면서 아홉 종을 납기 안에 완성했습니다.',
+  },
+  {
+    num: '02',
+    title: '미지의 디바이스',
+    body: 'Apple Vision Pro는 팀에게도 저에게도 처음이었고, 컨트롤러 없이 시선과 손동작만으로 조작하는 기기였습니다. 참고할 만한 직업체험 사례가 없어 인터랙션 규칙부터 직접 세워야 했습니다.',
+    result: '실패 확률이 낮은 동작만 남기고 나머지는 버튼으로 대체하는 기준을 정리했습니다.',
+  },
+  {
+    num: '03',
+    title: '넓은 타겟 연령',
+    body: '초기 타깃은 고등학생이었는데 진행 중에 초등 고학년까지 확대됐습니다. 규칙이 어려우면 저학년이 막히고 너무 쉬우면 고학년이 지루해지는 구간을, 같은 콘텐츠 안에서 동시에 만족시켜야 했습니다.',
+    result: '나레이션과 자막으로 안내를 이중으로 깔고, 난이도는 콘텐츠마다 조절 가능한 형태로 설계했습니다.',
+  },
 ];
 
 const WORLDS = [
   {
     id: 'mars',
     name: '꿈키 MARS',
-    desc: '허공에 주먹을 쥐면 조종간이 생성되고, 이를 통해 기기를 조작하는 방식. Vision Pro의 공간 인터랙션을 직업체험에 재해석했습니다.',
+    desc: '화성에서 탈출한다는 하나의 목표를 세 직업이 나눠 맡습니다. 우주선을 조립하고, 현지 자원으로 연료를 만들고, 식량을 배양하는 과정이 순서대로 이어집니다.',
+    signature: '허공에 주먹을 쥐면 조종간이 생성됩니다',
     jobs: '기계공학자 · 우주자원개발자 · 바이오식품공학자',
-    accent: 'rgba(216,165,75,0.12)',
-    border: 'rgba(216,165,75,0.18)',
+    accent: 'rgba(216,165,75,0.22)',
+    border: 'rgba(158,106,22,0.3)',
   },
   {
     id: 'crime',
     name: '밀실사건수사대',
-    desc: '하나의 사건을 중심으로 증거 수집-분석-결과 도출이 이어지는 구조. 각 직업 체험이 사건 서사 안에서 연결됩니다.',
+    desc: '박물관에서 벌어진 사건 하나를 세 직업이 이어받습니다. 증거를 수집하고, 수치와 데이터로 바꾸고, 그 데이터를 연결해 범인을 특정하는 흐름입니다.',
+    signature: '증거를 눈앞으로 가져와 직접 채증합니다',
     jobs: '과학수사관 · 국과수 직무 · 프로파일러',
-    accent: 'rgba(140,109,216,0.12)',
-    border: 'rgba(140,109,216,0.18)',
+    accent: 'rgba(140,109,216,0.2)',
+    border: 'rgba(104,78,178,0.3)',
   },
   {
     id: 'ent',
     name: '꿈키 엔터테인먼트',
-    desc: '광선응원봉으로 노트를 쳐내는 리듬게임 구조. HMD 밖으로 손이 나가도 오브젝트가 유지되도록 설계했습니다.',
+    desc: '쇼케이스 한 편을 무대에 올리는 과정을 세 직업이 나눠 맡습니다. 곡을 만들고, 무대를 안전하게 준비하고, 그 결과를 무대 위에서 퍼포먼스로 완성합니다.',
+    signature: '손이 시야 밖으로 나가도 응원봉은 유지됩니다',
     jobs: '작곡가 · 공연기획자 · 아이돌',
-    accent: 'rgba(244,114,182,0.12)',
-    border: 'rgba(244,114,182,0.18)',
+    accent: 'rgba(244,114,182,0.2)',
+    border: 'rgba(200,60,120,0.3)',
   },
 ];
 
@@ -67,12 +85,12 @@ const DECISIONS = [
     title: '퍼즐 교체',
     before: '전구 토글 추론',
     after: '점등 순서 재현',
-    verdict: '힌트를 겹겹이 얹어야 풀린다면, 퍼즐이 아니라 대상 설정이 틀린 것',
+    verdict: '힌트를 겹겹이 얹어야 풀리는 퍼즐이라면, 문제는 퍼즐이 아니라 대상 설정이라고 판단했습니다',
     detail: [
-      '고등학생 기준으로 짠 퍼즐인데 타깃이 초등 고학년까지 내려감',
-      '힌트 단계 추가부터 검토 → 기각. 정답에 가까워지는지 알 수 없는 게 본질',
-      '세계관(전기)은 유지, 요구 능력만 추론 → 관찰·기억으로 전환',
-      '난이도는 라운드 수로 조절. 실패 시 패턴 재제시로 재도전 유도',
+      '고등학생 기준으로 설계한 퍼즐이었는데, 타깃이 초등 고학년까지 내려가면서 난이도가 맞지 않게 됐습니다.',
+      '처음에는 힌트 단계를 얹는 방향으로 검토했습니다. 하지만 사용자가 정답에 가까워지고 있는지 스스로 알 수 없다는 게 본질이라 기각했습니다.',
+      '전기라는 세계관은 그대로 두고, 요구하는 능력만 추론에서 관찰과 기억으로 바꿨습니다.',
+      '난이도는 라운드 수로 조절하고, 실패하면 정답 패턴을 다시 보여줘 자연스럽게 재도전하도록 했습니다.',
     ],
   },
   {
@@ -81,12 +99,13 @@ const DECISIONS = [
     title: '추리를 데이터로',
     before: '"증거를 과학적으로 분석"',
     after: '증거=변수, 용의자=데이터셋, 범인=교집합',
-    verdict: '개발자가 착수할 수 없는 문장은 기획이 아니라 소개문',
+    verdict: '개발자가 바로 착수할 수 없는 문장은 기획이 아니라 소개문이라고 봤습니다',
     detail: [
-      '용의자를 속성 집합으로 정의 — 연령대·발 크기·유니폼',
-      '증거를 대응 변수로 — 지문·족적·혈흔·섬유',
-      '범인 특정 = 속성 교집합. 사건 전제로 현장 흔적의 개연성 확보',
-      '사건보드 UI는 증거·용의자 카드 다중 연결 구조',
+      '용의자를 연령대·발 크기·유니폼 같은 속성의 집합으로 정의했습니다.',
+      '증거는 각 속성에 대응하는 변수로 뒀습니다. 지문·족적·혈흔·섬유가 저마다 다른 정보를 알려줍니다.',
+      '그 결과 범인 특정이 속성의 교집합 문제가 됐습니다. 증거 하나로는 좁혀지지 않지만 여러 개를 겹치면 한 명으로 수렴합니다.',
+      '전날 청소가 끝났다는 전제를 깔아, 현장에 남은 흔적이 범인의 것일 개연성부터 확보했습니다.',
+      '사건보드는 증거 카드와 용의자 카드를 여러 갈래로 연결할 수 있는 구조로 설계했습니다.',
     ],
   },
   {
@@ -95,13 +114,13 @@ const DECISIONS = [
     title: '생성 모델 우회',
     before: '파트별 분리 프롬프트',
     after: '완성곡 생성 → Stem 분리 → 트랙 믹싱',
-    verdict: '모델을 설득할 수 없으면 파이프라인 순서를 바꾼다',
+    verdict: '모델을 설득할 수 없다면 파이프라인 순서를 바꾸는 편이 빠르다고 판단했습니다',
     detail: [
-      '샘플 조합 구조는 1~2분이면 끝나는 "블록 고르기"였음',
-      '"드럼 빼고" 류 프롬프트를 모델이 무시 → 프롬프트 튜닝 포기',
-      'BPM·Key 통일한 완성곡 생성 후 Stem 분리, 엔진에서 ON/OFF 믹싱',
-      'dspTime 예약 재생으로 트랙 어긋남 제거 · 전환 페이드로 클릭 노이즈 차단',
-      '오디오 미들웨어는 과잉으로 판단, 내장 필터로 마감',
+      '샘플 세 개를 고르는 초기 구조는 1~2분이면 끝났고, 음악을 만든다기보다 블록을 고르는 느낌이었습니다.',
+      '악기별로 나눠 생성하려 했지만, 생성 모델이 "드럼 빼고" 같은 지시를 제대로 따르지 않아 프롬프트 조정은 포기했습니다.',
+      'BPM과 키를 맞춘 완성곡을 먼저 만든 뒤 트랙을 분리하고, 엔진에서 켜고 끄는 방식으로 순서를 뒤집었습니다.',
+      '트랙이 미세하게 어긋나는 문제는 dspTime 기반 예약 재생으로 잡고, 켜고 끌 때 생기는 잡음은 짧은 페이드로 없앴습니다.',
+      '전문 오디오 미들웨어까지는 과하다고 보고 엔진 내장 기능으로 마감했습니다.',
     ],
   },
   {
@@ -110,13 +129,13 @@ const DECISIONS = [
     title: '공연기획자 재정의',
     before: '조명·효과 고르기',
     after: '관객·출연자 안전 조율',
-    verdict: '재미가 안 나오면 대개 직업 정의부터 틀려 있다',
+    verdict: '재미가 나오지 않을 때는 대개 직업 정의부터 다시 봐야 한다고 생각했습니다',
     detail: [
-      '연출 선택형은 재미도 직업성도 약했음',
-      '직업을 "무대를 꾸미는 사람"이 아니라 "사고 없이 공연을 끝내는 사람"으로 재정의',
-      '절차형 안전 미션으로 재구성 — 조명 고장, 관객 방향 레이저, 깨진 유리, 특수효과 폭주',
-      '모든 미션에 "설명 → 조작 → 테스트 → 성공" 동일 문법 적용해 학습 비용 절감',
-      '체크리스트는 조작 대상이 아닌 표시 전용 UI. 진행 관리는 시스템이 담당',
+      '조명과 효과를 고르는 구조는 재미도 약하고 직업의 본질과도 멀었습니다.',
+      '공연기획자를 "무대를 꾸미는 사람"이 아니라 "사고 없이 공연을 끝내는 사람"으로 다시 정의했습니다.',
+      '그 정의에 맞춰 조명 고장, 관객 쪽을 향한 레이저, 무대 위 깨진 유리, 특수효과 폭주라는 네 가지 안전 미션으로 재구성했습니다.',
+      '모든 미션에 설명 → 조작 → 테스트 → 성공이라는 같은 문법을 적용해, 하나만 익히면 나머지는 바로 이해되도록 했습니다.',
+      '체크리스트는 사용자가 조작하지 않고 진행 상태만 보여주는 UI로 뒀습니다. 이미 조작할 것이 충분히 많았기 때문입니다.',
     ],
   },
 ];
@@ -130,91 +149,118 @@ const IDEA_FILTERS = [
 
 /* ── Animation ── */
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.1, 0.25, 1] } } };
-const stagger = { visible: { transition: { staggerChildren: 0.06 } } };
 
-/* ── Color tokens ── */
+/* ── Color tokens — 라이트(이끼·포슬린) 테마. 히어로의 밝은 톤을 상세까지 연장 ── */
 const C = {
-  accent: 'rgba(216,165,75,0.55)',
-  accentDim: 'rgba(216,165,75,0.35)',
-  text92: 'rgba(243,246,251,0.92)',
-  text45: 'rgba(243,246,251,0.45)',
-  text60: 'rgba(243,246,251,0.6)',
-  border: 'rgba(255,255,255,0.06)',
-  cardBg: 'rgba(255,255,255,0.03)',
-  cardBorder: 'rgba(255,255,255,0.07)',
+  accent: 'rgba(158,106,22,0.9)',      // 딥 앰버 (밝은 배경용 텍스트 액센트, 핫스팟 #d8a54b 계열)
+  accentDim: 'rgba(158,106,22,0.55)',
+  text92: 'rgba(27,24,18,0.92)',
+  text45: 'rgba(27,24,18,0.52)',
+  text60: 'rgba(27,24,18,0.65)',
+  border: 'rgba(27,24,18,0.08)',
+  cardBg: 'rgba(255,255,255,0.6)',
+  cardBorder: 'rgba(27,24,18,0.08)',
+  cardShadow: '0 8px 24px rgba(27,24,18,0.05)',
 };
 
 /* ══════════════════════════════════════════
    COMPONENTS
    ══════════════════════════════════════════ */
 
-/* ── HeroSection (auto curtain reveal) ── */
+/* ── HeroSection (auto curtain reveal) ──
+   커튼은 연출용 오버레이일 뿐이라, 본문은 뒤에서 이미 렌더되어 있습니다.
+   모션 최소화 설정에서는 커튼을 아예 띄우지 않고 본문을 즉시 보여줍니다. */
 function HeroSection() {
+  const reduceMotion = useReducedMotion();
+  const CURTAIN_DELAY = 0.25;
+  const CURTAIN_DURATION = 0.7;
+
+  const curtain = (side) => ({
+    initial: { x: '0%' },
+    animate: { x: side === 'left' ? '-100%' : '100%' },
+    transition: { duration: CURTAIN_DURATION, delay: CURTAIN_DELAY, ease: [0.76, 0, 0.24, 1] },
+  });
+
   return (
     <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
-      {/* Curtain left */}
-      <motion.div
-        className="absolute inset-y-0 left-0 w-1/2 z-20 flex items-center justify-end pr-10"
-        initial={{ x: '0%' }}
-        animate={{ x: '-100%' }}
-        transition={{ duration: 1.0, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        style={{ background: '#0C0A12' }}
-      >
-        <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
-          style={{ color: 'rgba(216,165,75,0.7)' }}>
-          Career XR
-        </p>
-      </motion.div>
-      {/* Curtain right */}
-      <motion.div
-        className="absolute inset-y-0 right-0 w-1/2 z-20 flex items-center pl-10"
-        initial={{ x: '0%' }}
-        animate={{ x: '100%' }}
-        transition={{ duration: 1.0, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        style={{ background: '#0C0A12' }}
-      >
-        <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
-          style={{ color: 'rgba(216,165,75,0.7)' }}>
-          꿈키올래
-        </p>
-      </motion.div>
+      {!reduceMotion && (
+        <>
+          {/* Curtain left */}
+          <motion.div
+            className="absolute inset-y-0 left-0 w-1/2 z-20 flex items-center justify-end pr-10"
+            {...curtain('left')}
+            style={{ background: '#ece7da' }}
+          >
+            <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
+              style={{ color: 'rgba(158,106,22,0.8)' }}>
+              Career XR
+            </p>
+          </motion.div>
+          {/* Curtain right */}
+          <motion.div
+            className="absolute inset-y-0 right-0 w-1/2 z-20 flex items-center pl-10"
+            {...curtain('right')}
+            style={{ background: '#ece7da' }}
+          >
+            <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
+              style={{ color: 'rgba(158,106,22,0.8)' }}>
+              꿈키올래
+            </p>
+          </motion.div>
+        </>
+      )}
 
-      {/* Revealed content */}
-      <motion.div
-        className="relative z-10 px-8 w-full"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-        style={{ maxWidth: '1100px' }}
-      >
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+      {/* 글래스 패널 — 이끼 사진 위, 메인 히어로와 동일 질감. 커튼이 걷히는 동안 이미 자리에 있다 */}
+      <div className="relative z-10 px-5 md:px-8 w-full flex justify-center">
+        <motion.div
+          className="w-full p-8 md:p-12"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.06,
+                delayChildren: reduceMotion ? 0 : CURTAIN_DELAY + CURTAIN_DURATION * 0.7,
+              },
+            },
+          }}
+          style={{
+            maxWidth: '860px',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%)',
+            backdropFilter: 'blur(22px) saturate(1.15)',
+            WebkitBackdropFilter: 'blur(22px) saturate(1.15)',
+            border: '1px solid rgba(255,255,255,0.4)',
+            borderRadius: 28,
+            boxShadow: '0 30px 70px rgba(0,0,0,0.3)',
+          }}
+        >
           <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.3em] uppercase mb-6"
-            style={{ color: C.accent }}>
+            style={{ color: '#d8a54b' }}>
             Career XR — 꿈키올래
           </motion.p>
           <motion.h1 variants={fadeUp}
-            className="text-[42px] md:text-[56px] font-extrabold leading-[1.08] tracking-tight mb-6"
-            style={{ color: C.text92, letterSpacing: '-0.02em' }}>
-            직업을 설명하지 않고,<br />
-            <span style={{ color: 'rgba(216,165,75,0.75)' }}>세계관 안에서 경험하게 만들다</span>
+            className="text-[38px] md:text-[52px] font-extrabold leading-[1.12] tracking-tight mb-6"
+            style={{ color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.02em', textShadow: '0 2px 16px rgba(0,0,0,0.25)' }}>
+            직업을 설명하는 대신,<br />
+            <span style={{ color: '#e8c37c' }}>세계관 안에서 경험하게 만들었습니다</span>
           </motion.h1>
           <motion.p variants={fadeUp}
             className="text-[16px] md:text-[18px] font-medium leading-relaxed mb-10"
-            style={{ color: C.text45, maxWidth: '520px' }}>
-            Apple Vision Pro 직업체험 콘텐츠 9종. 실개발 2개월.
-            설명하는 교육이 아니라 기억에 남는 체험으로 만들었습니다.
+            style={{ color: 'rgba(255,255,255,0.72)', maxWidth: '520px' }}>
+            Apple Vision Pro 기반 직업체험 콘텐츠 아홉 종을 실개발 2개월 만에 만들었습니다.
+            설명하는 교육이 아니라, 끝나고 나서 기억에 남는 체험을 목표로 했습니다.
           </motion.p>
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2.5">
             {META_BADGES.map((b) => (
               <span key={b.label}
-                className="text-[12px] font-semibold px-3 py-1.5 rounded-md"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: C.text60 }}>
+                className="text-[12px] font-semibold px-3 py-1.5 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>
                 {b.label}
               </span>
             ))}
           </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -234,14 +280,14 @@ function ChallengeSection() {
               transition={{ delay: 0.08 }}
               className="text-[28px] md:text-[34px] font-bold leading-tight mb-4"
               style={{ color: C.text92, letterSpacing: '-0.02em' }}>
-              처음 방식대로면<br />3종도 못 끝낼 일정이었다
+              처음 방식대로라면<br />세 종도 끝내지 못할 일정이었습니다
             </motion.h2>
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
               transition={{ delay: 0.15 }}
               className="text-[14px] leading-relaxed"
               style={{ color: C.text45 }}>
-              XR 콘텐츠 하나에 보통 2~3개월. 만들 건 9종.
-              초기 기획을 전부 폐기하고 구조부터 다시 세웠습니다.
+              XR 콘텐츠 한 종을 만드는 데 보통 2~3개월이 듭니다.
+              그런데 만들어야 할 건 아홉 종이었습니다. 초기 기획을 전부 폐기하고 구조부터 다시 세웠습니다.
             </motion.p>
           </div>
         </div>
@@ -254,12 +300,15 @@ function ChallengeSection() {
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-3" style={{ color: C.accent }}>
                 {p.num}
               </p>
-              <h3 className="text-[18px] md:text-[20px] font-bold mb-2" style={{ color: 'rgba(243,246,251,0.88)' }}>
+              <h3 className="text-[18px] md:text-[20px] font-bold mb-3" style={{ color: 'rgba(27,24,18,0.88)' }}>
                 {p.title}
               </h3>
-              <p className="text-[12px] font-semibold mb-3 px-2 py-1 rounded inline-block"
-                style={{ color: 'rgba(216,165,75,0.8)', background: 'rgba(216,165,75,0.06)' }}>
-                → {p.result}
+              <p className="text-[14px] leading-[1.85] mb-4" style={{ color: C.text60, maxWidth: '580px' }}>
+                {p.body}
+              </p>
+              <p className="text-[13px] font-semibold leading-relaxed pl-4"
+                style={{ color: 'rgba(158,106,22,0.92)', borderLeft: '2px solid rgba(158,106,22,0.4)' }}>
+                {p.result}
               </p>
             </motion.div>
           ))}
@@ -294,16 +343,20 @@ function WorldCard({ world, index }) {
         style={{ background: `radial-gradient(240px circle at ${glowX} ${glowY}, ${world.accent}, transparent 70%)` }} />
       <div className="relative z-10 p-7 flex flex-col h-full">
         <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-3"
-          style={{ color: 'rgba(216,165,75,0.5)' }}>
+          style={{ color: 'rgba(158,106,22,0.6)' }}>
           World {String(index + 1).padStart(2, '0')}
         </p>
-        <h4 className="text-[17px] font-bold mb-3" style={{ color: 'rgba(243,246,251,0.88)' }}>{world.name}</h4>
+        <h4 className="text-[17px] font-bold mb-3" style={{ color: 'rgba(27,24,18,0.88)' }}>{world.name}</h4>
         <p className="text-[13px] leading-[1.85] mb-4 flex-1"
           style={{ color: C.text45, fontFamily: '"Noto Serif KR", serif' }}>
           {world.desc}
         </p>
+        <p className="text-[12px] leading-snug mb-4 pl-3"
+          style={{ color: 'rgba(158,106,22,0.85)', borderLeft: '2px solid rgba(158,106,22,0.4)' }}>
+          {world.signature}
+        </p>
         <p className="text-[11px] font-semibold"
-          style={{ color: 'rgba(140,109,216,0.5)' }}>
+          style={{ color: 'rgba(104,78,178,0.75)' }}>
           {world.jobs}
         </p>
       </div>
@@ -328,7 +381,7 @@ function WorldsSection() {
       <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         transition={{ delay: 0.12 }}
         className="text-[14px] mb-12" style={{ color: C.text45 }}>
-        단순 목록형 나열 대신, 컨셉별 세계관과 서사 안에서 선택하고 경험하는 구조.
+        직업을 목록으로 나열하는 대신, 세 개의 세계관 안에서 골라 들어가 서사를 따라 경험하도록 구성했습니다.
       </motion.p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {WORLDS.map((w, i) => (
@@ -354,8 +407,8 @@ function DecisionRow({ item, index, isOpen, onToggle }) {
       transition={{ duration: 0.5, delay: index * 0.06 }}
       className="rounded-2xl overflow-hidden"
       style={{
-        background: isOpen ? 'rgba(216,165,75,0.05)' : C.cardBg,
-        border: `1px solid ${isOpen ? 'rgba(216,165,75,0.22)' : C.cardBorder}`,
+        background: isOpen ? 'rgba(216,165,75,0.14)' : C.cardBg,
+        border: `1px solid ${isOpen ? 'rgba(158,106,22,0.32)' : C.cardBorder}`,
         transition: 'background 0.25s, border-color 0.25s',
       }}
     >
@@ -370,7 +423,7 @@ function DecisionRow({ item, index, isOpen, onToggle }) {
             0{index + 1}
           </span>
           <span className="text-[11px] font-semibold px-2.5 py-1 rounded-md"
-            style={{ background: 'rgba(216,165,75,0.08)', color: 'rgba(216,165,75,0.8)' }}>
+            style={{ background: 'rgba(216,165,75,0.18)', color: 'rgba(158,106,22,0.9)' }}>
             {item.tag}
           </span>
           <span className="ml-auto text-[18px] leading-none font-light select-none"
@@ -387,19 +440,19 @@ function DecisionRow({ item, index, isOpen, onToggle }) {
         {/* 버린 것 → 택한 것 */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <span className="text-[13px] px-3 py-1.5 rounded-lg"
-            style={{ color: 'rgba(243,246,251,0.35)', background: 'rgba(255,255,255,0.03)', textDecoration: 'line-through' }}>
+            style={{ color: 'rgba(27,24,18,0.5)', background: 'rgba(27,24,18,0.05)', textDecoration: 'line-through' }}>
             {item.before}
           </span>
           <span style={{ color: C.accentDim }}>→</span>
           <span className="text-[13px] font-semibold px-3 py-1.5 rounded-lg"
-            style={{ color: 'rgba(216,165,75,0.9)', background: 'rgba(216,165,75,0.08)' }}>
+            style={{ color: 'rgba(158,106,22,0.95)', background: 'rgba(216,165,75,0.18)' }}>
             {item.after}
           </span>
         </div>
 
         {/* 한 줄 결론 */}
         <p className="text-[14px] md:text-[15px] font-semibold leading-snug pl-4"
-          style={{ color: C.text92, borderLeft: '2px solid rgba(216,165,75,0.4)' }}>
+          style={{ color: C.text92, borderLeft: '2px solid rgba(158,106,22,0.45)' }}>
           {item.verdict}
         </p>
       </button>
@@ -416,7 +469,7 @@ function DecisionRow({ item, index, isOpen, onToggle }) {
           >
             <div className="px-6 md:px-7 pb-7 pt-1">
               <p className="text-[10px] font-bold tracking-[0.2em] uppercase mb-4 pb-2"
-                style={{ color: C.accentDim, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                style={{ color: C.accentDim, borderBottom: '1px solid rgba(27,24,18,0.08)' }}>
                 판단 근거
               </p>
               <ul className="flex flex-col gap-2.5">
@@ -449,13 +502,13 @@ function DecisionSection() {
         transition={{ delay: 0.06 }}
         className="text-[26px] md:text-[32px] font-bold leading-snug mb-4"
         style={{ color: C.text92, letterSpacing: '-0.01em' }}>
-        9종을 만든 힘은<br />아이디어가 아니라 버리는 속도였다
+        아홉 종을 만든 힘은<br />아이디어가 아니라 버리는 속도였습니다
       </motion.h2>
       <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         transition={{ delay: 0.12 }}
         className="text-[14px] leading-relaxed mb-12" style={{ color: C.text45, maxWidth: '580px' }}>
-        일정을 맞추려면 좋은 안을 고르는 것보다, 안 맞는 안을 빨리 걷어내는 게 중요했습니다.
-        대표적으로 갈아엎은 네 가지. <span style={{ color: C.text60 }}>카드를 누르면 판단 근거가 열립니다.</span>
+        일정을 맞추려면 좋은 안을 고르는 것보다 맞지 않는 안을 빨리 걷어내는 편이 중요했습니다.
+        아래 네 가지가 그렇게 갈아엎은 대표 사례입니다. <span style={{ color: C.text60 }}>카드를 누르면 판단 근거를 볼 수 있습니다.</span>
       </motion.p>
 
       <div className="flex flex-col gap-3">
@@ -472,7 +525,7 @@ function DecisionSection() {
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5 }}
         className="mt-12 p-7 md:p-8 rounded-2xl"
-        style={{ background: 'rgba(216,165,75,0.04)', border: '1px solid rgba(216,165,75,0.14)' }}>
+        style={{ background: 'rgba(216,165,75,0.12)', border: '1px solid rgba(158,106,22,0.28)' }}>
         <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-3" style={{ color: C.accentDim }}>
           기준
         </p>
@@ -482,14 +535,14 @@ function DecisionSection() {
         <div className="flex flex-wrap gap-2 mb-7">
           {IDEA_FILTERS.map((f) => (
             <span key={f} className="text-[12px] font-medium px-3 py-1.5 rounded-full"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: C.text60 }}>
+              style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(27,24,18,0.1)', color: C.text60 }}>
               {f}
             </span>
           ))}
         </div>
         <p className="text-[14px] font-semibold leading-snug pl-4"
-          style={{ color: 'rgba(216,165,75,0.9)', borderLeft: '2px solid rgba(216,165,75,0.4)' }}>
-          기준이 고정되니 논쟁이 줄고, 9종이 같은 품질로 나왔습니다.
+          style={{ color: 'rgba(158,106,22,0.95)', borderLeft: '2px solid rgba(158,106,22,0.45)' }}>
+          기준을 고정해두니 논쟁이 줄었고, 아홉 종이 같은 품질로 나왔습니다.
         </p>
       </motion.div>
     </section>
@@ -515,12 +568,12 @@ function OutcomeSection() {
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         transition={{ delay: 0.15 }} className="mb-14 flex flex-col gap-3" style={{ maxWidth: '640px' }}>
         <div className="flex items-center gap-3 text-[13px] px-4 py-3 rounded-xl"
-          style={{ color: 'rgba(243,246,251,0.35)', background: 'rgba(255,255,255,0.02)' }}>
+          style={{ color: 'rgba(27,24,18,0.5)', background: 'rgba(27,24,18,0.04)' }}>
           <span className="font-semibold" style={{ minWidth: '52px' }}>이전</span>
           <span>1종 기획 → 개발 → 검수 → 다음 1종</span>
         </div>
         <div className="flex items-center gap-3 text-[13px] px-4 py-3 rounded-xl"
-          style={{ color: 'rgba(216,165,75,0.9)', background: 'rgba(216,165,75,0.07)' }}>
+          style={{ color: 'rgba(158,106,22,0.95)', background: 'rgba(216,165,75,0.16)' }}>
           <span className="font-semibold" style={{ minWidth: '52px' }}>이후</span>
           <span>1종 기획 → 개발 전달 <span style={{ color: C.accentDim }}>‖</span> 동시에 다음 1종 기획 → 병렬 검수</span>
         </div>
@@ -529,9 +582,9 @@ function OutcomeSection() {
       {/* 결과 3종 — UX 원칙 포함 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { head: '납기', body: '9종 전량 기한 내 납품. 체험센터 운영 가능 수준으로 마감.' },
-          { head: '신뢰', body: '클라이언트가 완성도·디테일을 높게 평가, 후속 제안 요청으로 연결.' },
-          { head: '접근성', body: '시선+제스처가 어려운 사용자를 위한 head raycast 옵션, 나레이션·자막 이중 안내로 초등 저학년까지 커버.' },
+          { head: '납기', body: '아홉 종을 모두 기한 안에 납품했고, 체험센터에서 바로 운영할 수 있는 상태로 마감했습니다.' },
+          { head: '신뢰', body: '클라이언트가 완성도와 디테일을 높게 평가해 후속 제안 요청으로 이어졌습니다.' },
+          { head: '접근성', body: '시선과 제스처가 어려운 사용자를 위해 head raycast 옵션을 넣고, 나레이션과 자막으로 안내를 이중으로 깔아 초등 저학년까지 커버했습니다.' },
         ].map((r, i) => (
           <motion.div key={r.head}
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -556,16 +609,24 @@ export default function Dream() {
   return (
     <div
       className="relative w-full overflow-x-hidden"
-      style={{ background: '#0C0A12', color: '#f3f6fb' }}
+      style={{
+        backgroundColor: '#f1eee4',
+        backgroundImage:
+          "linear-gradient(180deg, rgba(241,238,228,0) 0%, rgba(241,238,228,0.55) 70vh, rgba(241,238,228,0.94) 115vh, #f1eee4 150vh), url('/hero-bg.jpg')",
+        backgroundSize: 'auto, 100% auto',
+        backgroundPosition: 'top center',
+        backgroundRepeat: 'no-repeat',
+        color: '#221e15',
+      }}
     >
       <div
         className="fixed top-0 left-0 right-0 h-px pointer-events-none z-10"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(216,165,75,0.15), transparent)' }}
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(158,106,22,0.25), transparent)' }}
       />
 
       <HeroSection />
       <AtAGlance
-        accent="rgba(216,165,75,0.85)"
+        accent="rgba(158,106,22,0.92)"
         items={[
           { num: '9종', label: 'XR 직업체험 콘텐츠', sub: '3컨셉 × 3직업 프레임워크화' },
           { num: '2개월', label: '실개발 기간', sub: '초기 기획 폐기 → 병렬 파이프라인 전환' },
