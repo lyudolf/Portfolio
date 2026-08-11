@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import ProjectDiorama from '../ui/ProjectDiorama';
 
 /* ══════════════════════════════════════════
    DATA — Work 인덱스 (프로젝트 3종)
@@ -251,6 +252,15 @@ export default function Work({ onNavigate }) {
           그리고 그 기획이 이어진 국가과제. 세 프로젝트 모두 문서가 아니라
           현장에서 굴러가는 상태까지 만들었습니다.
         </motion.p>
+      </section>
+
+      {/* 3D 디오라마 — 프로젝트를 공간으로 설명 */}
+      <section className="px-8 pb-16" style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.18 }}>
+          <ProjectDiorama onNavigate={onNavigate} />
+        </motion.div>
       </section>
 
       {/* 프로젝트 카드 */}
