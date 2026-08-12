@@ -405,34 +405,29 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
         </div>
       </div>
 
-      {/* 배경 대형 타이포 */}
+      {/* 배경 대형 타이포 — 좌측 상단에 한 덩어리로 */}
       <AnimatePresence mode="wait">
         <motion.div
           key={p.id}
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
           transition={{ duration: 0.45 }}
-          className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none"
-          style={{ top: isMobile ? -60 : 0 }}
+          className="absolute z-0 pointer-events-none select-none"
+          style={{ top: isMobile ? 62 : 78, left: isMobile ? 18 : 40 }}
         >
           <span style={{
-            fontSize: 'clamp(64px, 12vw, 190px)', fontWeight: 900, letterSpacing: '-0.05em',
-            color: 'rgba(255,255,255,0.9)', lineHeight: 1,
-            marginRight: isMobile ? '30vw' : 'clamp(150px, 22vw, 330px)',
+            display: 'block',
+            fontSize: isMobile ? 'clamp(52px, 17vw, 76px)' : 'clamp(74px, 10.5vw, 158px)',
+            fontWeight: 900, letterSpacing: '-0.055em',
+            color: 'rgba(255,255,255,0.9)', lineHeight: 0.92, whiteSpace: 'nowrap',
           }}>
-            {p.display[0]}
-          </span>
-          <span style={{
-            fontSize: 'clamp(64px, 12vw, 190px)', fontWeight: 900, letterSpacing: '-0.05em',
-            color: 'rgba(255,255,255,0.9)', lineHeight: 1,
-            marginLeft: isMobile ? '30vw' : 'clamp(150px, 22vw, 330px)',
-          }}>
-            {p.display[1]}
+            {p.display.join('')}
           </span>
         </motion.div>
       </AnimatePresence>
 
-      {/* 3D 오브젝트 */}
-      <div className="absolute inset-0 z-10" style={{ touchAction: 'pan-y', top: isMobile ? -40 : 0 }}>
+      {/* 3D 오브젝트 — 우측으로 치우쳐 배치 */}
+      <div className="absolute inset-0 z-10"
+        style={{ touchAction: 'pan-y', top: isMobile ? -40 : 0, left: isMobile ? 0 : '24%' }}>
         <Canvas key={p.id} camera={{ position: [0, 0.4, 4.2], fov: 42 }} dpr={[1, 1.7]} shadows
           gl={{ antialias: true, alpha: true }}>
           <Suspense fallback={null}>
