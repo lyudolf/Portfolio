@@ -1,6 +1,6 @@
-import { useRef, useState, useMemo, useCallback, useSyncExternalStore, Suspense } from 'react';
+import { useRef, useMemo, useCallback, useSyncExternalStore, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Html, ContactShadows, Float, useGLTF } from '@react-three/drei';
+import { OrbitControls, ContactShadows, Float, useGLTF } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 
@@ -214,59 +214,10 @@ function PlaceholderModel({ id, accent }) {
   );
 }
 
-/* 오브젝트에 붙는 핫스팟 */
-function Hotspot({ data, accent, open, onToggle }) {
-  const pos = useMemo(
-    () => new THREE.Vector3(...data.dir).normalize().multiplyScalar(R * 1.04),
-    [data.dir]
-  );
-  return (
-    <group position={pos}>
-      <mesh onClick={(e) => { e.stopPropagation(); onToggle(); }}>
-        <sphereGeometry args={[0.055, 14, 14]} />
-        <meshBasicMaterial color={open ? accent : '#ffffff'} />
-      </mesh>
-      <mesh>
-        <ringGeometry args={[0.08, 0.098, 28]} />
-        <meshBasicMaterial color={accent} transparent opacity={0.7} side={2} />
-      </mesh>
-      <Html center distanceFactor={5.5} zIndexRange={[40, 0]} style={{ pointerEvents: 'auto' }}>
-        {open ? (
-          <div
-            className="rounded-2xl text-left"
-            style={{
-              width: 236, padding: '13px 15px', transform: 'translate(0, -74px)',
-              background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(14px)',
-              border: `1px solid ${accent}55`, boxShadow: '0 16px 38px rgba(0,0,0,0.34)',
-            }}
-          >
-            <p style={{ fontSize: 12.5, fontWeight: 800, lineHeight: 1.35, color: 'rgba(18,24,28,0.92)', marginBottom: 6 }}>
-              {data.title}
-            </p>
-            <p style={{ fontSize: 10.5, lineHeight: 1.65, color: 'rgba(18,24,28,0.6)' }}>{data.desc}</p>
-          </div>
-        ) : (
-          <button
-            onClick={onToggle}
-            className="cursor-pointer whitespace-nowrap rounded-full"
-            style={{
-              padding: '4px 10px', transform: 'translate(0, -34px)',
-              background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.4)',
-              backdropFilter: 'blur(8px)', color: '#fff', fontSize: 10, fontWeight: 700,
-            }}
-          >
-            {data.title.length > 12 ? `${data.title.slice(0, 12)}…` : data.title}
-          </button>
-        )}
-      </Html>
-    </group>
-  );
-}
-
-function Stage({ project, reduced, openIdx, setOpenIdx }) {
+function Stage({ project, reduced }) {
   const spin = useRef();
   useFrame((_, delta) => {
-    if (spin.current && !reduced && openIdx === null) spin.current.rotation.y += delta * 0.25;
+    if (spin.current && !reduced) spin.current.rotation.y += delta * 0.25;
   });
   return (
     <>
@@ -280,13 +231,6 @@ function Stage({ project, reduced, openIdx, setOpenIdx }) {
               ? <Model url={project.model} />
               : <PlaceholderModel id={project.id} accent={project.accent} />}
           </Suspense>
-          {project.hotspots.map((h, i) => (
-            <Hotspot
-              key={i} data={h} accent={project.accent}
-              open={openIdx === i}
-              onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-            />
-          ))}
         </group>
       </Float>
       <ContactShadows position={[0, -1.05, 0]} opacity={0.5} scale={5} blur={2.4} far={2.6} color="#000000" />
@@ -311,7 +255,6 @@ function useMedia(query) {
    ══════════════════════════════════════════ */
 export default function ProjectShowcase({ activeId, onNavigate, children }) {
   const idx = Math.max(0, PROJECTS.findIndex((it) => it.id === activeId));
-  const [openIdx, setOpenIdx] = useState(null);
   const reduced = useMedia('(prefers-reduced-motion: reduce)');
   const isMobile = useMedia('(max-width: 767px)');
   const p = PROJECTS[idx];
@@ -419,48 +362,53 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
           className="absolute z-0 pointer-events-none select-none"
           style={{ top: isMobile ? 62 : 78, left: isMobile ? 18 : 40 }}
         >
-          {/* 아래로 갈수록 옅어지는 그라디언트 텍스트 */}
-          <span style={{
-            display: 'block',
-            fontSize: isMobile ? 'clamp(52px, 17vw, 76px)' : 'clamp(74px, 10.5vw, 158px)',
-            fontWeight: 900, letterSpacing: '-0.055em',
-            lineHeight: 0.92, whiteSpace: 'nowrap',
-            backgroundImage:
-              'linear-gradient(180deg, rgba(255,255,255,0.95) 32%, rgba(255,255,255,0.62) 68%, rgba(255,255,255,0.12) 100%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            color: 'transparent',
-            WebkitTextFillColor: 'transparent',
-          }}>
-            {p.display.join('')}
-          </span>
-          <span style={{
-            display: 'block',
-            marginTop: isMobile ? 6 : 10,
-            fontSize: isMobile ? 11.5 : 14,
-            fontWeight: 600, letterSpacing: '-0.01em',
-            color: 'rgba(255,255,255,0.62)',
-            whiteSpace: 'nowrap',
-          }}>
-            {p.subtitle}
-          </span>
+          {/* 래퍼 폭 = 제목 폭. 부제목은 justify로 같은 폭에 맞춘다 */}
+          <div style={{ display: 'inline-block' }}>
+            {/* 아래로 갈수록 옅어지는 그라디언트 텍스트 */}
+            <span style={{
+              display: 'block',
+              fontSize: isMobile ? 'clamp(52px, 17vw, 76px)' : 'clamp(74px, 10.5vw, 158px)',
+              fontWeight: 900, letterSpacing: '-0.055em',
+              lineHeight: 0.92, whiteSpace: 'nowrap',
+              backgroundImage:
+                'linear-gradient(180deg, rgba(255,255,255,0.82) 26%, rgba(255,255,255,0.45) 62%, rgba(255,255,255,0.06) 100%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              {p.display.join('')}
+            </span>
+            <span style={{
+              display: 'block',
+              marginTop: isMobile ? 8 : 12,
+              fontSize: isMobile ? 14 : 21,
+              fontWeight: 600, letterSpacing: '-0.01em',
+              color: 'rgba(255,255,255,0.66)',
+              whiteSpace: 'nowrap',
+              textAlign: 'justify',
+              textAlignLast: 'justify',
+            }}>
+              {p.subtitle}
+            </span>
+          </div>
         </motion.div>
       </AnimatePresence>
 
       {/* 3D 오브젝트 — 우측으로 치우쳐 배치 */}
       <div className="absolute inset-0 z-10"
-        style={{ touchAction: 'pan-y', top: isMobile ? -40 : 0, left: isMobile ? 0 : '24%' }}>
+        style={{ touchAction: 'pan-y', top: isMobile ? -40 : 0, left: isMobile ? 0 : '33%' }}>
         <Canvas key={p.id} camera={{ position: [0, 0.4, 4.2], fov: 42 }} dpr={[1, 1.7]} shadows
           gl={{ antialias: true, alpha: true }}>
           <Suspense fallback={null}>
-            <Stage project={p} reduced={reduced} openIdx={openIdx} setOpenIdx={setOpenIdx} />
+            <Stage project={p} reduced={reduced} />
           </Suspense>
         </Canvas>
       </div>
 
       {/* 하단 좌 — 요약 · 지표 · CTA */}
       <div className="absolute left-0 bottom-0 z-20 px-6 md:px-10 pb-6 md:pb-9 w-full md:w-auto"
-        style={{ maxWidth: isMobile ? '100%' : 480 }}>
+        style={{ width: isMobile ? '100%' : 'max(440px, calc(50% - 250px))' }}>
         <AnimatePresence mode="wait">
           <motion.div key={p.id}
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
@@ -520,7 +468,7 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
       {/* 안내 — 홈(notch)에 가리지 않게 좌측으로 치움 */}
       <p className="absolute z-20 text-[10px] pointer-events-none hidden lg:block"
         style={{ bottom: 16, left: 40, color: 'rgba(255,255,255,0.38)' }}>
-        오브젝트를 드래그해 돌려보세요 · 점을 누르면 설계 결정이 열립니다
+        오브젝트를 드래그해 돌려보세요
       </p>
       </div>
 
