@@ -522,24 +522,25 @@ export default function Dream({ onNavigate }) {
         className="fixed top-0 left-0 right-0 h-px pointer-events-none z-10"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(158,106,22,0.25), transparent)' }}
       />
-      <div className="px-4 md:px-6 pt-6">
+      <div className="px-4 md:px-6 py-6">
         <div style={{ maxWidth: 1640, margin: '0 auto' }}>
-          <ProjectShowcase activeId="dream" onNavigate={onNavigate} />
+          <ProjectShowcase activeId="dream" onNavigate={onNavigate}>
+          <AtAGlance
+            accent="rgba(158,106,22,0.92)"
+            items={[
+              { num: '9종', label: 'XR 직업체험 콘텐츠', sub: '3컨셉 × 3직업 프레임워크화' },
+              { num: '2개월', label: '실개발 기간', sub: '초기 기획 폐기 → 병렬 파이프라인 전환' },
+              { num: '40~50분', label: '통합 체험 플로우', sub: '로비 → 3컨셉 선택 → 체험 → 진로정보' },
+              { num: '후속 제안', label: '클라이언트 재요청', sub: '퀄리티·디테일 평가로 이어진 신뢰' },
+            ]}
+          />
+          <ChallengeSection />
+          <WorldsSection />
+          <DecisionSection />
+          <OutcomeSection />
+          </ProjectShowcase>
         </div>
       </div>
-      <AtAGlance
-        accent="rgba(158,106,22,0.92)"
-        items={[
-          { num: '9종', label: 'XR 직업체험 콘텐츠', sub: '3컨셉 × 3직업 프레임워크화' },
-          { num: '2개월', label: '실개발 기간', sub: '초기 기획 폐기 → 병렬 파이프라인 전환' },
-          { num: '40~50분', label: '통합 체험 플로우', sub: '로비 → 3컨셉 선택 → 체험 → 진로정보' },
-          { num: '후속 제안', label: '클라이언트 재요청', sub: '퀄리티·디테일 평가로 이어진 신뢰' },
-        ]}
-      />
-      <ChallengeSection />
-      <WorldsSection />
-      <DecisionSection />
-      <OutcomeSection />
     </div>
   );
 }

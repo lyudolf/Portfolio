@@ -448,25 +448,26 @@ export default function Kisti({ onNavigate }) {
         className="fixed top-0 left-0 right-0 h-px pointer-events-none z-10"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(23,118,166,0.25), transparent)' }}
       />
-      <div className="px-4 md:px-6 pt-6">
+      <div className="px-4 md:px-6 py-6">
         <div style={{ maxWidth: 1640, margin: '0 auto' }}>
-          <ProjectShowcase activeId="kisti" onNavigate={onNavigate} />
+          <ProjectShowcase activeId="kisti" onNavigate={onNavigate}>
+          <AtAGlance
+            accent="rgba(111,216,255,0.85)"
+            items={[
+              { num: '60명', label: '1차 임상 무이슈 완료', sub: '목표 120명, 2차 진행 중' },
+              { num: '3년차', label: '1년 용역 → 계속 연장', sub: '5·6년차 연장 논의 중' },
+              { num: '3배+', label: '팀 매출 성장 견인', sub: '3.8억 → 11.5억 (전년 대비)' },
+              { num: '1~2', label: '운영 Depth 단축', sub: '진입 6단계 → 1~2 depth 재설계' },
+            ]}
+          />
+          <ProblemSection />
+          <PrinciplesSection />
+          <SolutionsSection />
+          <SystemSection />
+          <ImpactSection />
+          </ProjectShowcase>
         </div>
       </div>
-      <AtAGlance
-        accent="rgba(111,216,255,0.85)"
-        items={[
-          { num: '60명', label: '1차 임상 무이슈 완료', sub: '목표 120명, 2차 진행 중' },
-          { num: '3년차', label: '1년 용역 → 계속 연장', sub: '5·6년차 연장 논의 중' },
-          { num: '3배+', label: '팀 매출 성장 견인', sub: '3.8억 → 11.5억 (전년 대비)' },
-          { num: '1~2', label: '운영 Depth 단축', sub: '진입 6단계 → 1~2 depth 재설계' },
-        ]}
-      />
-      <ProblemSection />
-      <PrinciplesSection />
-      <SolutionsSection />
-      <SystemSection />
-      <ImpactSection />
     </div>
   );
 }

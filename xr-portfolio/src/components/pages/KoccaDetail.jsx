@@ -286,15 +286,16 @@ export default function KoccaDetail({ onNavigate }) {
     >
       <div className="fixed top-0 left-0 right-0 h-px pointer-events-none z-10"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(166,54,102,0.25), transparent)' }} />
-      <div className="px-4 md:px-6 pt-6">
+      <div className="px-4 md:px-6 py-6">
         <div style={{ maxWidth: 1640, margin: '0 auto' }}>
-          <ProjectShowcase activeId="kocca" onNavigate={onNavigate} />
+          <ProjectShowcase activeId="kocca" onNavigate={onNavigate}>
+          <LineageSection onNavigate={onNavigate} />
+          <MyPartSection />
+          <EngineSection />
+          <StatusSection />
+          </ProjectShowcase>
         </div>
       </div>
-      <LineageSection onNavigate={onNavigate} />
-      <MyPartSection />
-      <EngineSection />
-      <StatusSection />
     </div>
   );
 }

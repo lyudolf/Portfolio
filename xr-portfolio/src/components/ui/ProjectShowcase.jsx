@@ -32,9 +32,9 @@ const PROJECTS = [
       { num: '3년차', label: '용역 연장' },
       { num: '1~2', label: '운영 depth' },
     ],
-    bg: '#0e3145',
-    bgSoft: '#154a66',
-    accent: '#6fd8ff',
+    bg: '#1540c9',
+    bgSoft: '#2f66ee',
+    accent: '#8ee4ff',
     model: '/models/obj-kisti.glb',
     hotspots: [
       { dir: [1.0, 0.5, 0.85], title: 'HMD는 스스로 로그인하지 않는다', desc: '헤드셋 안에서 계정을 입력하는 건 고령 훈련자에게 비현실적. 교수자가 PC에서 기기와 계정을 연결하면 자동 로그인된다.' },
@@ -306,7 +306,7 @@ function useMedia(query) {
 /* ══════════════════════════════════════════
    MAIN
    ══════════════════════════════════════════ */
-export default function ProjectShowcase({ activeId, onNavigate }) {
+export default function ProjectShowcase({ activeId, onNavigate, children }) {
   const idx = Math.max(0, PROJECTS.findIndex((it) => it.id === activeId));
   const [openIdx, setOpenIdx] = useState(null);
   const reduced = useMedia('(prefers-reduced-motion: reduce)');
@@ -336,10 +336,12 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
         boxShadow: '0 18px 50px rgba(20,28,24,0.14)',
       }}
     >
+      {/* 패널 래퍼 — 상·하단 홈이 이 영역을 기준으로 앉는다 */}
+      <div className="relative">
       {/* 상단 홈 — 흰 프레임이 패널 위쪽으로 파고든 탭.
          양옆 필렛(radial-gradient)이 오목하게 이어져 깎아낸 것처럼 보인다. */}
       <div className="absolute left-1/2 z-30 flex items-start pointer-events-none"
-        style={{ top: isMobile ? 8 : 13, transform: 'translateX(-50%)' }}>
+        style={{ top: 0, transform: 'translateX(-50%)' }}>
         <div style={{
           width: FILLET, height: FILLET, marginRight: -1,
           background: `radial-gradient(circle ${FILLET}px at 0 100%, transparent ${FILLET - 0.5}px, #fff ${FILLET}px)`,
@@ -508,7 +510,7 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
         aria-label="아래 내용으로 이동"
         className="absolute left-1/2 z-40 flex items-center justify-center rounded-full cursor-pointer transition-all"
         style={{
-          bottom: isMobile ? -4 : -6,
+          bottom: isMobile ? -NOTCH * 0.42 : -NOTCH * 0.4,
           transform: 'translateX(-50%)',
           width: NOTCH * 1.5,
           height: NOTCH * 1.5,
@@ -523,6 +525,10 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
       >
         ↓
       </button>
+      </div>
+
+      {/* 프레임 안으로 들어오는 본문 섹션 */}
+      {children && <div style={{ paddingTop: isMobile ? 24 : 40 }}>{children}</div>}
     </div>
   );
 }
