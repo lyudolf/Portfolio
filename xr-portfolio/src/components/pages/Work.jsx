@@ -254,8 +254,9 @@ export default function Work({ onNavigate }) {
         </motion.p>
       </section>
 
-      {/* 3D 쇼케이스 — 대표 오브젝트 + 핫스팟으로 설명 */}
-      <section className="px-8 pb-16" style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      {/* 3D 쇼케이스 — 대표 오브젝트 + 핫스팟으로 설명.
+          본문(1100px)보다 넓게 빼서 시선을 잡는다. */}
+      <section className="px-4 md:px-6 pb-16" style={{ maxWidth: '1640px', margin: '0 auto' }}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.18 }}>

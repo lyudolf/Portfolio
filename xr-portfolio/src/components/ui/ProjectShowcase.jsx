@@ -321,7 +321,7 @@ export default function ProjectShowcase({ onNavigate }) {
       style={{
         borderRadius: 32,
         background: `linear-gradient(150deg, ${p.bgSoft} 0%, ${p.bg} 62%)`,
-        minHeight: isMobile ? 660 : 640,
+        minHeight: isMobile ? 660 : 700,
         transition: 'background 0.6s ease',
         boxShadow: '0 18px 50px rgba(20,28,24,0.16)',
       }}
@@ -356,14 +356,16 @@ export default function ProjectShowcase({ onNavigate }) {
           style={{ top: isMobile ? -60 : 0 }}
         >
           <span style={{
-            fontSize: 'clamp(64px, 13vw, 178px)', fontWeight: 900, letterSpacing: '-0.05em',
-            color: 'rgba(255,255,255,0.9)', lineHeight: 1, marginRight: isMobile ? '32vw' : '26vw',
+            fontSize: 'clamp(64px, 12vw, 190px)', fontWeight: 900, letterSpacing: '-0.05em',
+            color: 'rgba(255,255,255,0.9)', lineHeight: 1,
+            marginRight: isMobile ? '30vw' : 'clamp(150px, 22vw, 330px)',
           }}>
             {p.display[0]}
           </span>
           <span style={{
-            fontSize: 'clamp(64px, 13vw, 178px)', fontWeight: 900, letterSpacing: '-0.05em',
-            color: 'rgba(255,255,255,0.9)', lineHeight: 1, marginLeft: isMobile ? '32vw' : '26vw',
+            fontSize: 'clamp(64px, 12vw, 190px)', fontWeight: 900, letterSpacing: '-0.05em',
+            color: 'rgba(255,255,255,0.9)', lineHeight: 1,
+            marginLeft: isMobile ? '30vw' : 'clamp(150px, 22vw, 330px)',
           }}>
             {p.display[1]}
           </span>
@@ -381,8 +383,8 @@ export default function ProjectShowcase({ onNavigate }) {
       </div>
 
       {/* 하단 좌 — 요약 · 지표 · CTA */}
-      <div className="absolute left-0 bottom-0 z-20 px-6 md:px-9 pb-6 md:pb-8 w-full md:w-auto"
-        style={{ maxWidth: isMobile ? '100%' : 400 }}>
+      <div className="absolute left-0 bottom-0 z-20 px-6 md:px-10 pb-6 md:pb-9 w-full md:w-auto"
+        style={{ maxWidth: isMobile ? '100%' : 480 }}>
         <AnimatePresence mode="wait">
           <motion.div key={p.id}
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
