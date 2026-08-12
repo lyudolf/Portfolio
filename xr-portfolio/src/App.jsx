@@ -66,7 +66,8 @@ export default function App() {
           </PageTransition>
         </AnimatePresence>
       </main>
-      {!isDetailPage && <Footer />}
+      {/* 랜딩은 자체 연락 블록이 있어 푸터는 하단 바만 */}
+      {!isDetailPage && <Footer compact={activeTab === 'about'} />}
     </>
   );
 }

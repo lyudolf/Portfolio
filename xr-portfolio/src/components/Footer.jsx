@@ -1,8 +1,11 @@
-export default function Footer() {
+/* compact — 페이지가 자체 연락 블록을 가진 경우(랜딩) 하단 바만 남긴다. */
+export default function Footer({ compact = false }) {
   return (
-    <footer className="relative py-24 px-6" style={{ background: '#060810', borderTop: '1px solid #263247' }}>
+    <footer className={`relative px-6 ${compact ? 'py-10' : 'py-24'}`}
+      style={{ background: '#060810', borderTop: '1px solid #263247' }}>
       <div className="max-w-5xl mx-auto">
         {/* Contact CTA */}
+        {!compact && (
         <div className="text-center mb-16">
           <p className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5" style={{ color: 'rgba(111,216,255,0.45)' }}>
             Contact
@@ -40,9 +43,11 @@ export default function Footer() {
             iplay3473@gmail.com
           </a>
         </div>
+        )}
 
         {/* Bottom bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8" style={{ borderTop: '1px solid rgba(38,50,71,0.5)' }}>
+        <div className={`flex flex-col md:flex-row items-center justify-between gap-6 ${compact ? '' : 'pt-8'}`}
+          style={compact ? undefined : { borderTop: '1px solid rgba(38,50,71,0.5)' }}>
           <div className="text-center md:text-left">
             <p className="text-sm font-semibold mb-1" style={{ color: 'rgba(243,246,251,0.4)' }}>유희수 · Service Planner / PM</p>
             <p className="text-xs" style={{ color: '#546178' }}>이 포트폴리오는 실제 프로젝트 경험을 기반으로 구성되었습니다.</p>
