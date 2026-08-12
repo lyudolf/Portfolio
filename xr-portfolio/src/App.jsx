@@ -21,7 +21,8 @@ import { TAB_PATHS, PATH_TABS, PAGE_META, SITE_URL } from './lib/site';
 const PAGES = { about: About, kisti: Kisti, dream: Dream, 'kocca-detail': KoccaDetail, process: Process, withai: WithAI, whyme: WhyMe, 'etribe-detail': EtribeDetail, 'leaf-detail': LeafDetail, 'rl-detail': RlDetail, resume: Resume };
 
 /* 하단 네비게이션을 숨길 페이지 */
-const DETAIL_PAGES = new Set(['etribe-detail', 'leaf-detail', 'rl-detail', 'resume']);
+/* 하단 네비·푸터를 숨길 페이지 (AI-lab은 전체화면 IDE라 자체 메뉴바를 씀) */
+const DETAIL_PAGES = new Set(['etribe-detail', 'leaf-detail', 'rl-detail', 'resume', 'withai']);
 
 export default function App() {
   const location = useLocation();

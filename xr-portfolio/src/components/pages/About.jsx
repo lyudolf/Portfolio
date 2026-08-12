@@ -41,8 +41,8 @@ const MORPH_PROJECTS = [
   },
   {
     tab: 'withai',
-    eyebrow: 'with AI',
-    title: 'with AI',
+    eyebrow: 'AI-lab',
+    title: 'AI-lab',
     period: '2026 — 진행 중',
     subtitle: 'AI를 쓰는 기획·실행 사이클',
     highlight: '기획서가 아닌, 출시된 제품으로',

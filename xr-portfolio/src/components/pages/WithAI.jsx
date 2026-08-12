@@ -455,23 +455,12 @@ export default function WithAI({ onNavigate }) {
   ];
 
   return (
-    <div style={{
-      background: '#eef2ec',
-      backgroundImage:
-        "linear-gradient(180deg, rgba(238,242,236,0) 0%, rgba(238,242,236,0.6) 60vh, #eef2ec 110vh), url('/hero-bg.jpg')",
-      backgroundSize: 'auto, 100% auto',
-      backgroundPosition: 'top center',
-      backgroundRepeat: 'no-repeat',
-      minHeight: '100vh',
-    }}>
-      <div className="px-4 md:px-6 py-6" style={{ maxWidth: 1640, margin: '0 auto' }}>
-        <IdeShell
-          tree={tree}
-          initialFileId="readme"
-          windowTitle="with-ai"
-          statusText="Human-in-the-Loop Methodology"
-        />
-      </div>
-    </div>
+    <IdeShell
+      tree={tree}
+      initialFileId="readme"
+      windowTitle="ai-lab"
+      statusText="Human-in-the-Loop"
+      onNavigate={onNavigate}
+    />
   );
 }

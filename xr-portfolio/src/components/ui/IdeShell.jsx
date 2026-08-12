@@ -102,7 +102,18 @@ const ACTIVITY_ICONS = [
   { id: 'ext', d: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z' },
 ];
 
-export default function IdeShell({ tree, initialFileId, windowTitle = 'with-ai', statusText }) {
+/* 타이틀바 메뉴 = 사이트 네비게이션.
+   전체화면 IDE라 하단 네비를 숨기는 대신 여기서 이동한다. */
+const MENU = [
+  { tab: 'about', label: 'About' },
+  { tab: 'kisti', label: 'Work' },
+  { tab: 'withai', label: 'AI-lab' },
+  { tab: 'process', label: 'Process' },
+  { tab: 'whyme', label: 'Why Me' },
+  { tab: 'resume', label: '이력서' },
+];
+
+export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', statusText, onNavigate }) {
   const isMobile = useMedia('(max-width: 767px)');
   const files = useMemo(() => flatten(tree), [tree]);
   const first = initialFileId ?? files[0]?.id;
@@ -134,35 +145,47 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'with-ai',
   const showSidebar = isMobile ? mobileNavOpen : sidebarOpen;
 
   return (
-    /* 흰 프레임 — 사이트의 다른 페이지와 같은 문법 */
-    <div style={{
-      background: '#fff',
-      borderRadius: isMobile ? 24 : 34,
-      padding: isMobile ? 8 : 12,
-      boxShadow: '0 18px 50px rgba(20,28,24,0.14)',
-    }}>
+    /* 전체화면 — 진짜 에디터를 열어둔 것처럼.
+       배경색을 같이 깔아 모바일 dvh/vh 차이로 생기는 틈을 감춘다. */
+    <div style={{ height: '100dvh', width: '100%', overflow: 'hidden', background: IDE.editor }}>
       <div style={{
-        borderRadius: isMobile ? 18 : 24,
-        overflow: 'hidden',
         background: IDE.editor,
-        border: `1px solid ${IDE.line}`,
         display: 'flex',
         flexDirection: 'column',
-        height: isMobile ? 620 : 'min(78vh, 780px)',
-        minHeight: isMobile ? 620 : 660,
+        height: '100%',
       }}>
-        {/* ── 타이틀 바 ── */}
-        <div className="flex items-center px-4 flex-shrink-0"
-          style={{ height: 38, background: IDE.chrome, borderBottom: `1px solid ${IDE.line}` }}>
-          <div className="flex items-center gap-2">
+        {/* ── 타이틀 바 = 메뉴바 ── */}
+        <div className="flex items-center flex-shrink-0"
+          style={{ height: 36, background: IDE.chrome, borderBottom: `1px solid ${IDE.line}`, paddingLeft: 14, paddingRight: 14 }}>
+          <div className="flex items-center gap-2 flex-shrink-0" style={{ marginRight: 16 }}>
             {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
               <span key={c} style={{ width: 11, height: 11, borderRadius: 99, background: c }} />
             ))}
           </div>
-          <p className="flex-1 text-center" style={{ fontSize: 11.5, color: IDE.muted, letterSpacing: '0.02em' }}>
+          {/* 메뉴 = 사이트 이동 */}
+          <div className="flex items-center flex-shrink-0 overflow-x-auto">
+            {MENU.map((m) => {
+              const on = m.tab === 'withai';
+              return (
+                <button key={m.tab} onClick={() => !on && onNavigate?.(m.tab)}
+                  className="cursor-pointer flex-shrink-0"
+                  style={{
+                    padding: '3px 9px', borderRadius: 4, fontSize: 12,
+                    color: on ? '#fff' : IDE.textDim,
+                    background: on ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    fontWeight: on ? 700 : 400, whiteSpace: 'nowrap',
+                  }}
+                  onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
+                  onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
+                  {m.label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="flex-1 text-center hidden lg:block"
+            style={{ fontSize: 11.5, color: IDE.muted, letterSpacing: '0.02em' }}>
             {active ? `${active.name} — ${windowTitle}` : windowTitle}
           </p>
-          <div style={{ width: 54 }} />
         </div>
 
         {/* ── 본체 ── */}

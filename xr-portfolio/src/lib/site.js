@@ -11,7 +11,7 @@ export const TAB_PATHS = {
   dream: '/dream',
   'kocca-detail': '/kocca',
   process: '/process',
-  withai: '/with-ai',
+  withai: '/ai-lab',
   whyme: '/why-me',
   'etribe-detail': '/etribe',
   'leaf-detail': '/leaf',
@@ -50,9 +50,9 @@ export const PAGE_META = {
     description: '문제 정의부터 QA·운영까지, 서비스 기획자 유희수의 일하는 방식.',
   },
   withai: {
-    title: 'with AI — Human-in-the-Loop 방법론 | 유희수',
+    title: 'AI-lab — AI로 직접 만든 것들 | 유희수',
     description:
-      'AI를 인지적 증폭기로 쓰는 기획자. 7일 만에 웹 3D 게임 단독 개발·배포, 토스 앱인토스 미니앱 3종 기획부터 출시까지 단독 수행.',
+      'AI를 인지적 증폭기로 쓰는 기획자의 작업 기록. 7일 만에 만든 웹 3D 게임, 2,700만 step 강화학습 실험, 앱인토스 미니앱 3종 출시.',
   },
   whyme: {
     title: 'Why Me — Technical PM | 유희수',
