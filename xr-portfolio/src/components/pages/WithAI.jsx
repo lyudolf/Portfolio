@@ -1,515 +1,477 @@
-import { motion } from 'framer-motion';
-import FadeIn from '../ui/FadeIn';
+import IdeShell from '../ui/IdeShell';
+import { IDE, MONO } from '../ui/ideTokens';
 
-/* ── 프로젝트 카드 데이터 ── */
-const PROJECTS = [
-  {
-    id: 'leaf-it-alone',
-    title: 'Leaf-it-alone (Web 3D Game)',
-    tools: ['React Three Fiber', 'ONNX Runtime', 'Vercel'],
-    link: 'https://leaf-it-alone-web.vercel.app/',
-    intro: '8,000개의 낙엽을 1인칭 시점으로 치우는 브라우저 3D 캐주얼 게임. InstancedMesh로 단일 드로우콜을 구현하고, ONNX 딥러닝 모델로 플레이어 행동을 예측하는 스나이퍼 AI를 탑재. 총 5스테이지, 7일 개발. Vercel 라이브 배포 중.',
-    duration: '7일',
-    language: 'JavaScript',
-    thumbnail: '/withai/leaf/leaf.jpg',
-    award: null,
-    detailPage: 'leaf-detail',
-  },
-  {
-    id: 'etribe-20th',
-    title: 'ETRIBE 20주년 기념 영상 제작',
-    tools: ['Midjourney', 'Runway Gen-2', 'After Effects'],
-    link: null,
-    intro: 'AI 이미지 생성과 모션 합성을 활용하여 기획부터 최종 편집까지 전 과정을 자체 제작한 사내 공모전 1위 수상작. 기존 외주 대비 약 70% 리소스를 절감하며 크리에이티브 프로덕션의 새로운 가능성을 검증했습니다.',
-    duration: '2일',
-    language: 'Korean',
-    thumbnail: null,
-    award: '1st Prize',
-    detailPage: 'etribe-detail',
-  },
-  {
-    id: 'hidenseek-rl',
-    title: 'Hide & Seek 강화학습 재현 (Unity ML-Agents)',
-    tools: ['Unity ML-Agents', 'PPO Self-Play', 'LSTM', 'ONNX'],
-    link: 'https://github.com/lyudolf/hideNseek_ML',
-    intro: 'OpenAI Hide & Seek을 Unity ML-Agents로 재현한 개인 실험. 술래·도망자 셀프플레이 누적 2,700만 step, 보상 설계 5회 개편. 벽 비비기·물리 버그 착취 같은 보상 해킹을 관측했고, 중간 보상을 전량 걷어낸 뒤에야 가르친 적 없는 입구 봉쇄 전략이 창발. 강화학습이 아니라 인센티브 설계를 배운 실험 로그.',
-    duration: '2026.02',
-    language: 'C# · Python',
-    thumbnail: '/withai/rl/thumb.png',
-    award: null,
-    detailPage: 'rl-detail',
-  },
-];
+/* ══════════════════════════════════════════
+   with AI — 작업 환경(에디터) 자체를 페이지로.
+   콘텐츠는 "파일"로 정의하고, IdeShell이 탐색기·탭·에디터 셸을 제공한다.
+   ══════════════════════════════════════════ */
 
-/* ── Shipped Products — 토스 앱인토스 출시 미니앱 ── */
-const SHIPPED = [
-  {
-    id: 'quizking',
-    name: '성격유형 퀴즈왕',
-    status: 'Live',
-    statusColor: 'rgba(74,222,128,0.85)',
-    statusBg: 'rgba(74,222,128,0.08)',
-    desc: '성격유형별 상식 퀴즈. 12개 카테고리 × 3,600문제, 난이도 시스템, 유형별 랭킹, 리워드 광고 BM까지 설계.',
-    meta: '토스 앱인토스 · 2026.06 출시',
-  },
-  {
-    id: 'coffee-slot',
-    name: '오늘은 누가 쏠래?',
-    status: 'Approved',
-    statusColor: 'rgba(111,216,255,0.85)',
-    statusBg: 'rgba(111,216,255,0.08)',
-    desc: '커피 내기 슬롯머신. 균등 1/N 추첨 + 스포트라이트 연출로 "내기의 재미"를 UX로 번역.',
-    meta: '토스 앱인토스 · 심사 승인, 공개 준비',
-  },
-  {
-    id: 'spending-test',
-    name: '소비유형 테스트',
-    status: 'In Review',
-    statusColor: 'rgba(216,165,75,0.85)',
-    statusBg: 'rgba(216,165,75,0.08)',
-    desc: '2지선다 밸런스게임으로 소비 성향 진단. 테스트 유니버스를 모듈로 확장하는 구조 설계.',
-    meta: '토스 앱인토스 · 심사 진행 중',
-  },
-];
-
-/* ── Pipeline / Protocol 데이터 (보류 — 기존 유지) ── */
-const PIPELINE_STEPS = [
-  {
-    step: '01',
-    title: 'Architecture Design',
-    agent: 'Human',
-    agentColor: 'rgba(111, 216, 255, 0.8)',
-    desc: '기술 스택 선정, DB 스키마 설계, API 엔드포인트 정의. 비즈니스 로직의 방향성을 인간이 결정합니다.',
-  },
-  {
-    step: '02',
-    title: 'Implementation & Generation',
-    agent: 'AI',
-    agentColor: 'rgba(110, 231, 183, 0.8)',
-    desc: '보일러플레이트 생성, UI 컴포넌트 구현, 반복적 로직 코드 작성. AI가 빠르게 초안을 생산합니다.',
-  },
-  {
-    step: '03',
-    title: 'QA, Refactoring & Edge Cases',
-    agent: 'Human',
-    agentColor: 'rgba(111, 216, 255, 0.8)',
-    desc: 'Google API 429 에러 방어, 예외 처리, 성능 최적화. 비즈니스 로직의 최종 검증은 인간이 수행합니다.',
-  },
-];
-
-const PROTOCOL_RULES = [
-  { key: 'Rule 1', title: 'No Unconditional Agreement', desc: '무조건적으로 동의하지 말 것. 논리적·기술적 오류가 있으면 반드시 지적할 것.' },
-  { key: 'Rule 2', title: 'Provide Factual Grounding', desc: '기술적 답변 시, 추론의 근거를 짧게 명시할 것. "~인 것 같습니다"는 금지.' },
-  { key: 'Rule 3', title: 'Confirm Before Execution', desc: '복잡한 태스크는 실행 전 이해한 바를 요약하여 컨펌을 받을 것.' },
-  { key: 'Rule 4', title: 'Skip Apologies & Flattery', desc: '사과와 아첨을 생략하고, 모르면 모른다고 명확히 밝힐 것.' },
-];
-
-/* ── 프로젝트 카드 컴포넌트 ── */
-function ProjectCard({ project, index, onNavigate }) {
+/* ── 문서용 프리미티브 ── */
+function DocHead({ title, sub, tags, meta }) {
   return (
-    <FadeIn delay={index * 0.08}>
-      <div
-        className="rounded-2xl overflow-hidden transition-all duration-300"
-        style={{
-          background: 'rgba(255,255,255,0.02)',
-          border: '1px solid rgba(255,255,255,0.06)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.border = '1px solid rgba(111, 216, 255, 0.15)';
-          e.currentTarget.style.background = 'rgba(255,255,255,0.035)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.border = '1px solid rgba(255,255,255,0.06)';
-          e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-        }}
-      >
-        <div className="flex flex-col md:flex-row">
-          {/* Left — 16:9 Thumbnail */}
-          <div className="md:w-[420px] flex-shrink-0">
-            <div
-              className="w-full h-full flex items-center justify-center"
-              style={{
-                aspectRatio: '16 / 9',
-                background: 'rgba(255,255,255,0.03)',
-                borderRight: '1px solid rgba(255,255,255,0.04)',
-              }}
-            >
-              {project.thumbnail ? (
-                <img
-                  src={project.thumbnail}
-                  alt={project.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="text-center">
-                  <div
-                    className="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center"
-                    style={{ background: 'rgba(111, 216, 255, 0.06)' }}
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(111, 216, 255, 0.4)" strokeWidth="1.5">
-                      <rect x="2" y="3" width="20" height="14" rx="2" />
-                      <path d="M8 21h8M12 17v4" />
-                    </svg>
-                  </div>
-                  <p className="text-[12px]" style={{ color: 'rgba(243,246,251,0.25)' }}>
-                    Thumbnail
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right — Project Info */}
-          <div className="flex-1 p-7 md:p-8 flex flex-col justify-between">
-            <div>
-              {/* Title + Award Badge */}
-              <div className="flex items-start justify-between mb-4">
-                <h3 className="text-[20px] font-bold leading-tight" style={{ color: 'rgba(243,246,251,0.9)' }}>
-                  {project.title}
-                </h3>
-                {project.award && (
-                  <span
-                    className="ml-3 flex-shrink-0 px-3 py-1 rounded-full text-[11px] font-bold"
-                    style={{
-                      background: 'rgba(216,165,75,0.1)',
-                      color: 'rgba(216,165,75,0.85)',
-                      border: '1px solid rgba(216,165,75,0.2)',
-                    }}
-                  >
-                    🏆 {project.award}
-                  </span>
-                )}
-              </div>
-
-              {/* Tool Hashtags */}
-              <div className="flex flex-wrap gap-2 mb-5">
-                {project.tools.map((tool) => (
-                  <span
-                    key={tool}
-                    className="text-[12px] font-medium"
-                    style={{ color: 'rgba(111, 216, 255, 0.6)' }}
-                  >
-                    #{tool.replace(/\s+/g, '')}
-                  </span>
-                ))}
-              </div>
-
-              {/* Intro */}
-              <p
-                className="text-[14px] leading-[1.8] mb-6"
-                style={{ color: 'rgba(243,246,251,0.5)' }}
-              >
-                {project.intro}
-              </p>
-
-              {/* Meta Row: Duration / Language / Link */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px]">
-                <div className="flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(111,216,255,0.4)" strokeWidth="1.5">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                  <span style={{ color: '#546178' }}>제작 기간</span>
-                  <span style={{ color: 'rgba(243,246,251,0.6)' }}>{project.duration}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(111,216,255,0.4)" strokeWidth="1.5">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  <span style={{ color: '#546178' }}>언어</span>
-                  <span style={{ color: 'rgba(243,246,251,0.6)' }}>{project.language}</span>
-                </div>
-
-                {project.link && (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 transition-colors"
-                    style={{ color: 'rgba(111, 216, 255, 0.6)' }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(111, 216, 255, 0.9)'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(111, 216, 255, 0.6)'}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                    </svg>
-                    <span className="text-[12px] font-medium">링크</span>
-                  </a>
-                )}
-              </div>
-            </div>
-
-            {/* Detail Button */}
-            <div className="mt-6 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-              <button
-                className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-[13px] font-semibold transition-all duration-200 cursor-pointer"
-                style={{
-                  background: 'rgba(111, 216, 255, 0.06)',
-                  color: 'rgba(111, 216, 255, 0.75)',
-                  border: '1px solid rgba(111, 216, 255, 0.12)',
-                }}
-                onClick={() => project.detailPage && onNavigate?.(project.detailPage)}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(111, 216, 255, 0.12)';
-                  e.currentTarget.style.borderColor = 'rgba(111, 216, 255, 0.25)';
-                  e.currentTarget.style.color = 'rgba(111, 216, 255, 0.95)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(111, 216, 255, 0.06)';
-                  e.currentTarget.style.borderColor = 'rgba(111, 216, 255, 0.12)';
-                  e.currentTarget.style.color = 'rgba(111, 216, 255, 0.75)';
-                }}
-              >
-                상세 보기
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </button>
-            </div>
-          </div>
+    <div style={{ marginBottom: 26 }}>
+      <h1 style={{
+        fontSize: 26, fontWeight: 800, color: '#fff', letterSpacing: '-0.02em',
+        lineHeight: 1.3, marginBottom: sub ? 8 : 14,
+      }}>
+        {title}
+      </h1>
+      {sub && (
+        <p style={{ fontSize: 14, color: IDE.textDim, lineHeight: 1.7, marginBottom: 14 }}>{sub}</p>
+      )}
+      {tags && (
+        <div className="flex flex-wrap gap-1.5" style={{ marginBottom: 12 }}>
+          {tags.map((t) => (
+            <span key={t} style={{
+              fontSize: 11, fontFamily: MONO, color: IDE.accent,
+              background: 'rgba(111,216,255,0.08)', border: '1px solid rgba(111,216,255,0.2)',
+              borderRadius: 5, padding: '2px 8px',
+            }}>
+              {t}
+            </span>
+          ))}
         </div>
-      </div>
-    </FadeIn>
-  );
-}
-
-/* ── Divider ── */
-function Divider() {
-  return (
-    <div className="mx-auto px-8" style={{ maxWidth: '1400px' }}>
-      <div className="h-px" style={{ background: 'rgba(38,50,71,0.35)' }} />
+      )}
+      {meta && (
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1"
+          style={{ fontSize: 11.5, fontFamily: MONO, color: IDE.muted }}>
+          {meta.map((m) => (
+            <span key={m.k}>
+              <span style={{ color: IDE.purple }}>{m.k}</span>
+              <span style={{ opacity: 0.6 }}>: </span>
+              <span style={{ color: IDE.string }}>{m.v}</span>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-/* ── Main Page ── */
-export default function WithAI({ onNavigate }) {
+function DocSection({ label, children }) {
   return (
-    <div style={{ background: '#0C0A12' }}>
+    <section style={{ marginTop: 30 }}>
+      {label && (
+        <p style={{
+          fontSize: 10.5, fontFamily: MONO, letterSpacing: '0.14em', textTransform: 'uppercase',
+          color: IDE.muted, marginBottom: 12, paddingBottom: 7, borderBottom: `1px solid ${IDE.lineSoft}`,
+        }}>
+          {label}
+        </p>
+      )}
+      {children}
+    </section>
+  );
+}
 
-      {/* ── Section 1: Abstract ── */}
-      <section className="mx-auto px-8 pt-16 pb-20 text-center" style={{ maxWidth: '1400px' }}>
-        <FadeIn>
-          <p className="text-label mb-10" style={{ color: 'rgba(111, 216, 255, 0.45)' }}>
-            Methodology
-          </p>
-        </FadeIn>
-        <FadeIn delay={0.05}>
-          <h1 className="text-headline mb-6" style={{ color: 'rgba(243,246,251,0.92)' }}>
-            with AI: The Human-in-the-Loop<br />
-            <span style={{ color: 'rgba(111, 216, 255, 0.7)' }}>Methodology</span>
-          </h1>
-        </FadeIn>
-        <FadeIn delay={0.1}>
-          <p className="text-body leading-[1.9] max-w-2xl mx-auto"
-            style={{ fontFamily: '"Noto Serif KR", serif' }}>
-            AI는 대체재가 아닌 인지적 증폭기(Amplifier)입니다.<br />
-            명확한 프롬프트 엔지니어링과 아키텍처 설계를 통해<br />
-            기획부터 프로덕션까지의 리소스를 최적화한<br />
-            본인만의 오퍼레이팅 방법론을 공유합니다.
-          </p>
-        </FadeIn>
-      </section>
+function P({ children }) {
+  return <p style={{ fontSize: 13.5, lineHeight: 1.95, color: IDE.textDim, marginBottom: 12 }}>{children}</p>;
+}
 
-      <Divider />
+function OpenPageButton({ onClick, label }) {
+  return (
+    <button onClick={onClick}
+      className="cursor-pointer inline-flex items-center gap-2"
+      style={{
+        marginTop: 18, padding: '9px 16px', borderRadius: 7,
+        background: 'rgba(111,216,255,0.1)', border: '1px solid rgba(111,216,255,0.28)',
+        color: IDE.accent, fontSize: 12.5, fontWeight: 700,
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(111,216,255,0.18)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(111,216,255,0.1)'; }}>
+      ↗ {label}
+    </button>
+  );
+}
 
-      {/* ── Section 2: Project Cards ── */}
-      <section className="mx-auto px-8 py-20" style={{ maxWidth: '1400px' }}>
-        <FadeIn>
-          <p className="text-label mb-3" style={{ color: 'rgba(111, 216, 255, 0.35)' }}>
-            Projects
-          </p>
-          <h2 className="text-subhead mb-12" style={{ color: 'rgba(243,246,251,0.85)' }}>
-            AI-Powered Project Archive
-          </h2>
-        </FadeIn>
+function ExternalLink({ href, children }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer"
+      style={{ color: IDE.accent, fontSize: 12.5, fontFamily: MONO, textDecoration: 'underline', textUnderlineOffset: 3 }}>
+      {children}
+    </a>
+  );
+}
 
-        {/* Project Card List */}
-        <div className="flex flex-col gap-6">
-          {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} onNavigate={onNavigate} />
-          ))}
+/* ── 프로젝트 문서 ── */
+function ProjectDoc({ data, onNavigate }) {
+  return (
+    <article>
+      <DocHead title={data.title} sub={data.sub} tags={data.tags} meta={data.meta} />
+      {data.media && (
+        <div style={{
+          borderRadius: 8, overflow: 'hidden', border: `1px solid ${IDE.line}`,
+          marginBottom: 22, aspectRatio: '16 / 9', background: '#141414',
+        }}>
+          <img src={data.media} alt={data.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
-      </section>
+      )}
+      <DocSection label="Overview">
+        {data.body.map((t) => <P key={t}>{t}</P>)}
+      </DocSection>
+      {data.highlights && (
+        <DocSection label="Highlights">
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+            {data.highlights.map((h) => (
+              <li key={h} className="flex gap-2.5" style={{ fontSize: 13, lineHeight: 1.85, color: IDE.textDim }}>
+                <span style={{ color: IDE.green, fontFamily: MONO, flexShrink: 0 }}>+</span>
+                <span>{h}</span>
+              </li>
+            ))}
+          </ul>
+        </DocSection>
+      )}
+      <div className="flex flex-wrap items-center gap-4">
+        {data.detailPage && (
+          <OpenPageButton onClick={() => onNavigate?.(data.detailPage)} label="전체 케이스 스터디 열기" />
+        )}
+        {data.link && <span style={{ marginTop: 18 }}><ExternalLink href={data.link}>{data.linkLabel ?? data.link}</ExternalLink></span>}
+      </div>
+    </article>
+  );
+}
 
-      <Divider />
-
-      {/* ── Section 2.5: Shipped Products ── */}
-      <section className="mx-auto px-8 py-20" style={{ maxWidth: '1400px' }}>
-        <FadeIn>
-          <p className="text-label mb-3" style={{ color: 'rgba(111, 216, 255, 0.35)' }}>
-            Shipped Products
-          </p>
-          <h2 className="text-subhead mb-4" style={{ color: 'rgba(243,246,251,0.85)' }}>
-            기획부터 출시까지, 혼자서
-          </h2>
-          <p className="text-caption mb-12 max-w-lg">
-            토스 앱인토스 미니앱 3종을 기획·개발·심사·출시까지 단독 수행.
-            문서가 아니라 스토어에 올라간 제품으로 실행력을 증명합니다.
-          </p>
-        </FadeIn>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {SHIPPED.map((app, i) => (
-            <FadeIn key={app.id} delay={i * 0.08}>
-              <div
-                className="h-full p-7 rounded-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
-                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-[17px] font-bold" style={{ color: 'rgba(243,246,251,0.9)' }}>
-                    {app.name}
-                  </h3>
-                  <span
-                    className="flex-shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase"
-                    style={{ background: app.statusBg, color: app.statusColor, border: `1px solid ${app.statusBg.replace('0.08', '0.2')}` }}
-                  >
-                    {app.status}
-                  </span>
-                </div>
-                <p className="text-[13px] leading-[1.8] flex-1" style={{ color: 'rgba(243,246,251,0.45)' }}>
-                  {app.desc}
-                </p>
-                <p className="text-[11px] font-semibold mt-5 pt-4" style={{ color: '#546178', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-                  {app.meta}
-                </p>
-              </div>
-            </FadeIn>
+/* ── 출시 앱 문서 ── */
+function ShippedDoc({ data }) {
+  return (
+    <article>
+      <DocHead title={data.name} sub={data.desc}
+        meta={[{ k: 'platform', v: '앱인토스' }, { k: 'status', v: data.status }, { k: 'released', v: data.released }]} />
+      <DocSection label="Scope">
+        <ul style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+          {data.scope.map((s) => (
+            <li key={s} className="flex gap-2.5" style={{ fontSize: 13, lineHeight: 1.85, color: IDE.textDim }}>
+              <span style={{ color: IDE.green, fontFamily: MONO, flexShrink: 0 }}>+</span>
+              <span>{s}</span>
+            </li>
           ))}
-        </div>
-      </section>
+        </ul>
+      </DocSection>
+      <DocSection label="Note">
+        <P>{data.note}</P>
+      </DocSection>
+    </article>
+  );
+}
 
-      <Divider />
+/* ── 데이터 ── */
+const PROJECT_FILES = [
+  {
+    id: 'leaf',
+    name: 'leaf-it-alone.md',
+    kind: 'md',
+    detailPage: 'leaf-detail',
+    title: 'Leaf It Alone',
+    sub: '8,000개의 낙엽을 치우는 브라우저 3D 게임. 7일 단독 개발·배포.',
+    tags: ['React Three Fiber', 'ONNX Runtime', 'Zustand', 'Vercel'],
+    meta: [{ k: 'duration', v: '7일' }, { k: 'role', v: '기획·개발 단독' }, { k: 'status', v: 'live' }],
+    media: '/withai/leaf/leaf.jpg',
+    body: [
+      '1인칭 시점으로 낙엽을 치우는 캐주얼 게임입니다. 아이디어부터 배포까지 7일이 걸렸고, 기획·개발·배포를 혼자 했습니다.',
+      '만들면서 확인하고 싶었던 건 하나였습니다 — AI를 제대로 쓰면 기획자가 어디까지 직접 만들 수 있는가.',
+    ],
+    highlights: [
+      'InstancedMesh로 8,000개 오브젝트를 단일 드로우콜로 렌더링',
+      '정지한 낙엽의 물리 연산을 건너뛰는 수면 시스템으로 평균 70% 객체를 비활성 유지',
+      'PyTorch로 학습한 모델을 ONNX로 변환해 브라우저에서 직접 추론하는 적대적 AI 탑재',
+      '수집 → 봉투 → 판매 → 업그레이드로 이어지는 경제 루프와 5스테이지 난이도 곡선 설계',
+    ],
+    link: 'https://leaf-it-alone-web.vercel.app/',
+    linkLabel: 'leaf-it-alone-web.vercel.app',
+    terminal: [
+      '$ npm run build && vercel deploy --prod',
+      '✓ built in 3.2s',
+      '✓ deployed — leaf-it-alone-web.vercel.app',
+      '! 8000 instances / 1 draw call',
+    ],
+  },
+  {
+    id: 'rl',
+    name: 'hide-n-seek.md',
+    kind: 'log',
+    detailPage: 'rl-detail',
+    title: 'Hide & Seek RL',
+    sub: '보상을 잘못 설계하면, 시스템은 보상만 최적화한다.',
+    tags: ['Unity ML-Agents', 'PPO', 'Self-Play', 'LSTM', 'ONNX'],
+    meta: [{ k: 'period', v: '2026.02' }, { k: 'steps', v: '27,000,000' }, { k: 'revisions', v: '5' }],
+    media: '/withai/rl/thumb.png',
+    body: [
+      'OpenAI Hide & Seek을 Unity ML-Agents로 재현한 개인 실험. 술래와 도망자를 셀프플레이로 붙여 누적 2,700만 step을 학습시켰고, 그동안 보상 설계를 다섯 번 갈아엎었습니다.',
+      '남은 것은 강화학습 지식이 아니라 인센티브 설계의 실패 기록입니다.',
+    ],
+    highlights: [
+      '거리 보상을 넣자 술래가 탐색을 버리고 벽 너머 신호에 밀착 — 지표를 주면 지표만 최적화된다',
+      '도망자가 램프를 벽 밖으로 떨어뜨려 발각 불가 상태를 만드는 버그를 스스로 발견',
+      '중간 보상을 전량 삭제하고 승 +1 / 패 -1만 남기자, 가르친 적 없는 입구 봉쇄 전략이 출현',
+    ],
+    link: 'https://github.com/lyudolf/hideNseek_ML',
+    linkLabel: 'github.com/lyudolf/hideNseek_ML',
+    terminal: [
+      '$ mlagents-learn config/hns.yaml --run-id=v5',
+      '  Step: 5,000,000  Hider: -0.31  Seeker: 0.28',
+      '  Step: 27,000,000 Hider: 0.74  Seeker: -0.66',
+      '✓ exported → HiderBrain.onnx, SeekerBrain.onnx',
+    ],
+  },
+  {
+    id: 'etribe',
+    name: 'etribe-20th.md',
+    kind: 'md',
+    detailPage: 'etribe-detail',
+    title: 'ETRIBE 20주년 기념 영상',
+    sub: 'AI 이미지 생성과 모션 합성으로 전 과정을 자체 제작. 사내 공모전 1위.',
+    tags: ['Midjourney', 'Runway Gen-2', 'After Effects'],
+    meta: [{ k: 'duration', v: '2일' }, { k: 'award', v: '사내 공모전 1위' }],
+    body: [
+      '기획부터 최종 편집까지 외주 없이 직접 만든 사내 기념 영상입니다. 기존 외주 대비 약 70%의 리소스를 절감했습니다.',
+      'AI를 데모가 아니라 실제 납품물 제작에 쓴 첫 사례였고, 이후 꿈키올래의 컨셉아트 파이프라인으로 이어졌습니다.',
+    ],
+    terminal: [
+      '$ 프롬프트 이터레이션 로그',
+      '  seated perspective → 의자가 계속 생성됨',
+      '  as if sitting in the chair → 여전히 의자',
+      '✓ 낮은 카메라 위치에서 정면 1인칭 → 해결',
+      '! AI에게 이유를 설명하면 불필요한 오브젝트가 생긴다',
+    ],
+  },
+];
 
+const SHIPPED_FILES = [
+  {
+    id: 'quizking',
+    name: 'quizking.app',
+    kind: 'app',
+    name_: '성격유형 퀴즈왕',
+    status: 'live',
+    released: '2026.06',
+    desc: '성격유형별 상식 퀴즈. 기획부터 심사·출시까지 단독 수행.',
+    scope: [
+      '12개 카테고리 × 3,600문제 구성과 난이도 시스템 설계',
+      '유형별 랭킹과 재도전 루프로 리텐션 확보',
+      '리워드 광고 기반 수익 모델 설계 및 심사 대응',
+    ],
+    note: '문서가 아니라 스토어에 올라간 제품으로 실행력을 증명한 첫 사례입니다.',
+    terminal: [
+      '$ ait build && ait deploy',
+      '✓ bundle 1.2MB',
+      '✓ 심사 통과 — LIVE (2026.06)',
+    ],
+  },
+  {
+    id: 'coffee',
+    name: 'coffee-slot.app',
+    kind: 'app',
+    name_: '오늘은 누가 쏠래?',
+    status: 'approved',
+    released: '공개 준비 중',
+    desc: '커피 내기 슬롯머신. 균등 1/N 추첨을 연출로 번역.',
+    scope: [
+      '확률은 정확히 1/N로 고정하되, 스포트라이트 연출로 긴장감을 만드는 구조',
+      '결과 공유 흐름과 재추첨 UX 설계',
+    ],
+    note: '"공정함"과 "재미"가 충돌할 때, 확률이 아니라 연출을 손대는 쪽을 택했습니다.',
+    terminal: ['$ ait deploy', '✓ 심사 승인 — 공개 대기'],
+  },
+  {
+    id: 'spending',
+    name: 'spending-test.app',
+    kind: 'app',
+    name_: '소비유형 테스트',
+    status: 'in review',
+    released: '심사 진행 중',
+    desc: '2지선다 밸런스게임으로 소비 성향을 진단하는 미니앱.',
+    scope: [
+      '8종 소비유형 분류 체계와 문항 설계',
+      '테스트 유니버스를 모듈로 확장 가능한 구조로 설계 — 다음 테스트는 문항만 갈아끼우면 됨',
+    ],
+    note: '한 번 만들고 끝내지 않기 위해, 처음부터 재사용 가능한 틀로 만들었습니다.',
+    terminal: ['$ ait deploy', '! 심사 진행 중'],
+  },
+];
 
-      {/* ── Section 3: Smart Workflow Pipeline (보류) ── */}
-      <section className="mx-auto px-8 py-20" style={{ maxWidth: '1400px' }}>
-        <FadeIn>
-          <p className="text-label mb-3" style={{ color: 'rgba(111, 216, 255, 0.35)' }}>
-            Development Process
-          </p>
-          <h2 className="text-subhead mb-4" style={{ color: 'rgba(243,246,251,0.85)' }}>
-            Next-Gen Development Workflow
-          </h2>
-          <p className="text-caption mb-14 max-w-lg">
-            Human-AI Collaboration: 인간이 설계하고, AI가 생산하고, 인간이 검증합니다.
-          </p>
-        </FadeIn>
+const PROTOCOL_RULES = [
+  { key: 'no_unconditional_agreement', desc: '무조건적으로 동의하지 말 것. 논리적·기술적 오류가 있으면 반드시 지적할 것.' },
+  { key: 'provide_factual_grounding', desc: '기술적 답변 시 추론의 근거를 짧게 명시할 것. "~인 것 같습니다"는 금지.' },
+  { key: 'confirm_before_execution', desc: '복잡한 태스크는 실행 전 이해한 바를 요약하여 컨펌을 받을 것.' },
+  { key: 'skip_apologies', desc: '사과와 아첨을 생략하고, 모르면 모른다고 명확히 밝힐 것.' },
+];
 
-        <div className="flex flex-col md:flex-row items-stretch gap-0">
-          {PIPELINE_STEPS.map((step, i) => (
-            <FadeIn key={step.step} delay={i * 0.06}>
-              <div className="flex items-stretch">
-                <div className="flex-1 rounded-xl p-6"
-                  style={{
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.06)',
+const WORKFLOW_STEPS = [
+  { agent: 'Human', color: IDE.accent, title: '아키텍처 설계', desc: '기술 스택 선정, 데이터 구조 정의, 인터페이스 경계 결정. 무엇을 만들지는 사람이 정합니다.' },
+  { agent: 'AI', color: IDE.green, title: '구현·생성', desc: '보일러플레이트, UI 컴포넌트, 반복 로직. 초안을 빠르게 뽑아내는 구간입니다.' },
+  { agent: 'Human', color: IDE.accent, title: '검증·예외 처리', desc: 'API 실패 방어, 엣지 케이스, 성능 최적화. 비즈니스 로직의 최종 책임은 사람이 집니다.' },
+];
+
+/* ── 페이지 ── */
+export default function WithAI({ onNavigate }) {
+  const readme = {
+    id: 'readme',
+    name: 'README.md',
+    kind: 'md',
+    terminal: ['$ cat README.md', '✓ AI는 대체재가 아니라 증폭기'],
+    render: () => (
+      <article>
+        <DocHead
+          title="with AI — Human-in-the-Loop"
+          sub="AI를 인지적 증폭기로 쓰는 기획자의 작업 기록."
+          meta={[{ k: 'author', v: '유희수' }, { k: 'branch', v: 'human-in-the-loop' }]}
+        />
+        <DocSection label="Why">
+          <P>
+            AI는 사람을 대체하는 도구가 아니라, 판단의 속도를 올리는 증폭기라고 봅니다.
+            방향을 정하는 일과 결과를 책임지는 일은 여전히 사람 몫이고, 그 사이의 실행 구간이 극적으로 짧아졌을 뿐입니다.
+          </P>
+          <P>
+            그래서 이 페이지는 완성된 결과물만 늘어놓지 않고, 실제로 어떤 파일을 열어 무엇을 판단했는지를 그대로 보여줍니다.
+            왼쪽 탐색기에서 파일을 열어보세요.
+          </P>
+        </DocSection>
+        <DocSection label="Index">
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[
+              ['projects/', '직접 만들어 배포한 것 — 웹 3D 게임, 강화학습 실험, AI 영상'],
+              ['shipped/', '토스 앱인토스에 출시한 미니앱 3종'],
+              ['workflow.md', '사람과 AI의 역할 분담'],
+              ['protocol.json', 'AI를 다룰 때 지키는 규칙'],
+            ].map(([k, v]) => (
+              <li key={k} className="flex gap-3" style={{ fontSize: 13, lineHeight: 1.8 }}>
+                <span style={{ fontFamily: MONO, color: IDE.amber, minWidth: 118 }}>{k}</span>
+                <span style={{ color: IDE.textDim }}>{v}</span>
+              </li>
+            ))}
+          </ul>
+        </DocSection>
+      </article>
+    ),
+  };
+
+  const workflow = {
+    id: 'workflow',
+    name: 'workflow.md',
+    kind: 'md',
+    terminal: ['$ 사람 → AI → 사람', '✓ 3 stages'],
+    render: () => (
+      <article>
+        <DocHead title="Workflow" sub="인간이 설계하고, AI가 생산하고, 인간이 검증합니다." />
+        <DocSection label="Pipeline">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {WORKFLOW_STEPS.map((s, i) => (
+              <div key={s.title} style={{
+                padding: '16px 18px', borderRadius: 8,
+                background: 'rgba(255,255,255,0.03)', border: `1px solid ${IDE.line}`,
+              }}>
+                <div className="flex items-center gap-2.5" style={{ marginBottom: 7 }}>
+                  <span style={{
+                    fontSize: 10.5, fontFamily: MONO, fontWeight: 700, color: s.color,
+                    border: `1px solid ${s.color}44`, borderRadius: 4, padding: '1px 7px',
                   }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-md"
-                      style={{
-                        background: step.agentColor.replace('0.8', '0.08'),
-                        color: step.agentColor,
-                        border: `1px solid ${step.agentColor.replace('0.8', '0.2')}`,
-                      }}>
-                      {step.agent}
-                    </span>
-                    <span className="text-[11px] font-semibold" style={{ color: '#546178' }}>
-                      Step {step.step}
-                    </span>
-                  </div>
-                  <h3 className="text-[15px] font-bold mb-2" style={{ color: 'rgba(243,246,251,0.8)' }}>
-                    {step.title}
-                  </h3>
-                  <p className="text-[13px] leading-relaxed" style={{ color: '#546178' }}>
-                    {step.desc}
-                  </p>
+                    {s.agent}
+                  </span>
+                  <span style={{ fontSize: 10.5, fontFamily: MONO, color: IDE.muted }}>0{i + 1}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{s.title}</span>
                 </div>
-
-                {i < PIPELINE_STEPS.length - 1 && (
-                  <div className="hidden md:flex items-center px-3">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2" strokeLinecap="round">
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </div>
-                )}
+                <p style={{ fontSize: 13, lineHeight: 1.85, color: IDE.textDim }}>{s.desc}</p>
               </div>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </DocSection>
+      </article>
+    ),
+  };
 
-      <Divider />
-
-      {/* ── Section 4: The Operator's Protocol (보류) ── */}
-      <section className="mx-auto px-8 py-20 pb-32" style={{ maxWidth: '1400px' }}>
-        <FadeIn>
-          <p className="text-label mb-3" style={{ color: 'rgba(111, 216, 255, 0.35)' }}>
-            Operating System
-          </p>
-          <h2 className="text-subhead mb-12" style={{ color: 'rgba(243,246,251,0.85)' }}>
-            The Operator's Protocol
-          </h2>
-        </FadeIn>
-
-        <FadeIn delay={0.05}>
-          <div className="rounded-xl overflow-hidden"
-            style={{ border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 40px rgba(0,0,0,0.3)' }}>
-            <div className="flex items-center gap-2 px-4 py-3"
-              style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              <span className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: '#febc2e' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: '#28c840' }} />
-              <span className="text-[11px] ml-3" style={{ color: '#546178', fontFamily: '"JetBrains Mono", monospace' }}>
-                operator_protocol.json
+  const protocol = {
+    id: 'protocol',
+    name: 'protocol.json',
+    kind: 'json',
+    terminal: ['$ validate protocol.json', '✓ 4 rules loaded', '✓ schema ok'],
+    render: () => (
+      <article>
+        <DocHead title="Operator's Protocol" sub="AI를 쓸 때 매번 지키는 네 가지 규칙." />
+        <div style={{
+          fontFamily: MONO, fontSize: 12.5, lineHeight: 2.1,
+          background: '#141414', border: `1px solid ${IDE.line}`, borderRadius: 8,
+          padding: '18px 8px 18px 0', marginTop: 22, overflowX: 'auto',
+        }}>
+          {[
+            '{',
+            ...PROTOCOL_RULES.flatMap((r, i) => [
+              `  "${r.key}": {`,
+              `    "rule": "${r.desc}"`,
+              `  }${i < PROTOCOL_RULES.length - 1 ? ',' : ''}`,
+            ]),
+            '}',
+          ].map((line, i) => (
+            <div key={i} className="flex" style={{ whiteSpace: 'pre' }}>
+              <span style={{
+                width: 46, textAlign: 'right', paddingRight: 16, color: IDE.muted,
+                opacity: 0.55, flexShrink: 0, userSelect: 'none',
+              }}>
+                {i + 1}
+              </span>
+              <span style={{
+                color: line.includes('"rule"') ? IDE.string
+                  : line.trim().startsWith('"') ? IDE.blue : IDE.textDim,
+              }}>
+                {line}
               </span>
             </div>
+          ))}
+        </div>
+        <p style={{ marginTop: 14, fontSize: 12, fontFamily: MONO, color: IDE.green }}>
+          ✓ Protocol loaded. All rules enforced.
+        </p>
+      </article>
+    ),
+  };
 
-            <div className="px-6 py-6" style={{ background: 'rgba(0,0,0,0.3)', fontFamily: '"JetBrains Mono", "Fira Code", monospace' }}>
-              <p className="text-[12px] mb-1" style={{ color: '#546178' }}>
-                {'// AI 운용 원칙 — Human-in-the-Loop Operator Rules'}
-              </p>
-              <p className="text-[12px] mb-5" style={{ color: '#546178' }}>
-                {'// @author 유희수 | XR Service Planner'}
-              </p>
+  const tree = [
+    {
+      type: 'folder',
+      name: 'projects',
+      children: PROJECT_FILES.map((f) => ({
+        type: 'file',
+        id: f.id,
+        name: f.name,
+        kind: f.kind,
+        terminal: f.terminal,
+        render: () => <ProjectDoc data={f} onNavigate={onNavigate} />,
+      })),
+    },
+    {
+      type: 'folder',
+      name: 'shipped',
+      children: SHIPPED_FILES.map((f) => ({
+        type: 'file',
+        id: f.id,
+        name: f.name,
+        kind: f.kind,
+        terminal: f.terminal,
+        render: () => <ShippedDoc data={{ ...f, name: f.name_ }} />,
+      })),
+    },
+    { type: 'file', ...readme },
+    { type: 'file', ...workflow },
+    { type: 'file', ...protocol },
+  ];
 
-              <div className="text-[13px] leading-[2.2]">
-                <p style={{ color: 'rgba(243,246,251,0.5)' }}>{'{'}</p>
-                {PROTOCOL_RULES.map((rule, i) => (
-                  <div key={rule.key} className="pl-6">
-                    <span style={{ color: 'rgba(111, 216, 255, 0.8)' }}>"{rule.key}"</span>
-                    <span style={{ color: 'rgba(243,246,251,0.3)' }}>{': {'}</span>
-                    <div className="pl-6">
-                      <span style={{ color: 'rgba(110, 231, 183, 0.7)' }}>"title"</span>
-                      <span style={{ color: 'rgba(243,246,251,0.3)' }}>: </span>
-                      <span style={{ color: 'rgba(167, 139, 250, 0.8)' }}>"{rule.title}"</span>
-                      <span style={{ color: 'rgba(243,246,251,0.3)' }}>,</span>
-                    </div>
-                    <div className="pl-6">
-                      <span style={{ color: 'rgba(110, 231, 183, 0.7)' }}>"desc"</span>
-                      <span style={{ color: 'rgba(243,246,251,0.3)' }}>: </span>
-                      <span style={{ color: 'rgba(216,165,75,0.75)' }}>"{rule.desc}"</span>
-                    </div>
-                    <span className="pl-6" style={{ color: 'rgba(243,246,251,0.3)' }}>
-                      {'}'}{i < PROTOCOL_RULES.length - 1 ? ',' : ''}
-                    </span>
-                  </div>
-                ))}
-                <p style={{ color: 'rgba(243,246,251,0.5)' }}>{'}'}</p>
-              </div>
-
-              <p className="text-[12px] mt-5" style={{ color: 'rgba(110, 231, 183, 0.5)' }}>
-                ✓ Protocol loaded successfully. All rules enforced.
-              </p>
-            </div>
-          </div>
-        </FadeIn>
-      </section>
+  return (
+    <div style={{
+      background: '#eef2ec',
+      backgroundImage:
+        "linear-gradient(180deg, rgba(238,242,236,0) 0%, rgba(238,242,236,0.6) 60vh, #eef2ec 110vh), url('/hero-bg.jpg')",
+      backgroundSize: 'auto, 100% auto',
+      backgroundPosition: 'top center',
+      backgroundRepeat: 'no-repeat',
+      minHeight: '100vh',
+    }}>
+      <div className="px-4 md:px-6 py-6" style={{ maxWidth: 1640, margin: '0 auto' }}>
+        <IdeShell
+          tree={tree}
+          initialFileId="readme"
+          windowTitle="with-ai"
+          statusText="Human-in-the-Loop Methodology"
+        />
+      </div>
     </div>
   );
 }
