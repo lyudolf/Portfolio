@@ -320,38 +320,58 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
   /* 하단 중앙 홈(notch) — 흰 프레임이 패널 안쪽으로 파고든 모양.
      radial-gradient 마스크로 원형 구멍을 뚫는다. */
   const NOTCH = isMobile ? 28 : 34;
+  const TAB_H = isMobile ? 38 : 46;   // 상단 홈 높이
+  const FILLET = isMobile ? 14 : 20;  // 홈 양옆 오목 곡선 반지름
   const notchMask =
     `radial-gradient(circle ${NOTCH}px at 50% 100%, transparent 0 ${NOTCH}px, #000 ${NOTCH + 1}px)`;
 
   return (
-    /* 흰 프레임 — 상단은 워드마크가 앉을 수 있게 넓게 */
+    /* 흰 프레임 */
     <div
       className="relative w-full"
       style={{
         background: '#ffffff',
         borderRadius: isMobile ? 30 : 44,
-        padding: isMobile ? '44px 8px 8px' : '58px 13px 13px',
+        padding: isMobile ? 8 : 13,
         boxShadow: '0 18px 50px rgba(20,28,24,0.14)',
       }}
     >
-      {/* 상단 워드마크 */}
-      <div className="absolute left-0 right-0 flex items-center justify-center gap-2 pointer-events-none"
-        style={{ top: 0, height: isMobile ? 44 : 58 }}>
-        <span style={{
-          width: 7, height: 7, borderRadius: 99, background: p.accent,
-          transition: 'background 0.6s ease',
+      {/* 상단 홈 — 흰 프레임이 패널 위쪽으로 파고든 탭.
+         양옆 필렛(radial-gradient)이 오목하게 이어져 깎아낸 것처럼 보인다. */}
+      <div className="absolute left-1/2 z-30 flex items-start pointer-events-none"
+        style={{ top: isMobile ? 8 : 13, transform: 'translateX(-50%)' }}>
+        <div style={{
+          width: FILLET, height: FILLET,
+          background: `radial-gradient(circle ${FILLET}px at 0 100%, transparent ${FILLET}px, #fff ${FILLET + 0.5}px)`,
         }} />
-        <span style={{
-          fontSize: isMobile ? 15 : 17, fontWeight: 800, letterSpacing: '-0.02em',
-          color: 'rgba(24,32,27,0.88)',
-        }}>
-          {p.label}
-        </span>
-        <span style={{
-          fontSize: isMobile ? 11 : 12, fontWeight: 600, color: 'rgba(24,32,27,0.35)', marginLeft: 2,
-        }}>
-          {p.eyebrow.split(' · ')[0]}
-        </span>
+        <div className="flex items-center gap-2"
+          style={{
+            height: TAB_H,
+            padding: isMobile ? '0 18px' : '0 26px',
+            background: '#fff',
+            borderRadius: `0 0 ${TAB_H * 0.55}px ${TAB_H * 0.55}px`,
+          }}>
+          <span style={{
+            width: 7, height: 7, borderRadius: 99, background: p.accent,
+            transition: 'background 0.6s ease', flexShrink: 0,
+          }} />
+          <span style={{
+            fontSize: isMobile ? 14 : 16, fontWeight: 800, letterSpacing: '-0.02em',
+            color: 'rgba(24,32,27,0.88)', whiteSpace: 'nowrap',
+          }}>
+            {p.label}
+          </span>
+          <span style={{
+            fontSize: isMobile ? 10.5 : 12, fontWeight: 600,
+            color: 'rgba(24,32,27,0.35)', whiteSpace: 'nowrap',
+          }}>
+            {p.eyebrow.split(' · ')[0]}
+          </span>
+        </div>
+        <div style={{
+          width: FILLET, height: FILLET,
+          background: `radial-gradient(circle ${FILLET}px at 100% 100%, transparent ${FILLET}px, #fff ${FILLET + 0.5}px)`,
+        }} />
       </div>
       <div
         className="relative w-full overflow-hidden"
