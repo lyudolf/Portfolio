@@ -341,12 +341,13 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
       <div className="absolute left-1/2 z-30 flex items-start pointer-events-none"
         style={{ top: isMobile ? 8 : 13, transform: 'translateX(-50%)' }}>
         <div style={{
-          width: FILLET, height: FILLET,
-          background: `radial-gradient(circle ${FILLET}px at 0 100%, transparent ${FILLET}px, #fff ${FILLET + 0.5}px)`,
+          width: FILLET, height: FILLET, marginRight: -1,
+          background: `radial-gradient(circle ${FILLET}px at 0 100%, transparent ${FILLET - 0.5}px, #fff ${FILLET}px)`,
         }} />
-        <div className="flex items-center gap-2"
+        <div className="flex items-center justify-center gap-2"
           style={{
             height: TAB_H,
+            minWidth: isMobile ? 240 : 420,
             padding: isMobile ? '0 18px' : '0 26px',
             background: '#fff',
             borderRadius: `0 0 ${TAB_H * 0.55}px ${TAB_H * 0.55}px`,
@@ -369,8 +370,8 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
           </span>
         </div>
         <div style={{
-          width: FILLET, height: FILLET,
-          background: `radial-gradient(circle ${FILLET}px at 100% 100%, transparent ${FILLET}px, #fff ${FILLET + 0.5}px)`,
+          width: FILLET, height: FILLET, marginLeft: -1,
+          background: `radial-gradient(circle ${FILLET}px at 100% 100%, transparent ${FILLET - 0.5}px, #fff ${FILLET}px)`,
         }} />
       </div>
       <div
