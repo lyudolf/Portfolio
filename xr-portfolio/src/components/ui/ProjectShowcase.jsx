@@ -386,8 +386,6 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
               fontWeight: 600, letterSpacing: '-0.01em',
               color: 'rgba(255,255,255,0.66)',
               whiteSpace: 'nowrap',
-              textAlign: 'justify',
-              textAlignLast: 'justify',
             }}>
               {p.subtitle}
             </span>
