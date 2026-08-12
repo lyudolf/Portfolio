@@ -317,17 +317,34 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
     onNavigate?.(PROJECTS[(next + PROJECTS.length) % PROJECTS.length].tab);
   };
 
+  /* 하단 중앙 홈(notch) — 흰 프레임이 패널 안쪽으로 파고든 모양.
+     radial-gradient 마스크로 원형 구멍을 뚫는다. */
+  const NOTCH = isMobile ? 28 : 34;
+  const notchMask =
+    `radial-gradient(circle ${NOTCH}px at 50% 100%, transparent 0 ${NOTCH}px, #000 ${NOTCH + 1}px)`;
+
   return (
+    /* 흰 프레임 */
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full"
       style={{
-        borderRadius: 32,
-        background: `linear-gradient(150deg, ${p.bgSoft} 0%, ${p.bg} 62%)`,
-        minHeight: isMobile ? 660 : 700,
-        transition: 'background 0.6s ease',
-        boxShadow: '0 18px 50px rgba(20,28,24,0.16)',
+        background: '#ffffff',
+        borderRadius: isMobile ? 30 : 44,
+        padding: isMobile ? 8 : 13,
+        boxShadow: '0 18px 50px rgba(20,28,24,0.14)',
       }}
     >
+      <div
+        className="relative w-full overflow-hidden"
+        style={{
+          borderRadius: isMobile ? 24 : 33,
+          background: `linear-gradient(150deg, ${p.bgSoft} 0%, ${p.bg} 62%)`,
+          minHeight: isMobile ? 660 : 700,
+          transition: 'background 0.6s ease',
+          WebkitMaskImage: notchMask,
+          maskImage: notchMask,
+        }}
+      >
       {/* 상단 — 프로젝트 스위처 */}
       <div className="relative z-30 flex items-center justify-between gap-3 px-6 md:px-9 pt-6">
         <p className="text-[10.5px] font-bold tracking-[0.28em] uppercase" style={{ color: 'rgba(255,255,255,0.5)' }}>
@@ -422,7 +439,8 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
       </div>
 
       {/* 하단 우 — 페이지네이션 · 화살표 */}
-      <div className="absolute right-6 md:right-9 bottom-6 md:bottom-8 z-20 flex items-center gap-3">
+      {/* 모바일에선 하단 중앙 홈 버튼과 겹치지 않도록 위로 올림 */}
+      <div className="absolute right-6 md:right-9 bottom-16 md:bottom-8 z-20 flex items-center gap-3">
         <div className="flex items-center gap-1.5">
           {PROJECTS.map((it, i) => (
             <span key={it.id} style={{
@@ -442,11 +460,34 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
         ))}
       </div>
 
-      {/* 안내 */}
-      <p className="absolute left-1/2 -translate-x-1/2 z-20 text-[10px] pointer-events-none hidden md:block"
-        style={{ bottom: 14, color: 'rgba(255,255,255,0.4)' }}>
-        오브젝트를 드래그해 돌려보세요 · 점을 누르면 설계 결정이 열립니다 · 우측 위에서 다른 프로젝트로 이동
+      {/* 안내 — 홈(notch)에 가리지 않게 좌측으로 치움 */}
+      <p className="absolute z-20 text-[10px] pointer-events-none hidden lg:block"
+        style={{ bottom: 16, left: 40, color: 'rgba(255,255,255,0.38)' }}>
+        오브젝트를 드래그해 돌려보세요 · 점을 누르면 설계 결정이 열립니다
       </p>
+      </div>
+
+      {/* 홈에 앉는 스크롤 버튼 — 프레임 위에 떠서 아래 본문으로 이동 */}
+      <button
+        onClick={() => window.scrollTo({ top: Math.round(window.innerHeight * 0.92), behavior: 'smooth' })}
+        aria-label="아래 내용으로 이동"
+        className="absolute left-1/2 z-40 flex items-center justify-center rounded-full cursor-pointer transition-all"
+        style={{
+          bottom: isMobile ? -4 : -6,
+          transform: 'translateX(-50%)',
+          width: NOTCH * 1.5,
+          height: NOTCH * 1.5,
+          background: '#ffffff',
+          color: p.bg,
+          border: `1px solid ${p.bg}1f`,
+          fontSize: NOTCH * 0.6,
+          lineHeight: 1,
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(-50%) translateY(3px)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(-50%)'; }}
+      >
+        ↓
+      </button>
     </div>
   );
 }
