@@ -279,7 +279,7 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
         background: '#ffffff',
         borderRadius: isMobile ? 30 : 44,
         padding: isMobile ? 8 : 13,
-        boxShadow: '0 18px 50px rgba(20,28,24,0.14)',
+        boxShadow: '0 20px 56px rgba(20,28,24,0.2), 0 0 0 1px rgba(24,32,27,0.05)',
       }}
     >
       {/* 패널 래퍼 — 상·하단 홈이 이 영역을 기준으로 앉는다 */}

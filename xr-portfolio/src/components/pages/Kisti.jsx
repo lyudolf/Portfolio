@@ -435,11 +435,6 @@ export default function Kisti({ onNavigate }) {
       className="relative w-full overflow-x-hidden"
       style={{
         backgroundColor: '#eef2ec',
-        backgroundImage:
-          "linear-gradient(180deg, rgba(238,242,236,0) 0%, rgba(238,242,236,0.55) 70vh, rgba(238,242,236,0.94) 115vh, #eef2ec 150vh), url('/hero-bg.jpg')",
-        backgroundSize: 'auto, 100% auto',
-        backgroundPosition: 'top center',
-        backgroundRepeat: 'no-repeat',
         color: '#1a231e',
       }}
     >

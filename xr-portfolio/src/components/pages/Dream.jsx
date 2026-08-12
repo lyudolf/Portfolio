@@ -510,11 +510,6 @@ export default function Dream({ onNavigate }) {
       className="relative w-full overflow-x-hidden"
       style={{
         backgroundColor: '#f1eee4',
-        backgroundImage:
-          "linear-gradient(180deg, rgba(241,238,228,0) 0%, rgba(241,238,228,0.55) 70vh, rgba(241,238,228,0.94) 115vh, #f1eee4 150vh), url('/hero-bg.jpg')",
-        backgroundSize: 'auto, 100% auto',
-        backgroundPosition: 'top center',
-        backgroundRepeat: 'no-repeat',
         color: '#221e15',
       }}
     >

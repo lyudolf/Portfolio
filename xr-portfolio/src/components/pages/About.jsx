@@ -295,7 +295,7 @@ export default function About({ onNavigate }) {
          섹션 4를 지나며 다크로 페이드 → 하단 다크 콘텐츠 연결. */
       backgroundColor: '#080A0F',
       backgroundImage:
-        "linear-gradient(180deg, rgba(8,10,15,0) 0%, rgba(8,10,15,0.18) 150vh, rgba(8,10,15,0.4) 330vh, rgba(8,10,15,0.82) 520vh, #080A0F 590vh), url('/hero-bg.jpg')",
+        "linear-gradient(180deg, rgba(8,10,15,0) 0%, rgba(8,10,15,0.35) 78vh, rgba(8,10,15,0.9) 105vh, #080A0F 125vh), url('/hero-bg.jpg')",
       backgroundSize: 'auto, 100% auto',
       backgroundPosition: 'top center',
       backgroundRepeat: 'no-repeat',

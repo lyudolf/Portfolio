@@ -276,11 +276,6 @@ export default function KoccaDetail({ onNavigate }) {
       className="relative w-full overflow-x-hidden"
       style={{
         backgroundColor: '#f2eef0',
-        backgroundImage:
-          "linear-gradient(180deg, rgba(242,238,240,0) 0%, rgba(242,238,240,0.55) 70vh, rgba(242,238,240,0.94) 115vh, #f2eef0 150vh), url('/hero-bg.jpg')",
-        backgroundSize: 'auto, 100% auto',
-        backgroundPosition: 'top center',
-        backgroundRepeat: 'no-repeat',
         color: '#1c181a',
       }}
     >
