@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const TABS = [
   { id: 'about', label: 'About' },
-  { id: 'work', label: 'Work' },
+  { id: 'kisti', label: 'Work' },
   { id: 'process', label: 'Process' },
   { id: 'withai', label: 'with AI' },
   { id: 'whyme', label: 'Why Me' },
@@ -11,9 +11,8 @@ const TABS = [
 
 /* 하위 상세 페이지에 있을 때 어느 상위 탭을 활성 표시할지 */
 const PARENT_TAB = {
-  kisti: 'work',
-  dream: 'work',
-  'kocca-detail': 'work',
+  dream: 'kisti',
+  'kocca-detail': 'kisti',
   'leaf-detail': 'withai',
   'etribe-detail': 'withai',
   'rl-detail': 'withai',

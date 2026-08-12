@@ -1,18 +1,12 @@
 import { useRef, useState } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import InfiniteGallery from '../ui/InfiniteGallery';
 import AtAGlance from '../ui/AtAGlance';
+import ProjectShowcase from '../ui/ProjectShowcase';
 
 /* ══════════════════════════════════════════
    DATA
    ══════════════════════════════════════════ */
-
-const META_BADGES = [
-  { label: 'PM · 기획 · 컨셉 설계 · QA' },
-  { label: '2025.09 — 2025.12' },
-  { label: 'Apple Vision Pro' },
-  { label: 'Unity · visionOS' },
-];
 
 const GALLERY_ITEMS = [
   { src: '/images/dream/1.png', title: '꿈키 MARS — 우주 탐사 체험' },
@@ -148,7 +142,6 @@ const IDEA_FILTERS = [
 ];
 
 /* ── Animation ── */
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.1, 0.25, 1] } } };
 
 /* ── Color tokens — 라이트(이끼·포슬린) 테마. 히어로의 밝은 톤을 상세까지 연장 ── */
 const C = {
@@ -170,100 +163,6 @@ const C = {
 /* ── HeroSection (auto curtain reveal) ──
    커튼은 연출용 오버레이일 뿐이라, 본문은 뒤에서 이미 렌더되어 있습니다.
    모션 최소화 설정에서는 커튼을 아예 띄우지 않고 본문을 즉시 보여줍니다. */
-function HeroSection() {
-  const reduceMotion = useReducedMotion();
-  const CURTAIN_DELAY = 0.25;
-  const CURTAIN_DURATION = 0.7;
-
-  const curtain = (side) => ({
-    initial: { x: '0%' },
-    animate: { x: side === 'left' ? '-100%' : '100%' },
-    transition: { duration: CURTAIN_DURATION, delay: CURTAIN_DELAY, ease: [0.76, 0, 0.24, 1] },
-  });
-
-  return (
-    <section className="relative min-h-screen overflow-hidden flex items-center justify-center">
-      {!reduceMotion && (
-        <>
-          {/* Curtain left */}
-          <motion.div
-            className="absolute inset-y-0 left-0 w-1/2 z-20 flex items-center justify-end pr-10"
-            {...curtain('left')}
-            style={{ background: '#ece7da' }}
-          >
-            <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
-              style={{ color: 'rgba(158,106,22,0.8)' }}>
-              Career XR
-            </p>
-          </motion.div>
-          {/* Curtain right */}
-          <motion.div
-            className="absolute inset-y-0 right-0 w-1/2 z-20 flex items-center pl-10"
-            {...curtain('right')}
-            style={{ background: '#ece7da' }}
-          >
-            <p className="text-[22px] md:text-[28px] font-extrabold tracking-[0.35em] uppercase"
-              style={{ color: 'rgba(158,106,22,0.8)' }}>
-              꿈키올래
-            </p>
-          </motion.div>
-        </>
-      )}
-
-      {/* 글래스 패널 — 이끼 사진 위, 메인 히어로와 동일 질감. 커튼이 걷히는 동안 이미 자리에 있다 */}
-      <div className="relative z-10 px-5 md:px-8 w-full flex justify-center">
-        <motion.div
-          className="w-full p-8 md:p-12"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: {
-              transition: {
-                staggerChildren: 0.06,
-                delayChildren: reduceMotion ? 0 : CURTAIN_DELAY + CURTAIN_DURATION * 0.7,
-              },
-            },
-          }}
-          style={{
-            maxWidth: '860px',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%)',
-            backdropFilter: 'blur(22px) saturate(1.15)',
-            WebkitBackdropFilter: 'blur(22px) saturate(1.15)',
-            border: '1px solid rgba(255,255,255,0.4)',
-            borderRadius: 28,
-            boxShadow: '0 30px 70px rgba(0,0,0,0.3)',
-          }}
-        >
-          <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.3em] uppercase mb-6"
-            style={{ color: '#d8a54b' }}>
-            Career XR — 꿈키올래
-          </motion.p>
-          <motion.h1 variants={fadeUp}
-            className="text-[38px] md:text-[52px] font-extrabold leading-[1.12] tracking-tight mb-6"
-            style={{ color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.02em', textShadow: '0 2px 16px rgba(0,0,0,0.25)' }}>
-            직업을 설명하는 대신,<br />
-            <span style={{ color: '#e8c37c' }}>세계관 안에서 경험하게 만들었습니다</span>
-          </motion.h1>
-          <motion.p variants={fadeUp}
-            className="text-[16px] md:text-[18px] font-medium leading-relaxed mb-10"
-            style={{ color: 'rgba(255,255,255,0.72)', maxWidth: '520px' }}>
-            Apple Vision Pro 기반 직업체험 콘텐츠 아홉 종을 실개발 2개월 만에 만들었습니다.
-            설명하는 교육이 아니라, 끝나고 나서 기억에 남는 체험을 목표로 했습니다.
-          </motion.p>
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2.5">
-            {META_BADGES.map((b) => (
-              <span key={b.label}
-                className="text-[12px] font-semibold px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>
-                {b.label}
-              </span>
-            ))}
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
 
 /* ── ChallengeSection (sticky sidebar) ── */
 function ChallengeSection() {
@@ -605,24 +504,6 @@ function OutcomeSection() {
 /* ══════════════════════════════════════════
    PAGE
    ══════════════════════════════════════════ */
-function BackToWork({ onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className="fixed top-6 left-6 z-30 flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold cursor-pointer transition-all"
-      style={{ background: 'rgba(255,255,255,0.75)', border: `1px solid ${C.border}`, color: C.text60, backdropFilter: 'blur(12px)' }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.95)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.75)'; }}
-    >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <line x1="19" y1="12" x2="5" y2="12" />
-        <polyline points="12 19 5 12 12 5" />
-      </svg>
-      Work
-    </button>
-  );
-}
-
 export default function Dream({ onNavigate }) {
   return (
     <div
@@ -641,9 +522,11 @@ export default function Dream({ onNavigate }) {
         className="fixed top-0 left-0 right-0 h-px pointer-events-none z-10"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(158,106,22,0.25), transparent)' }}
       />
-
-      <BackToWork onClick={() => onNavigate?.('work')} />
-      <HeroSection />
+      <div className="px-4 md:px-6 pt-6">
+        <div style={{ maxWidth: 1640, margin: '0 auto' }}>
+          <ProjectShowcase activeId="dream" onNavigate={onNavigate} />
+        </div>
+      </div>
       <AtAGlance
         accent="rgba(158,106,22,0.92)"
         items={[

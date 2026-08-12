@@ -209,7 +209,7 @@ export default function HeroLanding({ onNavigate }) {
               <p className="text-[10px] font-bold tracking-[0.25em] uppercase" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 Featured Work
               </p>
-              <button onClick={() => onNavigate?.('work')}
+              <button onClick={() => onNavigate?.('kisti')}
                 className="text-[11px] font-semibold cursor-pointer transition-colors"
                 style={{ color: 'rgba(255,255,255,0.65)' }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.95)'; }}

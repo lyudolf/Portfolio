@@ -1,17 +1,11 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import ProjectShowcase from '../ui/ProjectShowcase';
 
 /* ══════════════════════════════════════════
    DATA — 한콘진 AI 직업체험
    ⚠️ 개발 성과는 팀 전체의 프로젝트 규모 지표입니다.
       유희수 본인 기여는 'My Part'(초기 기획)에 분리 명시.
    ══════════════════════════════════════════ */
-
-const META_BADGES = [
-  { label: '초기 기획 참여' },
-  { label: '2026.04 — 11 (진행 중)' },
-  { label: '한국콘텐츠진흥원 국가과제' },
-  { label: 'LLM 실시간 생성' },
-];
 
 /* 유희수 본인 산출물 — Figma 실물 확인(2026-08) */
 const MY_PART = [
@@ -79,78 +73,10 @@ const C = {
   cardShadow: '0 8px 24px rgba(28,24,26,0.05)',
 };
 
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.1, 0.25, 1] } } };
 
 /* ══════════════════════════════════════════
    COMPONENTS
    ══════════════════════════════════════════ */
-
-function BackButton({ onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className="fixed top-6 left-6 z-30 flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold cursor-pointer transition-all"
-      style={{ background: 'rgba(255,255,255,0.75)', border: `1px solid ${C.border}`, color: C.text60, backdropFilter: 'blur(12px)' }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.95)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.75)'; }}
-    >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <line x1="19" y1="12" x2="5" y2="12" />
-        <polyline points="12 19 5 12 12 5" />
-      </svg>
-      Work
-    </button>
-  );
-}
-
-function HeroSection() {
-  const reduceMotion = useReducedMotion();
-  return (
-    <section className="relative min-h-screen flex items-center px-5 md:px-8">
-      <motion.div
-        className="w-full p-8 md:p-12"
-        initial="hidden"
-        animate="visible"
-        variants={{ visible: { transition: { staggerChildren: 0.07, delayChildren: reduceMotion ? 0 : 0.15 } } }}
-        style={{
-          maxWidth: '860px',
-          margin: '0 auto',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%)',
-          backdropFilter: 'blur(22px) saturate(1.15)',
-          WebkitBackdropFilter: 'blur(22px) saturate(1.15)',
-          border: '1px solid rgba(255,255,255,0.4)',
-          borderRadius: 28,
-          boxShadow: '0 30px 70px rgba(0,0,0,0.3)',
-        }}
-      >
-        <motion.p variants={fadeUp} className="text-[11px] font-bold tracking-[0.3em] uppercase mb-6"
-          style={{ color: '#f9a8d4' }}>
-          AI × Career — 한국콘텐츠진흥원
-        </motion.p>
-        <motion.h1 variants={fadeUp}
-          className="text-[36px] md:text-[50px] font-extrabold leading-[1.12] tracking-tight mb-6"
-          style={{ color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.02em', textShadow: '0 2px 16px rgba(0,0,0,0.25)' }}>
-          같은 사건을 두 번 겪지 않는<br />
-          <span style={{ color: '#f9a8d4' }}>과학수사 직업체험</span>
-        </motion.h1>
-        <motion.p variants={fadeUp}
-          className="text-[16px] md:text-[18px] font-medium leading-relaxed mb-10"
-          style={{ color: 'rgba(255,255,255,0.72)', maxWidth: '560px' }}>
-          매 플레이마다 LLM이 사건·증거·NPC 대사를 새로 생성하는 국가과제.
-          꿈키올래에서 만든 세계관과 난이도 설계가 이 과제의 출발점이 됐습니다.
-        </motion.p>
-        <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2.5">
-          {META_BADGES.map((b) => (
-            <span key={b.label} className="text-[12px] font-semibold px-3 py-1.5 rounded-full"
-              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.4)', color: 'rgba(255,255,255,0.9)' }}>
-              {b.label}
-            </span>
-          ))}
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
 
 /* 꿈키올래 → 이 과제로 이어진 경로 */
 function LineageSection({ onNavigate }) {
@@ -360,8 +286,11 @@ export default function KoccaDetail({ onNavigate }) {
     >
       <div className="fixed top-0 left-0 right-0 h-px pointer-events-none z-10"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(166,54,102,0.25), transparent)' }} />
-      <BackButton onClick={() => onNavigate?.('work')} />
-      <HeroSection />
+      <div className="px-4 md:px-6 pt-6">
+        <div style={{ maxWidth: 1640, margin: '0 auto' }}>
+          <ProjectShowcase activeId="kocca" onNavigate={onNavigate} />
+        </div>
+      </div>
       <LineageSection onNavigate={onNavigate} />
       <MyPartSection />
       <EngineSection />

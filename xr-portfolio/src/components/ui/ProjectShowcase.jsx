@@ -24,6 +24,7 @@ const PROJECTS = [
     label: 'KISTI',
     display: ['KIS', 'TI'],
     eyebrow: 'Clinical XR · 2024 — 현재 · 단독 기획 · PM',
+    headline: '고령자를 위한 XR은 “재미있는 콘텐츠”로 완성되지 않습니다',
     summary:
       '고령자 인지·운동 훈련 VR. 교수자 PC와 VR 앱 두 종이 서버를 사이에 두고 움직이는 구조를 기획 단계에서 정의하고, 임상 데이터가 실제로 수집되는 운영 체계까지 설계했습니다.',
     stats: [
@@ -47,6 +48,7 @@ const PROJECTS = [
     label: '꿈키올래',
     display: ['꿈키', '올래'],
     eyebrow: 'Career XR · 2025.09 — 12 · PM · 기획 · QA',
+    headline: '직업을 설명하는 대신, 세계관 안에서 경험하게 만들었습니다',
     summary:
       'Apple Vision Pro 직업체험 9종. 세 세계관 아래 세 직업이 같은 흐름을 공유하는 프레임워크로 재설계해, 두 달이라는 불가능한 일정을 구조로 해결했습니다.',
     stats: [
@@ -70,6 +72,7 @@ const PROJECTS = [
     label: '한콘진',
     display: ['KOC', 'CA'],
     eyebrow: 'AI × Career · 2026.04 — 진행 중 · 초기 기획',
+    headline: '같은 사건을 두 번 겪지 않는 과학수사 직업체험',
     summary:
       '한국콘텐츠진흥원 국가과제. 매 플레이마다 LLM이 사건·증거·NPC 대사를 새로 생성합니다. 꿈키올래의 세계관과 난이도 파라미터 설계가 이 과제의 출발점이 됐습니다.',
     stats: [
@@ -303,16 +306,15 @@ function useMedia(query) {
 /* ══════════════════════════════════════════
    MAIN
    ══════════════════════════════════════════ */
-export default function ProjectShowcase({ onNavigate }) {
-  const [idx, setIdx] = useState(0);
+export default function ProjectShowcase({ activeId, onNavigate }) {
+  const idx = Math.max(0, PROJECTS.findIndex((it) => it.id === activeId));
   const [openIdx, setOpenIdx] = useState(null);
   const reduced = useMedia('(prefers-reduced-motion: reduce)');
   const isMobile = useMedia('(max-width: 767px)');
   const p = PROJECTS[idx];
 
   const go = (next) => {
-    setOpenIdx(null);
-    setIdx((next + PROJECTS.length) % PROJECTS.length);
+    onNavigate?.(PROJECTS[(next + PROJECTS.length) % PROJECTS.length].tab);
   };
 
   return (
@@ -334,7 +336,7 @@ export default function ProjectShowcase({ onNavigate }) {
         <div className="flex items-center gap-1.5 p-1 rounded-full"
           style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)' }}>
           {PROJECTS.map((it, i) => (
-            <button key={it.id} onClick={() => { setIdx(i); setOpenIdx(null); }}
+            <button key={it.id} onClick={() => i !== idx && onNavigate?.(it.tab)}
               className="px-3.5 py-1.5 rounded-full text-[11.5px] font-bold cursor-pointer transition-all"
               style={{
                 background: i === idx ? '#fff' : 'transparent',
@@ -392,6 +394,10 @@ export default function ProjectShowcase({ onNavigate }) {
             <p className="text-[10.5px] font-semibold mb-2.5" style={{ color: p.accent }}>
               {p.eyebrow}
             </p>
+            <h2 className="text-[19px] md:text-[23px] font-extrabold leading-[1.3] mb-3"
+              style={{ color: '#fff', letterSpacing: '-0.02em' }}>
+              {p.headline}
+            </h2>
             <p className="text-[13px] leading-[1.85] mb-4" style={{ color: 'rgba(255,255,255,0.78)' }}>
               {p.summary}
             </p>
@@ -403,12 +409,13 @@ export default function ProjectShowcase({ onNavigate }) {
                 </div>
               ))}
             </div>
-            <button onClick={() => onNavigate?.(p.tab)}
+            <button
+              onClick={() => window.scrollTo({ top: Math.round(window.innerHeight * 0.92), behavior: 'smooth' })}
               className="px-6 py-3 rounded-full text-[13px] font-bold cursor-pointer transition-transform"
               style={{ background: '#fff', color: p.bg }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(3px)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(2px)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; }}>
-              자세히 보기 →
+              아래에서 자세히 ↓
             </button>
           </motion.div>
         </AnimatePresence>
@@ -438,7 +445,7 @@ export default function ProjectShowcase({ onNavigate }) {
       {/* 안내 */}
       <p className="absolute left-1/2 -translate-x-1/2 z-20 text-[10px] pointer-events-none hidden md:block"
         style={{ bottom: 14, color: 'rgba(255,255,255,0.4)' }}>
-        오브젝트를 드래그해 돌려보세요 · 점을 누르면 설계 결정이 열립니다
+        오브젝트를 드래그해 돌려보세요 · 점을 누르면 설계 결정이 열립니다 · 우측 위에서 다른 프로젝트로 이동
       </p>
     </div>
   );
