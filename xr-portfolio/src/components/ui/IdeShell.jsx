@@ -1,6 +1,6 @@
-import { useState, useMemo, useCallback, useSyncExternalStore } from 'react';
+import { useState, useEffect, useMemo, useCallback, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IDE } from './ideTokens';
+import { IDE, MONO } from './ideTokens';
 
 /* ══════════════════════════════════════════
    IdeShell — 코드 에디터 형태의 콘텐츠 셸
@@ -102,19 +102,66 @@ const ACTIVITY_ICONS = [
   { id: 'ext', d: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z' },
 ];
 
-/* 타이틀바 메뉴 = 사이트 네비게이션.
-   전체화면 IDE라 하단 네비를 숨기는 대신 여기서 이동한다. */
-const MENU = [
-  { tab: 'about', label: 'About' },
-  { tab: 'kisti', label: 'Work' },
-  { tab: 'withai', label: 'AI-lab' },
-  { tab: 'process', label: 'Process' },
-  { tab: 'whyme', label: 'Why Me' },
-  { tab: 'resume', label: '이력서' },
+/* 사이트 이동은 터미널의 `return` 출력으로 처리한다.
+   전체화면 IDE라 하단 네비가 없으므로, 터미널을 기본 펼침으로 두어
+   나가는 길이 항상 보이게 한다. */
+const RETURN_LINKS = [
+  { tab: 'about', label: 'About', desc: '유희수는 누구인가' },
+  { tab: 'kisti', label: 'Work', desc: '프로젝트 3선' },
+  { tab: 'process', label: 'Process', desc: '일하는 방식' },
+  { tab: 'whyme', label: 'Why Me', desc: '왜 저인가' },
+  { tab: 'resume', label: '이력서', desc: '경력 요약' },
 ];
+
+const BOOT_LINES = ['$ open ai-lab', '✓ 9 files indexed', '✓ ready'];
+
+/* 터미널 로그 — 줄 단위로 흘러나오고, 명령줄($)은 글자 단위로 타이핑된다.
+   key로 리마운트해 파일이 바뀔 때마다 처음부터 재생한다. */
+function TerminalLog({ lines, reduced, onDone }) {
+  const [shown, setShown] = useState(reduced ? lines.length : 0);
+  const [typed, setTyped] = useState(reduced ? Infinity : 0);
+
+  useEffect(() => {
+    if (reduced) { onDone?.(); return undefined; }
+    if (shown >= lines.length) { onDone?.(); return undefined; }
+
+    const line = lines[shown];
+    const isCmd = line.startsWith('$');
+
+    if (isCmd && typed < line.length) {
+      const t = setTimeout(() => setTyped((v) => v + 1), 22);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => {
+      setShown((v) => v + 1);
+      setTyped(0);
+    }, isCmd ? 220 : 110);
+    return () => clearTimeout(t);
+  }, [shown, typed, lines, reduced, onDone]);
+
+  const color = (ln) =>
+    ln.startsWith('$') ? IDE.accent
+      : ln.startsWith('✓') ? IDE.green
+        : ln.startsWith('!') ? IDE.amber : IDE.textDim;
+
+  return (
+    <>
+      {lines.slice(0, shown).map((ln, i) => (
+        <p key={i} style={{ color: color(ln) }}>{ln}</p>
+      ))}
+      {shown < lines.length && (
+        <p style={{ color: color(lines[shown]) }}>
+          {lines[shown].startsWith('$') ? lines[shown].slice(0, typed) : lines[shown]}
+          <span style={{ opacity: 0.7 }}>▌</span>
+        </p>
+      )}
+    </>
+  );
+}
 
 export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', statusText, onNavigate }) {
   const isMobile = useMedia('(max-width: 767px)');
+  const reduced = useMedia('(prefers-reduced-motion: reduce)');
   const files = useMemo(() => flatten(tree), [tree]);
   const first = initialFileId ?? files[0]?.id;
 
@@ -122,7 +169,15 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
   const [activeId, setActiveId] = useState(first);
   const [sidebarOpen, setSidebarOpen] = useState(true);   // 데스크톱: 패널 형태
   const [mobileNavOpen, setMobileNavOpen] = useState(false); // 모바일: 오버레이 드로어
-  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [terminalOpen, setTerminalOpen] = useState(true); // 나가는 길이 항상 보이도록 기본 펼침
+  /* 부팅 시퀀스는 세션당 한 번만 */
+  const [booting, setBooting] = useState(
+    () => typeof sessionStorage !== 'undefined' && !sessionStorage.getItem('aiLabBooted')
+  );
+  const endBoot = useCallback(() => {
+    sessionStorage.setItem('aiLabBooted', '1');
+    setBooting(false);
+  }, []);
 
   const active = files.find((f) => f.id === activeId) ?? files[0];
 
@@ -162,27 +217,15 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
               <span key={c} style={{ width: 11, height: 11, borderRadius: 99, background: c }} />
             ))}
           </div>
-          {/* 메뉴 = 사이트 이동 */}
-          <div className="flex items-center flex-shrink-0 overflow-x-auto">
-            {MENU.map((m) => {
-              const on = m.tab === 'withai';
-              return (
-                <button key={m.tab} onClick={() => !on && onNavigate?.(m.tab)}
-                  className="cursor-pointer flex-shrink-0"
-                  style={{
-                    padding: '3px 9px', borderRadius: 4, fontSize: 12,
-                    color: on ? '#fff' : IDE.textDim,
-                    background: on ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    fontWeight: on ? 700 : 400, whiteSpace: 'nowrap',
-                  }}
-                  onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
-                  onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}>
-                  {m.label}
-                </button>
-              );
-            })}
-          </div>
-          <p className="flex-1 text-center hidden lg:block"
+          {/* 프로젝트명 = 최후의 탈출구 (실제 에디터에도 있는 자리) */}
+          <button onClick={() => onNavigate?.('about')}
+            className="cursor-pointer flex-shrink-0"
+            style={{ fontSize: 12, color: IDE.textDim, padding: '3px 8px', borderRadius: 4 }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = IDE.textDim; }}>
+            유희수 · portfolio
+          </button>
+          <p className="flex-1 text-center hidden md:block"
             style={{ fontSize: 11.5, color: IDE.muted, letterSpacing: '0.02em' }}>
             {active ? `${active.name} — ${windowTitle}` : windowTitle}
           </p>
@@ -308,7 +351,7 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
               </div>
             </div>
 
-            {/* 터미널 */}
+            {/* 터미널 — 실행 로그 + 사이트 이동(return) */}
             <div className="flex-shrink-0" style={{ borderTop: `1px solid ${IDE.line}`, background: IDE.terminal }}>
               <button onClick={() => setTerminalOpen((v) => !v)}
                 className="w-full flex items-center gap-3 cursor-pointer"
@@ -316,22 +359,32 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
                 <span style={{ fontSize: 8 }}>{terminalOpen ? '▼' : '▶'}</span>
                 <span style={{ color: terminalOpen ? '#fff' : IDE.muted }}>TERMINAL</span>
                 <span style={{ marginLeft: 'auto', opacity: 0.7 }}>
-                  {active?.terminal ? `${active.terminal.length} lines` : 'idle'}
+                  {terminalOpen ? 'bash' : '다른 페이지로 이동하려면 펼치세요'}
                 </span>
               </button>
               {terminalOpen && (
                 <div style={{
-                  padding: '4px 16px 14px', maxHeight: 150, overflowY: 'auto',
-                  fontFamily: '"JetBrains Mono", "Fira Code", monospace', fontSize: 11.5, lineHeight: 1.85,
+                  padding: '4px 16px 14px', maxHeight: isMobile ? 190 : 224, overflowY: 'auto',
+                  fontFamily: MONO, fontSize: 11.5, lineHeight: 1.85,
                 }}>
-                  {(active?.terminal ?? ['$ 파일을 선택하면 실행 로그가 표시됩니다']).map((ln, i) => (
-                    <p key={i} style={{
-                      color: ln.startsWith('$') ? IDE.accent
-                        : ln.startsWith('✓') ? IDE.green
-                          : ln.startsWith('!') ? IDE.amber : IDE.textDim,
-                    }}>
-                      {ln}
-                    </p>
+                  {booting ? (
+                    <TerminalLog key="boot" lines={BOOT_LINES} reduced={reduced} onDone={endBoot} />
+                  ) : (
+                    <TerminalLog key={activeId} lines={active?.terminal ?? ['$ 파일을 선택하세요']} reduced={reduced} />
+                  )}
+
+                  {/* 사이트 이동 — 항상 맨 아래에 남는다 */}
+                  <p style={{ color: IDE.accent, marginTop: 10 }}>$ return</p>
+                  {RETURN_LINKS.map((l) => (
+                    <button key={l.tab} onClick={() => onNavigate?.(l.tab)}
+                      className="flex items-baseline gap-2 cursor-pointer text-left w-full"
+                      style={{ padding: '1px 0', color: IDE.textDim }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = IDE.textDim; }}>
+                      <span style={{ color: IDE.green, flexShrink: 0 }}>{'  ->'}</span>
+                      <span style={{ minWidth: 76, textDecoration: 'underline', textUnderlineOffset: 3 }}>{l.label}</span>
+                      <span style={{ color: IDE.muted, fontSize: 11 }}>{l.desc}</span>
+                    </button>
                   ))}
                 </div>
               )}
