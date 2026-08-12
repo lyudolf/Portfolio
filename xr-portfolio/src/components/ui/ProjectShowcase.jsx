@@ -324,16 +324,35 @@ export default function ProjectShowcase({ activeId, onNavigate }) {
     `radial-gradient(circle ${NOTCH}px at 50% 100%, transparent 0 ${NOTCH}px, #000 ${NOTCH + 1}px)`;
 
   return (
-    /* 흰 프레임 */
+    /* 흰 프레임 — 상단은 워드마크가 앉을 수 있게 넓게 */
     <div
       className="relative w-full"
       style={{
         background: '#ffffff',
         borderRadius: isMobile ? 30 : 44,
-        padding: isMobile ? 8 : 13,
+        padding: isMobile ? '44px 8px 8px' : '58px 13px 13px',
         boxShadow: '0 18px 50px rgba(20,28,24,0.14)',
       }}
     >
+      {/* 상단 워드마크 */}
+      <div className="absolute left-0 right-0 flex items-center justify-center gap-2 pointer-events-none"
+        style={{ top: 0, height: isMobile ? 44 : 58 }}>
+        <span style={{
+          width: 7, height: 7, borderRadius: 99, background: p.accent,
+          transition: 'background 0.6s ease',
+        }} />
+        <span style={{
+          fontSize: isMobile ? 15 : 17, fontWeight: 800, letterSpacing: '-0.02em',
+          color: 'rgba(24,32,27,0.88)',
+        }}>
+          {p.label}
+        </span>
+        <span style={{
+          fontSize: isMobile ? 11 : 12, fontWeight: 600, color: 'rgba(24,32,27,0.35)', marginLeft: 2,
+        }}>
+          {p.eyebrow.split(' · ')[0]}
+        </span>
+      </div>
       <div
         className="relative w-full overflow-hidden"
         style={{
