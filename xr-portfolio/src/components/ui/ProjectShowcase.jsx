@@ -23,6 +23,7 @@ const PROJECTS = [
     tab: 'kisti',
     label: 'KISTI',
     display: ['KIS', 'TI'],
+    subtitle: '고령자용 비대면 인지-운동 융합 훈련',
     eyebrow: 'Clinical XR · 2024 — 현재 · 단독 기획 · PM',
     headline: '고령자를 위한 XR은 “재미있는 콘텐츠”로 완성되지 않습니다',
     summary:
@@ -47,6 +48,7 @@ const PROJECTS = [
     tab: 'dream',
     label: '꿈키올래',
     display: ['꿈키', '올래'],
+    subtitle: 'XR 직업체험 콘텐츠',
     eyebrow: 'Career XR · 2025.09 — 12 · PM · 기획 · QA',
     headline: '직업을 설명하는 대신, 세계관 안에서 경험하게 만들었습니다',
     summary:
@@ -71,6 +73,7 @@ const PROJECTS = [
     tab: 'kocca-detail',
     label: '한콘진',
     display: ['KOC', 'CA'],
+    subtitle: 'AI 직업체험 콘텐츠',
     eyebrow: 'AI × Career · 2026.04 — 진행 중 · 초기 기획',
     headline: '같은 사건을 두 번 겪지 않는 과학수사 직업체험',
     summary:
@@ -416,13 +419,30 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
           className="absolute z-0 pointer-events-none select-none"
           style={{ top: isMobile ? 62 : 78, left: isMobile ? 18 : 40 }}
         >
+          {/* 아래로 갈수록 옅어지는 그라디언트 텍스트 */}
           <span style={{
             display: 'block',
             fontSize: isMobile ? 'clamp(52px, 17vw, 76px)' : 'clamp(74px, 10.5vw, 158px)',
             fontWeight: 900, letterSpacing: '-0.055em',
-            color: 'rgba(255,255,255,0.9)', lineHeight: 0.92, whiteSpace: 'nowrap',
+            lineHeight: 0.92, whiteSpace: 'nowrap',
+            backgroundImage:
+              'linear-gradient(180deg, rgba(255,255,255,0.95) 32%, rgba(255,255,255,0.62) 68%, rgba(255,255,255,0.12) 100%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent',
+            WebkitTextFillColor: 'transparent',
           }}>
             {p.display.join('')}
+          </span>
+          <span style={{
+            display: 'block',
+            marginTop: isMobile ? 6 : 10,
+            fontSize: isMobile ? 11.5 : 14,
+            fontWeight: 600, letterSpacing: '-0.01em',
+            color: 'rgba(255,255,255,0.62)',
+            whiteSpace: 'nowrap',
+          }}>
+            {p.subtitle}
           </span>
         </motion.div>
       </AnimatePresence>
