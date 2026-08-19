@@ -10,7 +10,7 @@ export const TAB_PATHS = {
   kisti: '/kisti',
   dream: '/dream',
   'kocca-detail': '/kocca',
-  process: '/process',
+  solo: '/solo',
   withai: '/ai-lab',
   whyme: '/why-me',
   'etribe-detail': '/etribe',
@@ -45,14 +45,15 @@ export const PAGE_META = {
     description:
       'Vision Pro 기반 XR 직업체험 콘텐츠 9종을 2개월 실개발로 딜리버리. 초기 기획 전면 폐기 후 프레임워크화로 불가능한 일정을 구조로 해결.',
   },
-  process: {
-    title: '워크 프로세스 | 유희수',
-    description: '문제 정의부터 QA·운영까지, 서비스 기획자 유희수의 일하는 방식.',
+  solo: {
+    title: 'Solo Work — 혼자 기획하고 출시한 미니앱 4종 | 유희수',
+    description:
+      '토스 앱인토스에 미니앱 4종을 단독 출시. 수익 모델·심사·배포까지 직접 통과한 B2C 제품 기획 기록과, 유저를 만들지 못한 이유에 대한 회고.',
   },
   withai: {
     title: 'AI-lab — AI로 직접 만든 것들 | 유희수',
     description:
-      'AI를 인지적 증폭기로 쓰는 기획자의 작업 기록. 7일 만에 만든 웹 3D 게임, 2,700만 step 강화학습 실험, 앱인토스 미니앱 3종 출시.',
+      'AI를 인지적 증폭기로 쓰는 기획자의 작업 기록. 7일 만에 만든 웹 3D 게임, 2,700만 step 강화학습 실험, AI 영상 프로덕션.',
   },
   whyme: {
     title: 'Why Me — Technical PM | 유희수',

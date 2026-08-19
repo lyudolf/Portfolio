@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 const TABS = [
   { id: 'about', label: 'About' },
   { id: 'kisti', label: 'Work' },
-  { id: 'process', label: 'Process' },
+  { id: 'solo', label: 'Solo' },
   { id: 'withai', label: 'AI-lab' },
   { id: 'whyme', label: 'Why Me' },
   { id: 'resume', label: '이력서' },

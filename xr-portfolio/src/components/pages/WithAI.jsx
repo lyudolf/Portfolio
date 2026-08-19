@@ -131,29 +131,6 @@ function ProjectDoc({ data, onNavigate }) {
   );
 }
 
-/* ── 출시 앱 문서 ── */
-function ShippedDoc({ data }) {
-  return (
-    <article>
-      <DocHead title={data.name} sub={data.desc}
-        meta={[{ k: 'platform', v: '앱인토스' }, { k: 'status', v: data.status }, { k: 'released', v: data.released }]} />
-      <DocSection label="Scope">
-        <ul style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-          {data.scope.map((s) => (
-            <li key={s} className="flex gap-2.5" style={{ fontSize: 13, lineHeight: 1.85, color: IDE.textDim }}>
-              <span style={{ color: IDE.green, fontFamily: MONO, flexShrink: 0 }}>+</span>
-              <span>{s}</span>
-            </li>
-          ))}
-        </ul>
-      </DocSection>
-      <DocSection label="Note">
-        <P>{data.note}</P>
-      </DocSection>
-    </article>
-  );
-}
-
 /* ── 데이터 ── */
 const PROJECT_FILES = [
   {
@@ -236,59 +213,6 @@ const PROJECT_FILES = [
   },
 ];
 
-const SHIPPED_FILES = [
-  {
-    id: 'quizking',
-    name: 'quizking.app',
-    kind: 'app',
-    name_: '성격유형 퀴즈왕',
-    status: 'live',
-    released: '2026.06',
-    desc: '성격유형별 상식 퀴즈. 기획부터 심사·출시까지 단독 수행.',
-    scope: [
-      '12개 카테고리 × 3,600문제 구성과 난이도 시스템 설계',
-      '유형별 랭킹과 재도전 루프로 리텐션 확보',
-      '리워드 광고 기반 수익 모델 설계 및 심사 대응',
-    ],
-    note: '문서가 아니라 스토어에 올라간 제품으로 실행력을 증명한 첫 사례입니다.',
-    terminal: [
-      '$ ait build && ait deploy',
-      '✓ bundle 1.2MB',
-      '✓ 심사 통과 — LIVE (2026.06)',
-    ],
-  },
-  {
-    id: 'coffee',
-    name: 'coffee-slot.app',
-    kind: 'app',
-    name_: '오늘은 누가 쏠래?',
-    status: 'approved',
-    released: '공개 준비 중',
-    desc: '커피 내기 슬롯머신. 균등 1/N 추첨을 연출로 번역.',
-    scope: [
-      '확률은 정확히 1/N로 고정하되, 스포트라이트 연출로 긴장감을 만드는 구조',
-      '결과 공유 흐름과 재추첨 UX 설계',
-    ],
-    note: '"공정함"과 "재미"가 충돌할 때, 확률이 아니라 연출을 손대는 쪽을 택했습니다.',
-    terminal: ['$ ait deploy', '✓ 심사 승인 — 공개 대기'],
-  },
-  {
-    id: 'spending',
-    name: 'spending-test.app',
-    kind: 'app',
-    name_: '소비유형 테스트',
-    status: 'in review',
-    released: '심사 진행 중',
-    desc: '2지선다 밸런스게임으로 소비 성향을 진단하는 미니앱.',
-    scope: [
-      '8종 소비유형 분류 체계와 문항 설계',
-      '테스트 유니버스를 모듈로 확장 가능한 구조로 설계 — 다음 테스트는 문항만 갈아끼우면 됨',
-    ],
-    note: '한 번 만들고 끝내지 않기 위해, 처음부터 재사용 가능한 틀로 만들었습니다.',
-    terminal: ['$ ait deploy', '! 심사 진행 중'],
-  },
-];
-
 const PROTOCOL_RULES = [
   { key: 'no_unconditional_agreement', desc: '무조건적으로 동의하지 말 것. 논리적·기술적 오류가 있으면 반드시 지적할 것.' },
   { key: 'provide_factual_grounding', desc: '기술적 답변 시 추론의 근거를 짧게 명시할 것. "~인 것 같습니다"는 금지.' },
@@ -330,7 +254,6 @@ export default function WithAI({ onNavigate }) {
           <ul style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
               ['projects/', '직접 만들어 배포한 것 — 웹 3D 게임, 강화학습 실험, AI 영상'],
-              ['shipped/', '토스 앱인토스에 출시한 미니앱 3종'],
               ['workflow.md', '사람과 AI의 역할 분담'],
               ['protocol.json', 'AI를 다룰 때 지키는 규칙'],
             ].map(([k, v]) => (
@@ -435,18 +358,6 @@ export default function WithAI({ onNavigate }) {
         kind: f.kind,
         terminal: f.terminal,
         render: () => <ProjectDoc data={f} onNavigate={onNavigate} />,
-      })),
-    },
-    {
-      type: 'folder',
-      name: 'shipped',
-      children: SHIPPED_FILES.map((f) => ({
-        type: 'file',
-        id: f.id,
-        name: f.name,
-        kind: f.kind,
-        terminal: f.terminal,
-        render: () => <ShippedDoc data={{ ...f, name: f.name_ }} />,
       })),
     },
     { type: 'file', ...readme },

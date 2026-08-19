@@ -108,12 +108,12 @@ const ACTIVITY_ICONS = [
 const RETURN_LINKS = [
   { tab: 'about', label: 'About', desc: '유희수는 누구인가' },
   { tab: 'kisti', label: 'Work', desc: '프로젝트 3선' },
-  { tab: 'process', label: 'Process', desc: '일하는 방식' },
+  { tab: 'solo', label: 'Solo Work', desc: '혼자 출시한 미니앱 4종' },
   { tab: 'whyme', label: 'Why Me', desc: '왜 저인가' },
   { tab: 'resume', label: '이력서', desc: '경력 요약' },
 ];
 
-const BOOT_LINES = ['$ open ai-lab', '✓ 9 files indexed', '✓ ready'];
+const BOOT_LINES = ['$ open ai-lab', '✓ 6 files indexed', '✓ ready'];
 
 /* 터미널 로그 — 줄 단위로 흘러나오고, 명령줄($)은 글자 단위로 타이핑된다.
    key로 리마운트해 파일이 바뀔 때마다 처음부터 재생한다. */

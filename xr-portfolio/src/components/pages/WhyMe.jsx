@@ -40,6 +40,30 @@ const CARDS = [
     tag: ['Cursor', 'v0', 'Prototype', 'AI-Assisted'],
     wide: true,
   },
+  {
+    id: 'alternatives',
+    label: '04. Collaboration',
+    title: 'Never Just "No"',
+    subtitle: '거절 대신 판단 가능한 선택지로',
+    body: '클라이언트의 요구가 기술적으로 어려울 때 "안 됩니다"로 끝내지 않습니다. 대체 구현안, 우회 방식, 각각의 리스크와 비용을 함께 올려 상대가 직접 판단할 수 있는 형태로 만듭니다. 결정권을 가져오지 않고 해상도만 올리는 방식이라, 거절보다 신뢰가 빨리 쌓입니다.',
+    proof: 'KISTI·꿈키올래 두 프로젝트 모두에서 클라이언트 재요청으로 이어졌습니다 — 1년 용역의 3년차 연장, 그리고 후속 과제 제안.',
+    col: 'md:col-span-2',
+    accent: 'rgba(251,191,36,0.10)',
+    border: 'rgba(251,191,36,0.18)',
+    tag: ['Trade-off', 'Client Trust'],
+  },
+  {
+    id: 'device-aware',
+    label: '05. Craft',
+    title: 'Constraint-Aware Design',
+    subtitle: '디바이스의 한계를 설계로 흡수',
+    body: 'Vision Pro의 아이트래킹은 정밀하지만 긴 플레이에서 눈 피로가 큽니다. Quest의 핸드트래킹은 자유롭지만 고령자에게는 정확도가 부족합니다. 한계를 회피하거나 사용자에게 떠넘기지 않고, 상호작용 설계 자체로 흡수하는 쪽을 택합니다.',
+    proof: '고정 시점 + 콜라이더 확대로 핸드트래킹 오차를 흡수 — 고령자 임상 60명 무이슈 완료.',
+    col: 'md:col-span-1',
+    accent: 'rgba(236,72,153,0.10)',
+    border: 'rgba(236,72,153,0.18)',
+    tag: ['XR UX', 'Accessibility'],
+  },
 ];
 
 /* ── Hover glow card ── */
