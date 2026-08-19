@@ -102,15 +102,14 @@ const ACTIVITY_ICONS = [
   { id: 'ext', d: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z' },
 ];
 
-/* 사이트 이동은 터미널의 `return` 출력으로 처리한다.
-   전체화면 IDE라 하단 네비가 없으므로, 터미널을 기본 펼침으로 두어
-   나가는 길이 항상 보이게 한다. */
-const RETURN_LINKS = [
-  { tab: 'about', label: 'About', desc: '유희수는 누구인가' },
-  { tab: 'kisti', label: 'Work', desc: '프로젝트 3선' },
-  { tab: 'solo', label: 'Solo Work', desc: '혼자 출시한 미니앱 4종' },
-  { tab: 'whyme', label: 'Why Me', desc: '왜 저인가' },
-  { tab: 'resume', label: '이력서', desc: '경력 요약' },
+/* 전체화면 IDE라 하단 네비가 없다. 사이트 이동은 상단 메뉴바에 얇게 노출한다.
+   (이전에는 터미널 `$ return` 출력으로 뒀는데, 나가는 길을 찾기 어려웠다.) */
+const NAV_LINKS = [
+  { tab: 'about', label: 'About' },
+  { tab: 'kisti', label: 'Work' },
+  { tab: 'solo', label: 'Solo Work' },
+  { tab: 'whyme', label: 'Why Me' },
+  { tab: 'resume', label: '이력서' },
 ];
 
 const BOOT_LINES = ['$ open ai-lab', '✓ 6 files indexed', '✓ ready'];
@@ -169,7 +168,7 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
   const [activeId, setActiveId] = useState(first);
   const [sidebarOpen, setSidebarOpen] = useState(true);   // 데스크톱: 패널 형태
   const [mobileNavOpen, setMobileNavOpen] = useState(false); // 모바일: 오버레이 드로어
-  const [terminalOpen, setTerminalOpen] = useState(true); // 나가는 길이 항상 보이도록 기본 펼침
+  const [terminalOpen, setTerminalOpen] = useState(true); // 실행 로그가 이 페이지의 성격을 보여주므로 기본 펼침
   /* 부팅 시퀀스는 세션당 한 번만 */
   const [booting, setBooting] = useState(
     () => typeof sessionStorage !== 'undefined' && !sessionStorage.getItem('aiLabBooted')
@@ -209,23 +208,37 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
         flexDirection: 'column',
         height: '100%',
       }}>
-        {/* ── 타이틀 바 = 메뉴바 ── */}
+        {/* ── 타이틀 바 = 메뉴바 (사이트 이동을 여기서 처리) ── */}
         <div className="flex items-center flex-shrink-0"
           style={{ height: 36, background: IDE.chrome, borderBottom: `1px solid ${IDE.line}`, paddingLeft: 14, paddingRight: 14 }}>
-          <div className="flex items-center gap-2 flex-shrink-0" style={{ marginRight: 16 }}>
+          <div className="hidden md:flex items-center gap-2 flex-shrink-0" style={{ marginRight: 14 }}>
             {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
               <span key={c} style={{ width: 11, height: 11, borderRadius: 99, background: c }} />
             ))}
           </div>
-          {/* 프로젝트명 = 최후의 탈출구 (실제 에디터에도 있는 자리) */}
-          <button onClick={() => onNavigate?.('about')}
-            className="cursor-pointer flex-shrink-0"
-            style={{ fontSize: 12, color: IDE.textDim, padding: '3px 8px', borderRadius: 4 }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = IDE.textDim; }}>
-            유희수 · portfolio
-          </button>
-          <p className="flex-1 text-center hidden md:block"
+
+          {/* 현재 위치 — 메뉴 링크와 구분되도록 강조 */}
+          <span className="flex-shrink-0" style={{ fontSize: 12, fontWeight: 700, color: '#fff', marginRight: 12 }}>
+            AI-lab
+          </span>
+          <span className="flex-shrink-0 hidden md:block"
+            style={{ width: 1, height: 14, background: IDE.line, marginRight: 12 }} />
+
+          {/* 메뉴바 네비 — 좁은 화면에서는 가로 스크롤 */}
+          <nav className="flex items-center gap-0.5 overflow-x-auto"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {NAV_LINKS.map((l) => (
+              <button key={l.tab} onClick={() => onNavigate?.(l.tab)}
+                className="cursor-pointer flex-shrink-0"
+                style={{ fontSize: 12, color: IDE.textDim, padding: '4px 9px', borderRadius: 4, whiteSpace: 'nowrap' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = IDE.textDim; }}>
+                {l.label}
+              </button>
+            ))}
+          </nav>
+
+          <p className="ml-auto pl-4 flex-shrink-0 hidden lg:block"
             style={{ fontSize: 11.5, color: IDE.muted, letterSpacing: '0.02em' }}>
             {active ? `${active.name} — ${windowTitle}` : windowTitle}
           </p>
@@ -351,20 +364,18 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
               </div>
             </div>
 
-            {/* 터미널 — 실행 로그 + 사이트 이동(return) */}
+            {/* 터미널 — 실행 로그. 사이트 이동은 상단 메뉴바로 옮겼다. */}
             <div className="flex-shrink-0" style={{ borderTop: `1px solid ${IDE.line}`, background: IDE.terminal }}>
               <button onClick={() => setTerminalOpen((v) => !v)}
                 className="w-full flex items-center gap-3 cursor-pointer"
                 style={{ padding: '7px 16px', fontSize: 10.5, letterSpacing: '0.1em', color: IDE.muted }}>
                 <span style={{ fontSize: 8 }}>{terminalOpen ? '▼' : '▶'}</span>
                 <span style={{ color: terminalOpen ? '#fff' : IDE.muted }}>TERMINAL</span>
-                <span style={{ marginLeft: 'auto', opacity: 0.7 }}>
-                  {terminalOpen ? 'bash' : '다른 페이지로 이동하려면 펼치세요'}
-                </span>
+                <span style={{ marginLeft: 'auto', opacity: 0.7 }}>bash</span>
               </button>
               {terminalOpen && (
                 <div style={{
-                  padding: '4px 16px 14px', maxHeight: isMobile ? 190 : 224, overflowY: 'auto',
+                  padding: '4px 16px 14px', maxHeight: isMobile ? 150 : 180, overflowY: 'auto',
                   fontFamily: MONO, fontSize: 11.5, lineHeight: 1.85,
                 }}>
                   {booting ? (
@@ -372,20 +383,6 @@ export default function IdeShell({ tree, initialFileId, windowTitle = 'ai-lab', 
                   ) : (
                     <TerminalLog key={activeId} lines={active?.terminal ?? ['$ 파일을 선택하세요']} reduced={reduced} />
                   )}
-
-                  {/* 사이트 이동 — 항상 맨 아래에 남는다 */}
-                  <p style={{ color: IDE.accent, marginTop: 10 }}>$ return</p>
-                  {RETURN_LINKS.map((l) => (
-                    <button key={l.tab} onClick={() => onNavigate?.(l.tab)}
-                      className="flex items-baseline gap-2 cursor-pointer text-left w-full"
-                      style={{ padding: '1px 0', color: IDE.textDim }}
-                      onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.color = IDE.textDim; }}>
-                      <span style={{ color: IDE.green, flexShrink: 0 }}>{'  ->'}</span>
-                      <span style={{ minWidth: 76, textDecoration: 'underline', textUnderlineOffset: 3 }}>{l.label}</span>
-                      <span style={{ color: IDE.muted, fontSize: 11 }}>{l.desc}</span>
-                    </button>
-                  ))}
                 </div>
               )}
             </div>
