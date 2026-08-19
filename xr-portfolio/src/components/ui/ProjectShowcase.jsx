@@ -240,11 +240,17 @@ function Stage({ project, reduced }) {
   );
 }
 
+/* resize도 함께 구독 — matchMedia의 change가 구독 이전에 지나가면
+   좁은 폭에서 뜬 페이지가 모바일 레이아웃에 고착된다. */
 function useMedia(query) {
   const subscribe = useCallback((cb) => {
     const m = window.matchMedia(query);
     m.addEventListener('change', cb);
-    return () => m.removeEventListener('change', cb);
+    window.addEventListener('resize', cb);
+    return () => {
+      m.removeEventListener('change', cb);
+      window.removeEventListener('resize', cb);
+    };
   }, [query]);
   const getSnapshot = useCallback(() => window.matchMedia(query).matches, [query]);
   return useSyncExternalStore(subscribe, getSnapshot, () => false);
