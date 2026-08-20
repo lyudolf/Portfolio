@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import HeroShowcase from '../ui/HeroShowcase';
 
@@ -14,6 +15,7 @@ const INK_45 = 'rgba(24,32,27,0.45)';
 const BORDER = 'rgba(24,32,27,0.08)';
 const CARD = 'rgba(255,255,255,0.6)';
 const ACCENT = '#0f8f74';
+const SIDE_ACCENT = '#6d4fd6';   // Solo Work 페이지와 같은 보라 — 섹션이 어디로 이어지는지 색으로 알린다
 
 /* 역량 키워드 — 채용담당자가 스캔하는 지점 */
 const CAPABILITIES = [
@@ -25,22 +27,51 @@ const CAPABILITIES = [
   'QA · 운영 설계',
 ];
 
-/* 대표작 — 색·워드마크를 Work 쇼케이스 패널과 맞춰 같은 계보로 읽히게 한다 */
-const FEATURED = [
+/* 실무 프로젝트 — 색·워드마크를 Work 쇼케이스 패널과 맞춰 같은 계보로 읽히게 한다.
+   desc는 데스크톱 아코디언의 펼친 패널에서만 노출. */
+const PROJECTS = [
   {
     tab: 'kisti', name: 'KISTI', sub: '고령자 인지-운동 융합 훈련 VR',
     meta: '2024 — 현재 · 단독 기획 · PM',
+    desc: '1차 임상 60명 무이슈 완료. 1년 용역이 3년차 운영으로 연장됐습니다.',
     bg: '#1540c9', bgSoft: '#2f66ee', accent: '#8ee4ff',
   },
   {
     tab: 'dream', name: '꿈키올래', sub: 'Vision Pro 직업체험 9종',
     meta: '2025 · PM · 기획 · QA',
+    desc: '불가능한 일정을 3컨셉 × 3직업 프레임워크 구조로 해결했습니다.',
     bg: '#3a2a10', bgSoft: '#5a4218', accent: '#e8bd6d',
   },
   {
     tab: 'kocca-detail', name: 'KOCCA', sub: 'LLM 실시간 생성 과학수사 체험',
     meta: '2026 · 국가과제 진행 중',
+    desc: '매 플레이마다 LLM이 사건을 새로 생성합니다. LLM은 제안, 코드가 보증.',
     bg: '#3b1428', bgSoft: '#5c1f3d', accent: '#f9a8d4',
+  },
+];
+
+/* 개인 프로젝트 — 같은 카드 문법, 전부 Solo Work 페이지로 연결.
+   워드마크는 카드 폭에 맞춰 짧게 줄이고 정식 명칭은 아래 줄이 받는다. */
+const SIDE_PROJECTS = [
+  {
+    tab: 'solo', name: '퀴즈왕', sub: '성격유형별 상식 퀴즈',
+    meta: '앱인토스 · 2026.06 출시',
+    bg: '#8a5a10', bgSoft: '#c98a22', accent: '#ffd98a',
+  },
+  {
+    tab: 'solo', name: '소비유형', sub: '2지선다 소비 성향 진단',
+    meta: '앱인토스 · 2026 출시',
+    bg: '#0e5a4c', bgSoft: '#1d8f78', accent: '#8ef0da',
+  },
+  {
+    tab: 'solo', name: '커피내기', sub: '균등 1/N 슬롯 추첨',
+    meta: '앱인토스 · 2026 출시',
+    bg: '#8c3a12', bgSoft: '#c95c22', accent: '#ffb289',
+  },
+  {
+    tab: 'solo', name: '산책지수', sub: '오늘 산책 나가도 되는지',
+    meta: '앱인토스 · 2026 출시',
+    bg: '#12466e', bgSoft: '#2578b5', accent: '#a8dcff',
   },
 ];
 
@@ -61,12 +92,12 @@ const CHANNELS = [
   },
 ];
 
-function SectionLabel({ children }) {
+function SectionLabel({ children, color = ACCENT }) {
   return (
     <motion.p
       initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       className="text-[11px] font-bold tracking-[0.3em] uppercase mb-6"
-      style={{ color: ACCENT }}
+      style={{ color }}
     >
       {children}
     </motion.p>
@@ -76,7 +107,8 @@ function SectionLabel({ children }) {
 function CapabilitiesSection() {
   return (
     <section className="px-8 pb-4" style={{ maxWidth: 1100, margin: '0 auto' }}>
-      <SectionLabel>What I Do</SectionLabel>
+      {/* "What I do"는 이제 Work 페이지의 문장이라, 랜딩 역량 칩은 deliver로 구분 */}
+      <SectionLabel>What I deliver</SectionLabel>
       <div className="flex flex-wrap gap-2">
         {CAPABILITIES.map((c, i) => (
           <motion.span
@@ -95,13 +127,149 @@ function CapabilitiesSection() {
   );
 }
 
-/* 각 카드가 해당 프로젝트 쇼케이스 패널의 축소판 — 색·워드마크·서브가 그대로 이어진다 */
-function FeaturedSection({ onNavigate }) {
+/* 카드 하나 = 해당 프로젝트 쇼케이스 패널의 축소판.
+   색·워드마크·서브가 상세 페이지와 그대로 이어진다. */
+function ProjectCard({ item, index, wordmarkSize }) {
   return (
-    <section className="px-8 py-16" style={{ maxWidth: 1100, margin: '0 auto' }}>
+    <motion.button
+      onClick={item.onClick}
+      initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="text-left overflow-hidden cursor-pointer"
+      style={{
+        borderRadius: 22,
+        background: '#fff',
+        border: `1px solid ${BORDER}`,
+        boxShadow: '0 8px 24px rgba(24,32,27,0.05)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-3px)';
+        e.currentTarget.style.boxShadow = '0 16px 36px rgba(24,32,27,0.12)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'none';
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(24,32,27,0.05)';
+      }}
+    >
+      {/* 미니 패널 — 쇼케이스 히어로와 같은 그라디언트·대형 워드마크 */}
+      <div className="relative flex items-end px-5"
+        style={{
+          height: 132,
+          background: `linear-gradient(150deg, ${item.bgSoft} 0%, ${item.bg} 62%)`,
+        }}>
+        <span style={{
+          position: 'absolute', left: 18, bottom: 10,
+          fontSize: wordmarkSize, fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 0.92,
+          backgroundImage:
+            'linear-gradient(180deg, rgba(255,255,255,0.82) 26%, rgba(255,255,255,0.4) 68%, rgba(255,255,255,0.06) 100%)',
+          WebkitBackgroundClip: 'text', backgroundClip: 'text',
+          color: 'transparent', WebkitTextFillColor: 'transparent',
+          whiteSpace: 'nowrap',
+        }}>
+          {item.name}
+        </span>
+        <span style={{
+          position: 'absolute', right: 16, top: 14,
+          width: 7, height: 7, borderRadius: 99, background: item.accent,
+        }} />
+      </div>
+
+      <div className="px-5 py-4">
+        <p className="text-[14px] font-bold mb-1.5" style={{ color: INK }}>{item.sub}</p>
+        <p className="text-[11.5px]" style={{ color: INK_45 }}>{item.meta}</p>
+      </div>
+    </motion.button>
+  );
+}
+
+/* ── 데스크톱 전용 아코디언 갤러리 ──
+   hover한 패널이 넓게 펼쳐지고 나머지는 접히며 채도가 빠진다.
+   패널은 쇼케이스와 같은 그라디언트+워드마크 — 이미지 없이 문법을 잇는다.
+   클릭은 항상 상세 이동(확장은 hover/focus 담당이라 충돌 없음). */
+function ProjectAccordion({ onNavigate }) {
+  const [idx, setIdx] = useState(0);
+
+  return (
+    <div className="hidden md:flex gap-2.5" style={{ height: 400 }}>
+      {PROJECTS.map((f, i) => {
+        const open = i === idx;
+        return (
+          <button
+            key={f.tab}
+            onMouseEnter={() => setIdx(i)}
+            onFocus={() => setIdx(i)}
+            onClick={() => onNavigate?.(f.tab)}
+            aria-expanded={open}
+            className="relative text-left overflow-hidden cursor-pointer"
+            style={{
+              flexGrow: open ? 2.6 : 1,
+              flexBasis: 0,
+              minWidth: 0,
+              borderRadius: 22,
+              background: `linear-gradient(150deg, ${f.bgSoft} 0%, ${f.bg} 62%)`,
+              filter: open ? 'none' : 'saturate(0.5) brightness(0.8)',
+              transition:
+                'flex-grow 0.65s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease',
+            }}
+          >
+            {/* 상단 — 액센트 점 + 펼친 패널에만 메타 */}
+            <div className="absolute top-5 left-6 right-5 flex items-center justify-between gap-3">
+              <span className="text-[11px] font-semibold whitespace-nowrap overflow-hidden"
+                style={{
+                  color: f.accent,
+                  opacity: open ? 1 : 0,
+                  transform: open ? 'none' : 'translateY(6px)',
+                  transition: 'opacity 0.4s ease 0.15s, transform 0.4s ease 0.15s',
+                }}>
+                {f.meta}
+              </span>
+              <span style={{ width: 7, height: 7, borderRadius: 99, background: f.accent, flexShrink: 0 }} />
+            </div>
+
+            {/* 하단 — 워드마크(항상) + 설명(펼친 패널만) */}
+            <div className="absolute left-6 right-5 bottom-5">
+              <span style={{
+                display: 'block',
+                fontSize: 52, fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 0.92,
+                backgroundImage:
+                  'linear-gradient(180deg, rgba(255,255,255,0.85) 26%, rgba(255,255,255,0.42) 68%, rgba(255,255,255,0.07) 100%)',
+                WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                color: 'transparent', WebkitTextFillColor: 'transparent',
+                whiteSpace: 'nowrap',
+              }}>
+                {f.name}
+              </span>
+              <div style={{
+                maxHeight: open ? 120 : 0,
+                opacity: open ? 1 : 0,
+                overflow: 'hidden',
+                transition: 'max-height 0.55s cubic-bezier(0.22,1,0.36,1) 0.08s, opacity 0.4s ease 0.18s',
+              }}>
+                <p className="text-[15px] font-bold mt-3 mb-1.5 whitespace-nowrap" style={{ color: 'rgba(255,255,255,0.94)' }}>
+                  {f.sub}
+                </p>
+                <p className="text-[12.5px] leading-relaxed mb-2.5" style={{ color: 'rgba(255,255,255,0.62)' }}>
+                  {f.desc}
+                </p>
+                <span className="text-[12px] font-bold" style={{ color: f.accent }}>
+                  자세히 보기 →
+                </span>
+              </div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function CardSection({ label, labelColor, items, columns, wordmarkSize = 42, moreTab, onNavigate, className }) {
+  return (
+    <section className={`px-8 ${className}`} style={{ maxWidth: 1100, margin: '0 auto' }}>
       <div className="flex items-baseline justify-between mb-6">
-        <SectionLabel>Selected Work</SectionLabel>
-        <button onClick={() => onNavigate?.('kisti')}
+        <SectionLabel color={labelColor}>{label}</SectionLabel>
+        <button onClick={() => onNavigate?.(moreTab)}
           className="text-[12px] font-semibold cursor-pointer transition-colors"
           style={{ color: INK_45 }}
           onMouseEnter={(e) => { e.currentTarget.style.color = INK; }}
@@ -110,58 +278,14 @@ function FeaturedSection({ onNavigate }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {FEATURED.map((f, i) => (
-          <motion.button
-            key={f.tab}
-            onClick={() => onNavigate?.(f.tab)}
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.5, delay: i * 0.08 }}
-            className="text-left overflow-hidden cursor-pointer"
-            style={{
-              borderRadius: 22,
-              background: '#fff',
-              border: `1px solid ${BORDER}`,
-              boxShadow: '0 8px 24px rgba(24,32,27,0.05)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-3px)';
-              e.currentTarget.style.boxShadow = '0 16px 36px rgba(24,32,27,0.12)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'none';
-              e.currentTarget.style.boxShadow = '0 8px 24px rgba(24,32,27,0.05)';
-            }}
-          >
-            {/* 미니 패널 — 쇼케이스 히어로와 같은 그라디언트·대형 워드마크 */}
-            <div className="relative flex items-end px-5"
-              style={{
-                height: 132,
-                background: `linear-gradient(150deg, ${f.bgSoft} 0%, ${f.bg} 62%)`,
-              }}>
-              <span style={{
-                position: 'absolute', left: 18, bottom: 10,
-                fontSize: 42, fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 0.92,
-                backgroundImage:
-                  'linear-gradient(180deg, rgba(255,255,255,0.82) 26%, rgba(255,255,255,0.4) 68%, rgba(255,255,255,0.06) 100%)',
-                WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                color: 'transparent', WebkitTextFillColor: 'transparent',
-                whiteSpace: 'nowrap',
-              }}>
-                {f.name}
-              </span>
-              <span style={{
-                position: 'absolute', right: 16, top: 14,
-                width: 7, height: 7, borderRadius: 99, background: f.accent,
-              }} />
-            </div>
-
-            <div className="px-5 py-4">
-              <p className="text-[14px] font-bold mb-1.5" style={{ color: INK }}>{f.sub}</p>
-              <p className="text-[11.5px]" style={{ color: INK_45 }}>{f.meta}</p>
-            </div>
-          </motion.button>
+      <div className={`grid grid-cols-1 gap-4 ${columns}`}>
+        {items.map((it, i) => (
+          <ProjectCard
+            key={it.name}
+            item={{ ...it, onClick: () => onNavigate?.(it.tab) }}
+            index={i}
+            wordmarkSize={wordmarkSize}
+          />
         ))}
       </div>
     </section>
@@ -236,7 +360,37 @@ export default function About({ onNavigate }) {
         <div style={{ maxWidth: 1640, margin: '0 auto' }}>
           <HeroShowcase onNavigate={onNavigate}>
             <CapabilitiesSection />
-            <FeaturedSection onNavigate={onNavigate} />
+            <section className="px-8 pt-16 pb-10" style={{ maxWidth: 1100, margin: '0 auto' }}>
+              <div className="flex items-baseline justify-between mb-6">
+                <SectionLabel>Project</SectionLabel>
+                <button onClick={() => onNavigate?.('kisti')}
+                  className="text-[12px] font-semibold cursor-pointer transition-colors"
+                  style={{ color: INK_45 }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = INK; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = INK_45; }}>
+                  전체 보기 →
+                </button>
+              </div>
+              {/* 데스크톱: hover 아코디언 / 모바일: 카드 스택 (hover 없어 탭 충돌 방지) */}
+              <ProjectAccordion onNavigate={onNavigate} />
+              <div className="grid grid-cols-1 gap-4 md:hidden">
+                {PROJECTS.map((it, i) => (
+                  <ProjectCard key={it.name}
+                    item={{ ...it, onClick: () => onNavigate?.(it.tab) }}
+                    index={i} wordmarkSize={42} />
+                ))}
+              </div>
+            </section>
+            <CardSection
+              label="Side Project"
+              labelColor={SIDE_ACCENT}
+              items={SIDE_PROJECTS}
+              columns="md:grid-cols-2 lg:grid-cols-4"
+              wordmarkSize={34}
+              moreTab="solo"
+              onNavigate={onNavigate}
+              className="pb-16"
+            />
             <ContactSection onNavigate={onNavigate} />
           </HeroShowcase>
         </div>
