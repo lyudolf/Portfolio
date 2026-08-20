@@ -1,4 +1,4 @@
-import { useRef, useMemo, useCallback, useSyncExternalStore, Suspense } from 'react';
+import { useRef, useMemo, useState, useEffect, useCallback, useSyncExternalStore, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, ContactShadows, Float, useGLTF } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -257,6 +257,121 @@ function useMedia(query) {
 }
 
 /* ══════════════════════════════════════════
+   픽셀 스왑 전환 — 프로젝트를 넘길 때 패널을 사각형 조각으로 덮었다가
+   새 프로젝트 위에서 걷어낸다. (reactbits Pixel Swap의 자체 구현)
+
+   라우트가 바뀌면 컴포넌트가 리마운트되므로, "덮은 채로 이동했다"는
+   사실은 모듈 레벨 플래그로 다음 마운트에 전달한다.
+   ══════════════════════════════════════════ */
+const pixelSwap = { pending: false };
+const getPixelPending = () => pixelSwap.pending;
+const setPixelPending = (v) => { pixelSwap.pending = v; }; // 직전 페이지가 픽셀로 덮은 채 넘어왔는가
+
+/* ⚙️ 픽셀 스왑 디테일은 이 상수만 만지면 됩니다.
+
+   pattern    조각이 퍼지는 순서
+              'center'         가운데부터 바깥으로
+              'edges'          가장자리부터 안으로
+              'random'         무작위
+              'left-to-right'  왼쪽 → 오른쪽
+              'right-to-left'  오른쪽 → 왼쪽
+              'top-to-bottom'  위 → 아래
+              'bottom-to-top'  아래 → 위
+              'diagonal'       좌상단 → 우하단 대각선
+   randomness 패턴에 섞는 무작위성 0(정직한 패턴)~1(완전 랜덤)
+   cols/rows  그리드 밀도 — 키우면 조각이 잘게 부서짐
+   cellMs     조각 하나가 나타나는/사라지는 시간(ms)
+   spreadMs   첫 조각과 마지막 조각 사이 시차(ms) — 전체 체감 속도
+   scaleFrom  조각이 시작하는 크기 배율 (0 = 점에서 자람, 1 = 크기 변화 없이 페이드만)
+   radius     조각 모서리 둥글기 % (0 = 사각, 50 = 원)
+   spin       조각이 나타나며 도는 각도(deg, 0 = 회전 없음)
+   colorMode  'project' = 이동할 프로젝트의 패널 색으로 차오름 (색이 목적지를 예고)
+              'fixed'   = 아래 color 고정 색 사용
+   color      colorMode가 'fixed'일 때의 조각 색 (흰 프레임 테마엔 '#ffffff' 추천) */
+const PIXEL = {
+  pattern: 'center',
+  randomness: 0.15,
+  cols: 12, rows: 6,
+  cellMs: 360,
+  spreadMs: 240,
+  scaleFrom: 0.35,
+  radius: 0,
+  spin: 0,
+  colorMode: 'project',
+  color: '#ffffff',
+};
+const PIXEL_TOTAL = PIXEL.cellMs + PIXEL.spreadMs;
+
+/* 인덱스 해시 의사난수 — Math.random 대신(렌더 순수성), 매번 같은 무작위 패턴 */
+const hash01 = (i) => (((i + 1) * 2654435761) % 997) / 997;
+
+/* 셀 위치 → 패턴상 진행도(0 = 먼저, 1 = 나중) */
+function patternProgress(col, row, i) {
+  const cx = (PIXEL.cols - 1) / 2;
+  const cy = (PIXEL.rows - 1) / 2;
+  switch (PIXEL.pattern) {
+    case 'center':
+      return Math.hypot((col - cx) / (cx || 1), (row - cy) / (cy || 1)) / Math.SQRT2;
+    case 'edges':
+      return 1 - Math.hypot((col - cx) / (cx || 1), (row - cy) / (cy || 1)) / Math.SQRT2;
+    case 'left-to-right':
+      return col / (PIXEL.cols - 1);
+    case 'right-to-left':
+      return 1 - col / (PIXEL.cols - 1);
+    case 'top-to-bottom':
+      return row / (PIXEL.rows - 1);
+    case 'bottom-to-top':
+      return 1 - row / (PIXEL.rows - 1);
+    case 'diagonal':
+      return (col / (PIXEL.cols - 1) + row / (PIXEL.rows - 1)) / 2;
+    default: // 'random'
+      return hash01(i);
+  }
+}
+
+/* 조각별 지연 — 패턴 진행도에 randomness만큼 노이즈를 섞는다 */
+const PIXEL_DELAYS = Array.from({ length: PIXEL.cols * PIXEL.rows }, (_, i) => {
+  const col = i % PIXEL.cols;
+  const row = Math.floor(i / PIXEL.cols);
+  const p = patternProgress(col, row, i);
+  const mixed = p * (1 - PIXEL.randomness) + hash01(i) * PIXEL.randomness;
+  return mixed * PIXEL.spreadMs;
+});
+
+/* mode: 'cover'(채우기) | 'reveal'(걷어내기). 끝나면 onDone(mode). */
+function PixelOverlay({ mode, color, onDone }) {
+  const delays = PIXEL_DELAYS;
+  /* 마운트 직후 목표 상태로 전환시켜 CSS transition을 발화 */
+  const [on, setOn] = useState(mode === 'reveal');
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setOn(mode === 'cover'));
+    const t = setTimeout(() => onDone?.(mode), PIXEL_TOTAL + 40);
+    return () => { cancelAnimationFrame(raf); clearTimeout(t); };
+  }, [mode, onDone]);
+
+  return (
+    <div className="absolute inset-0 z-50 pointer-events-none"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${PIXEL.cols}, 1fr)`,
+        gridTemplateRows: `repeat(${PIXEL.rows}, 1fr)`,
+      }}>
+      {delays.map((d, i) => (
+        <div key={i} style={{
+          background: color ?? PIXEL.color,
+          borderRadius: PIXEL.radius ? `${PIXEL.radius}%` : 0,
+          transform: on
+            ? 'scale(1.02) rotate(0deg)'
+            : `scale(${PIXEL.scaleFrom}) rotate(${PIXEL.spin}deg)`,
+          opacity: on ? 1 : 0,
+          transition: `transform ${PIXEL.cellMs}ms cubic-bezier(0.22,1,0.36,1) ${d}ms, opacity ${PIXEL.cellMs}ms ease ${d}ms`,
+        }} />
+      ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════
    MAIN
    ══════════════════════════════════════════ */
 export default function ProjectShowcase({ activeId, onNavigate, children }) {
@@ -265,8 +380,34 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
   const isMobile = useMedia('(max-width: 767px)');
   const p = PROJECTS[idx];
 
+  /* 픽셀 전환 상태 — 덮인 채 마운트됐으면 걷어내기부터 시작 */
+  const [pixelMode, setPixelMode] = useState(() => (getPixelPending() ? 'reveal' : null));
+  /* 커버 색 — colorMode 'project'면 이동할 프로젝트의 패널 색 */
+  const [pixelColor, setPixelColor] = useState(null);
+  const nextTab = useRef(null);
+
+  /* 스위처·화살표 공용 진입점 — 덮기 → 이동 */
+  const swapTo = (tab) => {
+    if (reduced) { onNavigate?.(tab); return; }   // 모션 최소화 설정이면 즉시 이동
+    if (pixelMode) return;                          // 전환 중 중복 클릭 무시
+    nextTab.current = tab;
+    const target = PROJECTS.find((t) => t.tab === tab);
+    setPixelColor(PIXEL.colorMode === 'project' ? target?.bg ?? PIXEL.color : PIXEL.color);
+    setPixelMode('cover');
+  };
   const go = (next) => {
-    onNavigate?.(PROJECTS[(next + PROJECTS.length) % PROJECTS.length].tab);
+    swapTo(PROJECTS[(next + PROJECTS.length) % PROJECTS.length].tab);
+  };
+  /* useCallback 없이 — React Compiler가 알아서 메모이즈한다 */
+  const onPixelDone = (mode) => {
+    if (mode === 'cover') {
+      // 다 덮였다 — 덮인 채 라우트 이동. 이 컴포넌트는 곧 언마운트된다.
+      setPixelPending(true);
+      onNavigate?.(nextTab.current);
+    } else {
+      setPixelPending(false);
+      setPixelMode(null);
+    }
   };
 
   /* 하단 중앙 홈(notch) — 흰 프레임이 패널 안쪽으로 파고든 모양.
@@ -341,13 +482,14 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
       >
       {/* 상단 — 프로젝트 스위처 */}
       <div className="relative z-30 flex items-center justify-between gap-3 px-6 md:px-9 pt-6">
+        {/* 어깨 라벨 = 네비 문장의 완성형 — "Do" 탭이 이 페이지로 연결된다 */}
         <p className="text-[10.5px] font-bold tracking-[0.28em] uppercase" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          Selected Work
+          What I do
         </p>
         <div className="flex items-center gap-1.5 p-1 rounded-full"
           style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)' }}>
           {PROJECTS.map((it, i) => (
-            <button key={it.id} onClick={() => i !== idx && onNavigate?.(it.tab)}
+            <button key={it.id} onClick={() => i !== idx && swapTo(it.tab)}
               className="px-3.5 py-1.5 rounded-full text-[11.5px] font-bold cursor-pointer transition-all"
               style={{
                 background: i === idx ? '#fff' : 'transparent',
@@ -474,6 +616,18 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
         style={{ bottom: 16, left: 40, color: 'rgba(255,255,255,0.38)' }}>
         오브젝트를 드래그해 돌려보세요
       </p>
+
+      {/* 픽셀 스왑 오버레이 — 프로젝트 전환 시 패널을 덮었다가 걷어낸다 */}
+      {/* reveal일 땐 이 페이지 자신의 패널 색 — cover에서 그 색으로 덮고 왔으므로 이어진다 */}
+      {pixelMode && (
+        <PixelOverlay
+          mode={pixelMode}
+          color={pixelMode === 'reveal'
+            ? (PIXEL.colorMode === 'project' ? p.bg : PIXEL.color)
+            : pixelColor}
+          onDone={onPixelDone}
+        />
+      )}
       </div>
 
       {/* 홈에 앉는 스크롤 버튼 — 프레임 위에 떠서 아래 본문으로 이동 */}

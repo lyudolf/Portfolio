@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Nav from './components/Nav';
@@ -24,12 +24,26 @@ const PAGES = { about: About, kisti: Kisti, dream: Dream, 'kocca-detail': KoccaD
 /* 하단 네비·푸터를 숨길 페이지 (AI-lab은 전체화면 IDE라 자체 메뉴바를 씀) */
 const DETAIL_PAGES = new Set(['etribe-detail', 'leaf-detail', 'rl-detail', 'resume', 'withai']);
 
+/* Work 3종끼리 이동할 때는 페이지 페이드를 생략 —
+   픽셀 스왑이 패널을 덮은 채 이어지므로 페이드가 끼면 깜빡인다.
+   세 페이지가 같은 흰 프레임·상단 탭을 쓰기 때문에 즉시 스왑해도 이어져 보인다. */
+const WORK_GROUP = new Set(['kisti', 'dream', 'kocca-detail']);
+
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
   /* 경로 → 탭 (매칭 실패 시 about으로 폴백) */
   const activeTab = PATH_TABS[location.pathname] ?? 'about';
+
+  /* 직전 탭 추적 — 렌더 중 상태 보정 패턴(공식 derived state 방식).
+     탭이 바뀐 그 렌더에서 tabs[1]이 직전 탭이다. */
+  const [tabs, setTabs] = useState([activeTab, activeTab]);
+  if (tabs[1] !== activeTab) setTabs([tabs[1], activeTab]);
+  const prevTab = tabs[1] !== activeTab ? tabs[1] : tabs[0];
+  const instantSwap = prevTab !== activeTab
+    ? WORK_GROUP.has(prevTab) && WORK_GROUP.has(activeTab)
+    : WORK_GROUP.has(tabs[0]) && WORK_GROUP.has(activeTab);
 
   const handleTabChange = (tab) => {
     if (tab === activeTab) return;
@@ -60,8 +74,8 @@ export default function App() {
       {!isDetailPage && <Nav activeTab={activeTab} onTabChange={handleTabChange} />}
       <InterestModal />
       <main>
-        <AnimatePresence mode="wait">
-          <PageTransition tabKey={activeTab}>
+        <AnimatePresence mode="wait" custom={instantSwap}>
+          <PageTransition tabKey={activeTab} instant={instantSwap}>
             <Page onNavigate={handleTabChange} />
           </PageTransition>
         </AnimatePresence>

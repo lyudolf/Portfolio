@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import FrameCard from '../ui/FrameCard';
 import { useMedia } from '../../lib/useMedia';
@@ -46,6 +47,25 @@ const APPS = [
     ],
   },
   {
+    id: 'walk',
+    name: '반려동물 산책지수',
+    appName: 'axiom-walk',
+    category: '생활 · 비게임',
+    released: '2026 출시',
+    color: '#5cb2ed',
+    summary: '오늘 산책 나가도 되는지를 지수 하나로. 전국 3,564개 읍면동 지원.',
+    decisions: [
+      {
+        t: '외부 API 두 개를 하나의 지수로',
+        d: '기상청과 에어코리아는 좌표계도 갱신 주기도 다릅니다. 기상 격자와 측정소를 최근접 매핑해 읍면동 단위로 붙이고, 두 값을 하나의 산책지수로 합쳐 사용자가 판단할 필요가 없게 만들었습니다.',
+      },
+      {
+        t: '프록시와 캐시를 기획에 포함',
+        d: '공공 API는 계정당 쿼터가 있습니다. 클라이언트에서 직접 부르지 않고 Edge Function 프록시 + 캐시 테이블을 거치게 해, 사용자가 늘어도 쿼터가 먼저 터지지 않도록 설계했습니다.',
+      },
+    ],
+  },
+  {
     id: 'spending',
     name: '소비유형 테스트',
     appName: 'axiom-spending-type-test',
@@ -87,25 +107,6 @@ const APPS = [
       },
     ],
   },
-  {
-    id: 'walk',
-    name: '반려동물 산책지수',
-    appName: 'axiom-walk',
-    category: '생활 · 비게임',
-    released: '2026 출시',
-    color: '#5cb2ed',
-    summary: '오늘 산책 나가도 되는지를 지수 하나로. 전국 3,564개 읍면동 지원.',
-    decisions: [
-      {
-        t: '외부 API 두 개를 하나의 지수로',
-        d: '기상청과 에어코리아는 좌표계도 갱신 주기도 다릅니다. 기상 격자와 측정소를 최근접 매핑해 읍면동 단위로 붙이고, 두 값을 하나의 산책지수로 합쳐 사용자가 판단할 필요가 없게 만들었습니다.',
-      },
-      {
-        t: '프록시와 캐시를 기획에 포함',
-        d: '공공 API는 계정당 쿼터가 있습니다. 클라이언트에서 직접 부르지 않고 Edge Function 프록시 + 캐시 테이블을 거치게 해, 사용자가 늘어도 쿼터가 먼저 터지지 않도록 설계했습니다.',
-      },
-    ],
-  },
 ];
 
 /* ── 회고 ── */
@@ -139,11 +140,12 @@ function SectionLabel({ children }) {
 function AppCard({ app, index }) {
   return (
     <motion.article
+      id={`app-${app.id}`}
       initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: index * 0.06 }}
       className="overflow-hidden"
-      style={{ borderRadius: 24, background: '#fff', border: `1px solid ${BORDER}`, boxShadow: '0 8px 24px rgba(24,32,27,0.05)' }}
+      style={{ borderRadius: 24, background: '#fff', border: `1px solid ${BORDER}`, boxShadow: '0 8px 24px rgba(24,32,27,0.05)', scrollMarginTop: 24 }}
     >
       {/* 헤더 — 앱 색으로 구분 */}
       <div className="px-6 md:px-8 py-6 flex flex-wrap items-center justify-between gap-3"
@@ -269,13 +271,147 @@ function CtaSection({ onNavigate }) {
   );
 }
 
+/* ── 앱 인덱스 옵션 휠 ──
+   우측 가장자리를 축으로 감긴 세로 휠. 가운데 항목이 선명하고,
+   멀어질수록 기울고 흐려진다. 스크롤 휠·드래그·클릭으로 회전,
+   활성 항목을 한 번 더 클릭하면 아래 해당 앱 카드로 스크롤. */
+/* ⚙️ 휠 모양은 이 상수만 만지면 됩니다.
+   방식 자체가 "오른쪽 축 회전" — 좌표 계산 없이, 회전축(transform-origin)을
+   각 항목의 오른쪽 모서리에서 radius(px)만큼 더 나간 지점에 박고 rotate만 한다.
+   모든 항목의 오른쪽 끝이 정렬돼 있어서 전부 같은 축을 돌게 되고,
+   부챗살처럼 오른쪽에 고정된 채 왼쪽 끝이 벌어진다.
+
+   stepDeg  한 칸당 부채 각도. 크면 활짝 벌어짐 (10~18 권장)
+   radius   회전축이 오른쪽 모서리에서 얼마나 바깥에 있는지(px).
+            작으면 급한 부채(축이 바로 옆), 크면 완만한 원호 (0~300)
+   dir      뒷 번호(2,3,4…)가 펼쳐지는 방향. 1 = 위로, -1 = 아래로.
+            위아래가 반대로 보이면 이 값만 뒤집으면 됨
+   slotY    활성 슬롯(축)의 세로 위치 — 휠 영역 기준.
+            '50%' = 중간, '30%' = 위쪽, 픽셀값(예: 300)도 가능
+   fade     한 칸 멀어질 때 깎이는 불투명도 (바닥 0.35)
+   blurStep 한 칸 멀어질 때 더해지는 블러 px (최대 1.6, 0이면 블러 없음) */
+const WHEEL = {
+  stepDeg: 30,
+  radius: 360,
+  dir: 1,
+  slotY: '50%',
+  fade: 1,
+  blurStep: 1,
+};
+/* 드래그 환산용 — 한 칸당 텍스트 중심부의 대략적 세로 이동량.
+   (텍스트 중심은 축에서 radius + 약 140px 거리에 있다) */
+const WHEEL_STEP_PX = (WHEEL.radius + 140) * Math.sin((WHEEL.stepDeg * Math.PI) / 180);
+
+function AppWheel() {
+  /* 초기 선택 = 1번 — 아래쪽 활성 슬롯에 1번이 하이라이트된 채,
+     2~4번이 dir 방향(기본: 위)으로 감겨 올라간 상태로 시작한다 */
+  const [sel, setSel] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);  // 드래그 중 부동 소수 오프셋
+  const [dragging, setDragging] = useState(false);  // 렌더용 — 드래그 중엔 transition 끔
+  const drag = useRef(null);                        // { startY, moved }
+  const wheelLock = useRef(0);
+
+  const clamp = (v) => Math.max(0, Math.min(APPS.length - 1, v));
+  const pos = sel - dragOffset; // 렌더 기준 위치(드래그 중엔 소수)
+
+  const onWheel = (e) => {
+    const now = Date.now();
+    if (now - wheelLock.current < 260) return; // 트랙패드 연타 방지
+    wheelLock.current = now;
+    setSel((s) => clamp(s + (e.deltaY > 0 ? 1 : -1)));
+  };
+
+  const onPointerDown = (e) => {
+    drag.current = { startY: e.clientY, moved: false };
+    setDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e) => {
+    if (!drag.current) return;
+    const dy = (e.clientY - drag.current.startY) / WHEEL_STEP_PX;
+    if (Math.abs(dy) > 0.08) drag.current.moved = true;
+    setDragOffset(dy);
+  };
+  const onPointerUp = () => {
+    if (!drag.current) return;
+    setSel((s) => clamp(Math.round(s - dragOffset)));
+    setDragOffset(0);
+    setDragging(false);
+    drag.current = null;
+  };
+
+  const onItemClick = (i) => {
+    if (drag.current?.moved) return; // 드래그 끝의 클릭 오발 방지
+    // hover가 이미 선택을 담당하므로 클릭은 항상 해당 앱 카드로 이동
+    document.getElementById(`app-${APPS[i].id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  return (
+    <div
+      className="absolute z-20 hidden md:block select-none"
+      style={{ right: 0, top: 90, bottom: 200, width: 380, touchAction: 'none', cursor: 'grab' }}
+      onWheel={onWheel}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+    >
+      {/* 활성 슬롯(축) 위치 — WHEEL.slotY로 조정 */}
+      <div className="relative" style={{ position: 'absolute', top: WHEEL.slotY, right: 44, width: '100%' }}>
+        {APPS.map((a, i) => {
+          const d = i - pos;                       // 활성 슬롯으로부터의 거리
+          const abs = Math.abs(d);
+          const active = Math.round(pos) === i;
+          /* 이동 계산 없음 — 모든 항목이 같은 자리에서 시작해,
+             오른쪽 바깥의 공통 축을 중심으로 회전만 한다.
+             부호를 뒤집어 앞 번호(d<0)는 위로, 뒷 번호(d>0)는 아래로 —
+             어느 항목이 활성이든 화면에는 항상 1→4 순서로 읽힌다. */
+          return (
+            <button
+              key={a.id}
+              onClick={() => onItemClick(i)}
+              onMouseEnter={() => { if (!drag.current) setSel(i); }}
+              className="absolute right-0 flex items-center gap-3 cursor-pointer whitespace-nowrap"
+              style={{
+                top: -31, /* 대략 텍스트 높이의 절반 — 활성 항목이 축 선상에 오도록 */
+                transform: `rotate(${WHEEL.dir * d * WHEEL.stepDeg}deg)`,
+                transformOrigin: `calc(100% + ${WHEEL.radius}px) 50%`,
+                opacity: Math.max(0.35, 1 - abs * WHEEL.fade),
+                filter: abs > 0.3 ? `blur(${Math.min(1.6, abs * WHEEL.blurStep)}px)` : 'none',
+                transition: dragging
+                  ? 'none'
+                  : 'transform 0.32s cubic-bezier(0.22,1,0.36,1), opacity 0.32s ease, filter 0.32s ease',
+              }}
+            >
+              <span className="text-[13px] font-bold"
+                style={{ color: 'rgba(255,255,255,0.35)', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="text-[40px] lg:text-[52px] font-extrabold"
+                style={{
+                  color: active ? '#ffffff' : 'rgba(255,255,255,0.6)',
+                  letterSpacing: '-0.04em',
+                  transition: 'color 0.3s ease',
+                }}>
+                {a.name}
+              </span>
+              <span style={{ width: 11, height: 11, borderRadius: 99, background: a.color, flexShrink: 0 }} />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ── 히어로 패널 ── */
 function HeroPanel({ isMobile }) {
   return (
     <>
       <div className="relative z-30 flex items-center justify-between gap-3 px-6 md:px-9 pt-6">
+        {/* 어깨 라벨 = 네비 문장의 완성형 — "Made" 탭이 이 페이지로 연결된다 */}
         <p className="text-[10.5px] font-bold tracking-[0.28em] uppercase" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          Personal Projects
+          What I made
         </p>
         <span className="text-[11px] font-semibold px-3 py-1.5 rounded-full"
           style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', color: '#fff' }}>
@@ -314,26 +450,8 @@ function HeroPanel({ isMobile }) {
         </span>
       </motion.h1>
 
-      {/* 우측 — 앱 인덱스 (Work의 오브젝트 자리) */}
-      <div className="absolute z-20 hidden md:flex flex-col gap-3"
-        style={{ right: 40, top: 120, alignItems: 'flex-end' }}>
-        {APPS.map((a, i) => (
-          <motion.div key={a.id}
-            initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.45, delay: 0.1 + i * 0.07 }}
-            className="flex items-center gap-3">
-            <span className="text-[11px] font-bold"
-              style={{ color: 'rgba(255,255,255,0.35)', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <span className="text-[22px] lg:text-[27px] font-extrabold"
-              style={{ color: 'rgba(255,255,255,0.9)', letterSpacing: '-0.03em' }}>
-              {a.name}
-            </span>
-            <span style={{ width: 8, height: 8, borderRadius: 99, background: a.color, flexShrink: 0 }} />
-          </motion.div>
-        ))}
-      </div>
+      {/* 우측 — 앱 인덱스 옵션 휠 (Work의 오브젝트 자리) */}
+      <AppWheel />
 
       {/* 좌하단 — 요약 · 지표 */}
       <div className="absolute left-0 bottom-0 z-20 px-6 md:px-10 pb-6 md:pb-9 w-full md:w-auto"
