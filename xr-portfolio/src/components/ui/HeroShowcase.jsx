@@ -143,8 +143,9 @@ export default function HeroShowcase({ onNavigate, children }) {
         <>
           {/* 상단 — 좌: 라벨 / 우: 구직 상태 (Work의 스위처 자리) */}
           <div className="relative z-30 flex items-center justify-between gap-3 px-6 md:px-9 pt-6">
+            {/* 어깨 라벨 = 네비 문장의 완성형 — "am" 탭이 이 페이지로 연결된다 */}
             <p className="text-[10.5px] font-bold tracking-[0.28em] uppercase" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              Portfolio · 2026
+              What I am
             </p>
             <span className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full"
               style={{ background: 'rgba(126,241,214,0.14)', border: '1px solid rgba(126,241,214,0.36)', color: '#a9f7e4' }}>

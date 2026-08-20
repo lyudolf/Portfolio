@@ -369,7 +369,7 @@ export default function WithAI({ onNavigate }) {
     <IdeShell
       tree={tree}
       initialFileId="readme"
-      windowTitle="ai-lab"
+      windowTitle="ai-lab · what i try"
       statusText="Human-in-the-Loop"
       onNavigate={onNavigate}
     />

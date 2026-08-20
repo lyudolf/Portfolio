@@ -103,16 +103,17 @@ const ACTIVITY_ICONS = [
 ];
 
 /* 전체화면 IDE라 하단 네비가 없다. 사이트 이동은 상단 메뉴바에 얇게 노출한다.
-   (이전에는 터미널 `$ return` 출력으로 뒀는데, 나가는 길을 찾기 어려웠다.) */
+   (이전에는 터미널 `$ return` 출력으로 뒀는데, 나가는 길을 찾기 어려웠다.)
+   라벨은 사이트 공통 "What I ___" 문장 시스템의 IDE 어휘(경로명) 버전. */
 const NAV_LINKS = [
-  { tab: 'about', label: 'About' },
-  { tab: 'kisti', label: 'Work' },
-  { tab: 'solo', label: 'Solo Work' },
-  { tab: 'whyme', label: 'Why Me' },
-  { tab: 'resume', label: '이력서' },
+  { tab: 'about', label: 'what-i-am' },
+  { tab: 'kisti', label: 'what-i-do' },
+  { tab: 'solo', label: 'what-i-made' },
+  { tab: 'whyme', label: 'what-i-bring' },
+  { tab: 'resume', label: 'resume' },
 ];
 
-const BOOT_LINES = ['$ open ai-lab', '✓ 6 files indexed', '✓ ready'];
+const BOOT_LINES = ['$ open what-i-try', '✓ 6 files indexed', '✓ ready'];
 
 /* 터미널 로그 — 줄 단위로 흘러나오고, 명령줄($)은 글자 단위로 타이핑된다.
    key로 리마운트해 파일이 바뀔 때마다 처음부터 재생한다. */

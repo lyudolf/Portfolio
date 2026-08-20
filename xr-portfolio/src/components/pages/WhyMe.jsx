@@ -197,11 +197,12 @@ export default function WhyMe() {
           transition={{ duration: 0.5 }}
           className="mb-14"
         >
+          {/* 어깨 라벨 = 네비 문장의 완성형 — "Bring" 탭이 이 페이지로 연결된다 */}
           <p
             className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5"
             style={{ color: '#546178' }}
           >
-            Why Me
+            What I bring
           </p>
           <h1
             className="text-[34px] md:text-[44px] font-extrabold leading-tight mb-4"
