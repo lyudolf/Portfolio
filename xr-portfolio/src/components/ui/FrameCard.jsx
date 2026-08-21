@@ -100,26 +100,34 @@ export default function FrameCard({
           {panel}
         </div>
 
-        {/* 홈에 앉는 스크롤 버튼 */}
+        {/* 홈에 앉는 스크롤 버튼 — 지름을 홈 구멍(2×NOTCH)과 정확히 맞추고
+           중심을 패널 모서리에 둬서, 배경과 흰 원의 경계가 홈 곡선과 맞물린다.
+           원이 움직이면 틈이 보이므로 hover는 화살표만 움직인다. */}
         <button
           onClick={scrollDown}
           aria-label="아래 내용으로 이동"
-          className="absolute left-1/2 z-40 flex items-center justify-center rounded-full cursor-pointer transition-all"
+          className="group absolute left-1/2 z-40 flex items-center justify-center rounded-full cursor-pointer"
           style={{
-            bottom: isMobile ? -NOTCH * 0.42 : -NOTCH * 0.4,
+            bottom: -NOTCH,
             transform: 'translateX(-50%)',
-            width: NOTCH * 1.5,
-            height: NOTCH * 1.5,
+            width: NOTCH * 2,
+            height: NOTCH * 2,
             background: '#ffffff',
             color: scrollBtnColor,
-            border: '1px solid rgba(24,32,27,0.12)',
-            fontSize: NOTCH * 0.6,
+            fontSize: NOTCH * 0.55,
             lineHeight: 1,
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(-50%) translateY(3px)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(-50%)'; }}
         >
-          ↓
+          <span className="flex flex-col items-center transition-transform duration-200 group-hover:translate-y-[3px]"
+            style={{ marginTop: -NOTCH * 0.35 /* 보이는 건 위 반원뿐이라 화살표를 그쪽으로 */ }}>
+            <span>↓</span>
+            <span style={{
+              fontSize: 9.5, fontWeight: 700, letterSpacing: '0.06em',
+              opacity: 0.5, marginTop: 3, whiteSpace: 'nowrap',
+            }}>
+              click me!
+            </span>
+          </span>
         </button>
       </div>
 
