@@ -64,7 +64,7 @@ const PROJECTS = [
 const WEB_PROJECTS = [
   {
     tab: 'webmind', name: '분석기업', sub: '공식 사이트 고도화',
-    meta: 'IA 개선 · GA 트래킹 구축',
+    meta: 'IA 개선 · 정보 접근성 향상',
     bg: '#0d6b46', bgSoft: '#1d9a68', accent: '#8ff0c0',
   },
   {
