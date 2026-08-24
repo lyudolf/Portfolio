@@ -15,7 +15,11 @@ const INK_45 = 'rgba(24,32,27,0.45)';
 const BORDER = 'rgba(24,32,27,0.08)';
 const CARD = 'rgba(255,255,255,0.6)';
 const ACCENT = '#0f8f74';
-const SIDE_ACCENT = '#6d4fd6';   // Solo Work 페이지와 같은 보라 — 섹션이 어디로 이어지는지 색으로 알린다
+/* 섹션 라벨 색 = 그 섹션이 이어지는 페이지의 시그니처.
+   색만 봐도 어디로 가는 목록인지 알 수 있게 한다. */
+const XR_ACCENT = '#1540c9';     // Work(KISTI·꿈키·한콘진)
+const WEB_ACCENT = '#0d6b46';    // 웹마인드
+const SIDE_ACCENT = '#6d4fd6';   // Solo Work
 
 /* What I deliver — 형용사가 아니라 실제로 만들어 넘기는 산출물 목록.
    전부 지식그래프 볼트·실프로젝트에 실물이 있는 것만 (검증 가능성 원칙) */
@@ -31,12 +35,14 @@ const CAPABILITIES = [
 ];
 
 /* 실무 프로젝트 — 색·워드마크를 Work 쇼케이스 패널과 맞춰 같은 계보로 읽히게 한다.
-   desc는 데스크톱 아코디언의 펼친 패널에서만 노출. */
+   desc는 데스크톱 아코디언의 펼친 패널에서만 노출.
+   thumb: 펼친 패널 배경으로 깔리는 실화면 이미지 (없으면 그라디언트만) */
 const PROJECTS = [
   {
     tab: 'kisti', name: 'KISTI', sub: '고령자 인지-운동 융합 훈련 VR',
     meta: '2024 — 현재 · 단독 기획 · PM',
     desc: '1차 임상 60명 무이슈 완료. 1년 용역이 3년차 운영으로 연장됐습니다.',
+    thumb: '/images/kisti/card.jpg',
     bg: '#1540c9', bgSoft: '#2f66ee', accent: '#8ee4ff',
   },
   {
@@ -50,6 +56,26 @@ const PROJECTS = [
     meta: '2026 · 국가과제 진행 중',
     desc: '매 플레이마다 LLM이 사건을 새로 생성합니다. LLM은 제안, 코드가 보증.',
     bg: '#3b1428', bgSoft: '#5c1f3d', accent: '#f9a8d4',
+  },
+];
+
+/* 웹 프로젝트 — 웹마인드에서 구축한 B2B 사이트들. 전부 /webmind로 연결.
+   ⚠️ 클라이언트 실명은 본인 확인 후 교체 (지금은 업종명) */
+const WEB_PROJECTS = [
+  {
+    tab: 'webmind', name: '분석기업', sub: '공식 사이트 고도화',
+    meta: 'IA 개선 · GA 트래킹 구축',
+    bg: '#0d6b46', bgSoft: '#1d9a68', accent: '#8ff0c0',
+  },
+  {
+    tab: 'webmind', name: '주차솔루션', sub: '브랜드 사이트 리뉴얼',
+    meta: '웹어워드 코리아 금상 · 유지보수 연장',
+    bg: '#14614f', bgSoft: '#248a72', accent: '#93ead6',
+  },
+  {
+    tab: 'webmind', name: '건설사', sub: '공식 사이트 구축',
+    meta: '제안 PT 참여 · 수주 100%',
+    bg: '#16603a', bgSoft: '#26905a', accent: '#97eeb8',
   },
 ];
 
@@ -155,11 +181,17 @@ function ProjectCard({ item, index, wordmarkSize }) {
         e.currentTarget.style.boxShadow = '0 8px 24px rgba(24,32,27,0.05)';
       }}
     >
-      {/* 미니 패널 — 쇼케이스 히어로와 같은 그라디언트·대형 워드마크 */}
+      {/* 미니 패널 — 쇼케이스 히어로와 같은 그라디언트·대형 워드마크.
+         thumb가 있으면 그라디언트 아래 실화면을 깔고 워드마크 가독성만 확보 */}
       <div className="relative flex items-end px-5"
         style={{
           height: 132,
-          background: `linear-gradient(150deg, ${item.bgSoft} 0%, ${item.bg} 62%)`,
+          backgroundColor: item.bg,
+          backgroundImage: item.thumb
+            ? `linear-gradient(150deg, ${item.bgSoft}cc 0%, ${item.bg}e6 62%), url('${item.thumb}')`
+            : `linear-gradient(150deg, ${item.bgSoft} 0%, ${item.bg} 62%)`,
+          backgroundSize: item.thumb ? 'auto, cover' : 'auto',
+          backgroundPosition: 'center, center',
         }}>
         <span style={{
           position: 'absolute', left: 18, bottom: 10,
@@ -210,7 +242,14 @@ function ProjectAccordion({ onNavigate }) {
               flexBasis: 0,
               minWidth: 0,
               borderRadius: 22,
-              background: `linear-gradient(150deg, ${f.bgSoft} 0%, ${f.bg} 62%)`,
+              backgroundColor: f.bg,
+              /* thumb가 있으면 실화면을 배경으로 깔고, 그 위에 컬러 그라디언트를
+                 얹어 텍스트 가독성을 확보한다. 펼친 패널일수록 사진이 더 보이게. */
+              backgroundImage: f.thumb
+                ? `linear-gradient(150deg, ${f.bgSoft}${open ? 'b8' : 'e0'} 0%, ${f.bg}${open ? 'e0' : 'f2'} 62%), url('${f.thumb}')`
+                : `linear-gradient(150deg, ${f.bgSoft} 0%, ${f.bg} 62%)`,
+              backgroundSize: f.thumb ? 'auto, cover' : 'auto',
+              backgroundPosition: 'center, center',
               filter: open ? 'none' : 'saturate(0.5) brightness(0.8)',
               transition:
                 'flex-grow 0.65s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease',
@@ -264,6 +303,75 @@ function ProjectAccordion({ onNavigate }) {
         );
       })}
     </div>
+  );
+}
+
+/* 캐러셀 화살표 — 비활성 상태를 색·테두리로 확실히 구분 */
+function PageArrow({ dir, disabled, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={dir === 'next' ? '다음 프로젝트' : '이전 프로젝트'}
+      className="w-8 h-8 rounded-full flex items-center justify-center text-[13px] transition-all"
+      style={{
+        border: `1px solid ${disabled ? 'rgba(24,32,27,0.08)' : 'rgba(24,32,27,0.18)'}`,
+        background: disabled ? 'transparent' : '#fff',
+        color: disabled ? 'rgba(24,32,27,0.22)' : INK,
+        cursor: disabled ? 'default' : 'pointer',
+      }}
+      onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.background = 'rgba(24,32,27,0.06)'; }}
+      onMouseLeave={(e) => { if (!disabled) e.currentTarget.style.background = '#fff'; }}
+    >
+      {dir === 'next' ? '→' : '←'}
+    </button>
+  );
+}
+
+/* 페이지네이션 카드 섹션 — 한 줄에 4장씩, 우측 상단 좌우 화살표로 넘긴다.
+   첫 페이지면 ←, 마지막 페이지면 → 가 비활성. 항목이 perPage 이하면 둘 다 비활성. */
+function CarouselSection({ label, labelColor, items, perPage = 4, wordmarkSize = 34, moreTab, onNavigate, className }) {
+  const [page, setPage] = useState(0);
+  const pages = Math.max(1, Math.ceil(items.length / perPage));
+  const atFirst = page === 0;
+  const atLast = page >= pages - 1;
+  const visible = items.slice(page * perPage, page * perPage + perPage);
+
+  return (
+    <section className={`px-8 ${className}`} style={{ maxWidth: 1100, margin: '0 auto' }}>
+      <div className="flex items-baseline justify-between gap-4 mb-6">
+        <SectionLabel color={labelColor}>{label}</SectionLabel>
+        <div className="flex items-center gap-2.5" style={{ transform: 'translateY(-4px)' }}>
+          {pages > 1 && (
+            <span className="text-[11.5px] font-semibold" style={{ color: INK_45 }}>
+              {page + 1} / {pages}
+            </span>
+          )}
+          {moreTab && (
+            <button onClick={() => onNavigate?.(moreTab)}
+              className="text-[12px] font-semibold cursor-pointer transition-colors mr-1"
+              style={{ color: INK_45 }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = INK; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = INK_45; }}>
+              전체 보기 →
+            </button>
+          )}
+          <PageArrow dir="prev" disabled={atFirst} onClick={() => setPage((p) => Math.max(0, p - 1))} />
+          <PageArrow dir="next" disabled={atLast} onClick={() => setPage((p) => Math.min(pages - 1, p + 1))} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {visible.map((it, i) => (
+          <ProjectCard
+            key={it.name}
+            item={{ ...it, onClick: () => onNavigate?.(it.tab) }}
+            index={i}
+            wordmarkSize={wordmarkSize}
+          />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -365,7 +473,7 @@ export default function About({ onNavigate }) {
             <CapabilitiesSection />
             <section className="px-8 pt-16 pb-10" style={{ maxWidth: 1100, margin: '0 auto' }}>
               <div className="flex items-baseline justify-between mb-6">
-                <SectionLabel>Project</SectionLabel>
+                <SectionLabel color={XR_ACCENT}>XR Project</SectionLabel>
                 <button onClick={() => onNavigate?.('kisti')}
                   className="text-[12px] font-semibold cursor-pointer transition-colors"
                   style={{ color: INK_45 }}
@@ -384,6 +492,15 @@ export default function About({ onNavigate }) {
                 ))}
               </div>
             </section>
+            <CarouselSection
+              label="Web Project"
+              labelColor={WEB_ACCENT}
+              items={WEB_PROJECTS}
+              perPage={4}
+              moreTab="webmind"
+              onNavigate={onNavigate}
+              className="pb-10"
+            />
             <CardSection
               label="Side Project"
               labelColor={SIDE_ACCENT}

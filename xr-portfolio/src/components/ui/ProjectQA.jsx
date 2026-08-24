@@ -199,7 +199,48 @@ function Posts({ block }) {
   );
 }
 
-const BLOCK_RENDERERS = { photos: Photos, cards: Cards, swaps: Swaps, stats: Stats, posts: Posts };
+/* 관측 → 조치 루프.
+   "설계했습니다"(조치만)가 아니라 "무엇을 보고 바꿨는지"를 드러낸다.
+   숫자가 없는 곳에 숫자를 만들지 않고, 조치들이 쌓여 만든 결과는 note로 한 줄. */
+function Loops({ block }) {
+  return (
+    <>
+      {block.label && <BlockLabel>{block.label}</BlockLabel>}
+      <div className="flex flex-col gap-2.5">
+        {block.items.map((it) => (
+          <div key={it.saw} className="grid gap-3 p-4 rounded-2xl"
+            style={{
+              background: CARD_BG,
+              border: `1px solid ${BORDER}`,
+              gridTemplateColumns: 'minmax(0,1fr) 18px minmax(0,1fr)',
+              alignItems: 'center',
+            }}>
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.16em] uppercase mb-1.5" style={{ color: INK_40 }}>
+                관측
+              </p>
+              <p className="text-[13.5px] leading-[1.75]" style={{ color: INK_55 }}>{it.saw}</p>
+            </div>
+            <span className="text-[15px] text-center" style={{ color: INK_40 }}>→</span>
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.16em] uppercase mb-1.5" style={{ color: INK_40 }}>
+                조치
+              </p>
+              <p className="text-[13.5px] leading-[1.75] font-medium" style={{ color: INK }}>{it.did}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      {block.note && (
+        <p className="text-[13.5px] leading-[1.9] mt-4" style={{ color: INK_74, maxWidth: 720 }}>
+          {block.note}
+        </p>
+      )}
+    </>
+  );
+}
+
+const BLOCK_RENDERERS = { photos: Photos, cards: Cards, swaps: Swaps, stats: Stats, posts: Posts, loops: Loops };
 
 export default function ProjectQA({ items }) {
   return (

@@ -4,6 +4,11 @@
    데이터 출처: 사람인 이력서(career-history) + 수정 문구(handoff-saramin-fixes),
    미니앱 상태는 4종 전부 출시로 갱신(appsintoss-traction). */
 
+/* 사진은 기본 미노출.
+   타겟(IT 자체서비스 기업)에서는 이력서 사진을 요구하지 않고, 블라인드 채용도 흔하다.
+   사람인 이력서에는 이미 사진이 있으니 채널별로 역할을 나눈다.
+   넣고 싶으면 SHOW_PHOTO를 true로 (public/resume-profile.jpg 교체 후). */
+const SHOW_PHOTO = false;
 const PROFILE_IMG = '/resume-profile.jpg';
 
 const INK = 'rgba(20,26,22,0.92)';
@@ -169,9 +174,11 @@ export default function Resume({ onNavigate }) {
               <span>서울 동작구 · {MILITARY}</span>
             </div>
           </div>
-          <img src={PROFILE_IMG} alt="유희수 프로필"
-            className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover flex-shrink-0"
-            style={{ objectPosition: '50% 30%', border: `1px solid ${LINE}` }} />
+          {SHOW_PHOTO && (
+            <img src={PROFILE_IMG} alt="유희수 프로필"
+              className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover flex-shrink-0"
+              style={{ objectPosition: '50% 30%', border: `1px solid ${LINE}` }} />
+          )}
         </header>
 
         {/* ── 요약 ── */}
