@@ -42,7 +42,7 @@ const PROJECTS = [
     tab: 'kisti', name: 'KISTI', sub: '고령자 인지-운동 융합 훈련 VR',
     meta: '2024 — 현재 · 단독 기획 · PM',
     desc: '1차 임상 60명 무이슈 완료. 1년 용역이 3년차 운영으로 연장됐습니다.',
-    thumb: '/images/kisti/card.jpg',
+    thumb: '/images/kisti/card.png',
     bg: '#1540c9', bgSoft: '#2f66ee', accent: '#8ee4ff',
   },
   {

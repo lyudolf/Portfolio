@@ -1,5 +1,54 @@
 import ProjectShowcase from '../ui/ProjectShowcase';
 import ProjectQA from '../ui/ProjectQA';
+import ScreenExplorer from '../ui/ScreenExplorer';
+
+/* 교수자 런처 화면별 개선 전/후.
+   실제 인수 시점 화면과 재설계 후 화면 — 실명·영상은 마스킹 처리됨. */
+const SCREENS = [
+  {
+    id: 'login', label: '로그인',
+    old: '/images/kisti/login-old.png', new: '/images/kisti/login-new.png',
+    saw: '입체 버튼과 그림자가 강한 게임풍 UI였고, 입력 필드가 버튼처럼 보여 무엇을 눌러야 할지 헷갈렸습니다.',
+    did: '장식을 걷어내고 입력과 버튼의 위계를 분리했습니다. 이후 모든 화면이 이 톤을 따르는 기준점이 됐습니다.',
+  },
+  {
+    id: 'start', label: '시작 화면',
+    old: '/images/kisti/start-old.png', new: '/images/kisti/start-new.png',
+    saw: '색만 다른 큰 타일 네 개가 나란히 있어, 지금 무엇을 할 차례인지 화면이 알려주지 않았습니다.',
+    did: '훈련자·교수자 화면을 분리하고 상단에 기기 연결 상태를 상시 노출했습니다. 시작 전에 무엇이 준비됐는지부터 보이게 했습니다.',
+  },
+  {
+    id: 'prepare', label: '수업 준비',
+    old: '/images/kisti/prepare-old.png', new: '/images/kisti/prepare-new.png',
+    saw: '훈련자 목록과 콘텐츠 설정이 다른 화면에 흩어져 있어, 수업 하나를 열려면 화면을 여러 번 오가야 했습니다.',
+    did: '한 화면에서 대상 선택 → 난이도·모드 설정 → 팀 구성 → 시작까지 끝나게 합쳤습니다. 기기 배터리와 로그인 상태도 같은 자리에서 보입니다.',
+  },
+  {
+    id: 'class', label: '수업 관리',
+    old: '/images/kisti/class-old.png', new: '/images/kisti/class-new.png',
+    saw: '뒤로가기 버튼으로만 이동할 수 있어, 다른 기능으로 가려면 상위 화면까지 되돌아가야 했습니다.',
+    did: '좌측에 상시 내비게이션을 두어 뒤로가기를 없앴습니다. 진입 6단계였던 구조가 1~2 depth로 줄었습니다.',
+  },
+  {
+    id: 'learner', label: '훈련자 관리',
+    old: '/images/kisti/learner-old.png', new: '/images/kisti/learner-new.png',
+    saw: '명단만 있고 검사 이력은 다른 화면에 있어, 한 사람의 상태를 파악하려면 화면을 오가며 기억해야 했습니다.',
+    did: '명단·검사 설정·회차별 결과를 한 화면에 세로로 쌓았습니다. 교수자가 한 사람을 선택하면 그 사람에 대한 모든 것이 아래로 이어집니다.',
+  },
+  {
+    id: 'cognitive', label: '인지검사 결과',
+    old: '/images/kisti/cognitive-old.png', new: '/images/kisti/cognitive-new.png',
+    saw: '결과가 현재·직전·평균 세 열로만 나와, 회차가 쌓여도 나아지고 있는지를 읽기 어려웠습니다.',
+    did: '회차별 표와 추이 그래프를 함께 배치하고 CSV·PDF 내보내기를 붙였습니다. 임상 데이터가 실제로 분석에 쓰이는 형태로 나가게 했습니다.',
+  },
+  {
+    id: 'monitor', label: '모니터링',
+    old: '/images/kisti/monitor-old.png', new: '/images/kisti/monitor-new.png',
+    saw: '웹캠 화면만 크게 떠 있고, 훈련자가 안전한 자세인지·영역을 벗어났는지는 화면에서 알 수 없었습니다.',
+    did: '자세·영역 안전 지표를 영상 위쪽에 상시 표시하고, 음소거·원격 요청을 같은 화면에 뒀습니다. 문제가 생기면 교수자가 그 자리에서 개입합니다.',
+    note: '고령자 대상이라 낙상·이탈은 즉시 알아야 했습니다. 모니터링은 "보는 화면"이 아니라 "개입하는 화면"이어야 한다고 봤습니다.',
+  },
+];
 
 /* KISTI — 고령자 인지·운동 융합 훈련 VR.
    본문 = 공통 Q&A 3문(스캔용 답변) + 각 답변의 증거 블록.
@@ -49,14 +98,6 @@ const QA = [
       '낙상 위험이 있던 "눈 감고 서 있기" 검사는 씬을 어둡게 바꾸는 방식으로 대체했습니다 — 안전 문제를 절차가 아니라 연출로 푼 결정이었습니다. 대신 훈련의 자율성은 포기했습니다. 스스로 탐색하는 재미보다, 실패 없이 끝까지 도달하는 경험이 이 사용자에게는 우선이라고 판단했습니다.',
     ],
     blocks: [
-      {
-        type: 'photos',
-        items: [
-          { caption: '곤충잡기 훈련 — 색 구분과 기억 재배치' },
-          { caption: '교수자 런처 — 1~2 depth로 재설계된 운영 화면' },
-          { caption: '균형검사 — Force Plate 연동 측정' },
-        ],
-      },
       {
         type: 'cards',
         label: '결정의 상세 — 시스템은 이렇게 굴러갑니다',
@@ -110,6 +151,11 @@ export default function Kisti({ onNavigate }) {
         <div style={{ maxWidth: 1640, margin: '0 auto' }}>
           <ProjectShowcase activeId="kisti" onNavigate={onNavigate}>
             <ProjectQA items={QA} />
+            <ScreenExplorer
+              screens={SCREENS}
+              accent="#1540c9"
+              label="화면별 개선 — 인수 시점 vs 재설계 후"
+            />
           </ProjectShowcase>
         </div>
       </div>
