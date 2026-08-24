@@ -26,12 +26,20 @@ const BORDER = 'rgba(24,32,27,0.08)';
 const CARD_BG = 'rgba(255,255,255,0.66)';
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 
-function BlockLabel({ children }) {
+/* 블록 제목. tools를 주면 오른쪽 끝에 작업 도구를 작게 병기한다 —
+   "무엇을 만들었나"가 앞서고 "무엇으로 만들었나"는 그 옆에 붙는 순서. */
+function BlockLabel({ children, tools }) {
   return (
-    <p className="text-[10.5px] font-bold tracking-[0.18em] uppercase mb-4 mt-9"
-      style={{ color: INK_40 }}>
-      {children}
-    </p>
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-4 mt-9">
+      <p className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: INK_40 }}>
+        {children}
+      </p>
+      {tools && (
+        <p className="text-[10.5px] font-semibold" style={{ color: INK_40, fontFamily: MONO }}>
+          {tools.join(' · ')}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -71,7 +79,7 @@ function Photos({ block }) {
 function Cards({ block }) {
   return (
     <>
-      {block.label && <BlockLabel>{block.label}</BlockLabel>}
+      {block.label && <BlockLabel tools={block.tools}>{block.label}</BlockLabel>}
       <div className={`grid gap-3.5 ${block.label ? '' : 'mt-7'}`}
         style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
         {block.items.map((c) => (
@@ -101,7 +109,7 @@ function Cards({ block }) {
 function Swaps({ block }) {
   return (
     <>
-      {block.label && <BlockLabel>{block.label}</BlockLabel>}
+      {block.label && <BlockLabel tools={block.tools}>{block.label}</BlockLabel>}
       <div className="flex flex-col gap-3">
         {block.items.map((s) => (
           <div key={s.title} className="p-5 rounded-2xl"
@@ -127,7 +135,7 @@ function Swaps({ block }) {
 function Stats({ block }) {
   return (
     <>
-      {block.label && <BlockLabel>{block.label}</BlockLabel>}
+      {block.label && <BlockLabel tools={block.tools}>{block.label}</BlockLabel>}
       <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 ${block.label ? '' : 'mt-7'}`}>
         {block.items.map((s) => (
           <div key={s.label} className="p-4 rounded-2xl"
@@ -152,7 +160,7 @@ function Stats({ block }) {
 function Posts({ block }) {
   return (
     <>
-      {block.label && <BlockLabel>{block.label}</BlockLabel>}
+      {block.label && <BlockLabel tools={block.tools}>{block.label}</BlockLabel>}
       <div className={`grid gap-4 ${block.label ? '' : 'mt-7'}`}
         style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
         {block.items.map((post) => (
@@ -206,7 +214,7 @@ function Posts({ block }) {
 function Loops({ block }) {
   return (
     <>
-      {block.label && <BlockLabel>{block.label}</BlockLabel>}
+      {block.label && <BlockLabel tools={block.tools}>{block.label}</BlockLabel>}
       <div className="flex flex-col gap-2.5">
         {block.items.map((it) => (
           <div key={it.saw} className="grid gap-3 p-4 rounded-2xl"
@@ -244,7 +252,12 @@ function Loops({ block }) {
 /* 화면별 개선 전/후 탐색기 — 답변 아래 증거로 붙는다.
    ScreenExplorer가 자체 폭을 갖지 않아 이 섹션 폭에 딱 맞는다. */
 function Explorer({ block }) {
-  return <ScreenExplorer screens={block.items} accent={block.accent} label={block.label} />;
+  return (
+    <>
+      {block.label && <BlockLabel tools={block.tools}>{block.label}</BlockLabel>}
+      <ScreenExplorer screens={block.items} accent={block.accent} />
+    </>
+  );
 }
 
 const BLOCK_RENDERERS = {
