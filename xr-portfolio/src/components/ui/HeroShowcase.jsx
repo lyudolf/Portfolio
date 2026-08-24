@@ -209,7 +209,7 @@ export default function HeroShowcase({ onNavigate, children }) {
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.08 }}>
               <p className="text-[10.5px] font-semibold mb-2.5" style={{ color: ACCENT }}>
-                XR · AI 프로덕트 · 2019 — 현재
+                XR · AI 프로덕트 · 2023 — 현재
               </p>
               <h2 className="text-[20px] md:text-[25px] font-extrabold leading-[1.28] mb-3"
                 style={{ color: '#fff', letterSpacing: '-0.025em' }}>

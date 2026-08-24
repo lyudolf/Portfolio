@@ -16,9 +16,10 @@ import LeafDetail from './components/pages/LeafDetail';
 import Resume from './components/pages/Resume';
 import RlDetail from './components/pages/RlDetail';
 import KoccaDetail from './components/pages/KoccaDetail';
+import Webmind from './components/pages/Webmind';
 import { TAB_PATHS, PATH_TABS, PAGE_META, SITE_URL } from './lib/site';
 
-const PAGES = { about: About, kisti: Kisti, dream: Dream, 'kocca-detail': KoccaDetail, solo: SoloWork, withai: WithAI, whyme: WhyMe, 'etribe-detail': EtribeDetail, 'leaf-detail': LeafDetail, 'rl-detail': RlDetail, resume: Resume };
+const PAGES = { about: About, kisti: Kisti, dream: Dream, 'kocca-detail': KoccaDetail, webmind: Webmind, solo: SoloWork, withai: WithAI, whyme: WhyMe, 'etribe-detail': EtribeDetail, 'leaf-detail': LeafDetail, 'rl-detail': RlDetail, resume: Resume };
 
 /* 하단 네비게이션을 숨길 페이지 */
 /* 하단 네비·푸터를 숨길 페이지 (AI-lab은 전체화면 IDE라 자체 메뉴바를 씀) */
@@ -27,7 +28,7 @@ const DETAIL_PAGES = new Set(['etribe-detail', 'leaf-detail', 'rl-detail', 'resu
 /* Work 3종끼리 이동할 때는 페이지 페이드를 생략 —
    픽셀 스왑이 패널을 덮은 채 이어지므로 페이드가 끼면 깜빡인다.
    세 페이지가 같은 흰 프레임·상단 탭을 쓰기 때문에 즉시 스왑해도 이어져 보인다. */
-const WORK_GROUP = new Set(['kisti', 'dream', 'kocca-detail']);
+const WORK_GROUP = new Set(['kisti', 'dream', 'kocca-detail', 'webmind']);
 
 export default function App() {
   const location = useLocation();

@@ -20,6 +20,7 @@ const TABS = [
 const PARENT_TAB = {
   dream: 'kisti',
   'kocca-detail': 'kisti',
+  webmind: 'kisti',
   'leaf-detail': 'withai',
   'etribe-detail': 'withai',
   'rl-detail': 'withai',

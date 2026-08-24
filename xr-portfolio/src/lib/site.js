@@ -10,6 +10,7 @@ export const TAB_PATHS = {
   kisti: '/kisti',
   dream: '/dream',
   'kocca-detail': '/kocca',
+  webmind: '/webmind',
   solo: '/solo',
   withai: '/ai-lab',
   whyme: '/why-me',
@@ -44,6 +45,11 @@ export const PAGE_META = {
     title: '꿈키올래 — Apple Vision Pro XR 직업체험 9종 | 유희수',
     description:
       'Vision Pro 기반 XR 직업체험 콘텐츠 9종을 2개월 실개발로 딜리버리. 초기 기획 전면 폐기 후 프레임워크화로 불가능한 일정을 구조로 해결.',
+  },
+  webmind: {
+    title: '웹마인드 — B2B 웹/앱 서비스 구축 | 유희수',
+    description:
+      'B2B 웹/앱 구축 기획 전 과정 — 경쟁사 분석부터 IA·화면정의서·GA 트래킹까지. 신규 제안 수주 100%, 웹어워드 코리아 금상.',
   },
   solo: {
     title: 'Solo Work — 혼자 기획하고 출시한 미니앱 4종 | 유희수',

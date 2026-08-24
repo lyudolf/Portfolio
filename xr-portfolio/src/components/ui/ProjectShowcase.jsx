@@ -21,6 +21,7 @@ const PROJECTS = [
   {
     id: 'kisti',
     tab: 'kisti',
+    company: 'ETRIBE',
     label: 'KISTI',
     display: ['KIS', 'TI'],
     subtitle: '고령자용 비대면 인지-운동 융합 훈련',
@@ -46,6 +47,7 @@ const PROJECTS = [
   {
     id: 'dream',
     tab: 'dream',
+    company: 'ETRIBE',
     label: '꿈키올래',
     display: ['꿈키', '올래'],
     subtitle: 'XR 직업체험 콘텐츠',
@@ -71,6 +73,7 @@ const PROJECTS = [
   {
     id: 'kocca',
     tab: 'kocca-detail',
+    company: 'ETRIBE',
     label: '한콘진',
     display: ['KOC', 'CA'],
     subtitle: 'AI 직업체험 콘텐츠',
@@ -92,6 +95,28 @@ const PROJECTS = [
       { dir: [-1.1, 0.25, 0.7], title: 'LLM은 제안, 코드가 보증', desc: '정답 유일성과 배치 유효성은 코드가 최종 검증. 실패 시 보정 → 재생성 → 폴백으로 플레이가 멈추지 않는다.' },
       { dir: [0.1, -0.95, 0.9], title: '난이도를 값으로', desc: '용의자 수·시간·훼손율로 난이도를 정의한 초기 기획이, 생성 슬롯 파라미터의 전신이 됐다.' },
     ],
+  },
+  {
+    id: 'webmind',
+    tab: 'webmind',
+    company: 'WEBMIND',
+    label: '웹마인드',
+    display: ['WEB', 'MIND'],
+    subtitle: 'B2B 웹/앱 서비스 구축',
+    eyebrow: 'B2B Web · 2023.04 — 2024.07 · 기획',
+    headline: '발주사의 요구를 서비스 구조로 번역했습니다',
+    summary:
+      'B2B 웹/앱 구축의 기획 전 과정 — 경쟁사 분석부터 IA, 요구사항 정의, 화면정의서, GA 트래킹까지. 제안 PT부터 유지보수까지 클라이언트와 서비스 사이를 오가며 기준을 세웠습니다.',
+    stats: [
+      { num: '100%', label: '신규 제안 수주' },
+      { num: '금상', label: '웹어워드 코리아' },
+      { num: '연장', label: '유지보수 계약' },
+    ],
+    bg: '#0d6b46',
+    bgSoft: '#1d9a68',
+    accent: '#8ff0c0',
+    model: null,
+    hotspots: [],
   },
 ];
 
@@ -189,7 +214,41 @@ function PlaceholderModel({ id, accent }) {
       </group>
     );
   }
-  /* 돋보기 + 증거 표식 */
+  if (id === 'webmind') {
+    /* 모니터(브라우저 창) + 받침 */
+    return (
+      <group>
+        <mesh position={[0, 0.32, 0]} castShadow>
+          <boxGeometry args={[1.5, 0.95, 0.07]} />
+          <meshStandardMaterial color="#f2f5f3" roughness={0.4} metalness={0.08} />
+        </mesh>
+        <mesh position={[0, 0.32, 0.04]}>
+          <boxGeometry args={[1.36, 0.8, 0.01]} />
+          <meshStandardMaterial color="#123528" roughness={0.25} metalness={0.3} />
+        </mesh>
+        {/* 브라우저 상단 바 + 버튼 3개 */}
+        <mesh position={[0, 0.66, 0.05]}>
+          <boxGeometry args={[1.36, 0.1, 0.01]} />
+          <meshStandardMaterial color={accent} roughness={0.35} emissive={accent} emissiveIntensity={0.2} />
+        </mesh>
+        {[-0.6, -0.52, -0.44].map((x, i) => (
+          <mesh key={i} position={[x, 0.66, 0.06]}>
+            <circleGeometry args={[0.02, 12]} />
+            <meshStandardMaterial color="#123528" roughness={0.4} />
+          </mesh>
+        ))}
+        <mesh position={[0, -0.28, 0]} castShadow>
+          <cylinderGeometry args={[0.07, 0.09, 0.35, 16]} />
+          <meshStandardMaterial color="#cfd6d2" roughness={0.6} />
+        </mesh>
+        <mesh position={[0, -0.46, 0]}>
+          <cylinderGeometry args={[0.4, 0.44, 0.06, 32]} />
+          <meshStandardMaterial color="#e6ebe8" roughness={0.6} />
+        </mesh>
+      </group>
+    );
+  }
+  /* 돋보기 + 증거 표식 (한콘진) */
   return (
     <group rotation={[0, 0, -0.5]}>
       <mesh position={[0, 0.35, 0]}>
@@ -486,18 +545,34 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
         <p className="text-[10.5px] font-bold tracking-[0.28em] uppercase" style={{ color: 'rgba(255,255,255,0.5)' }}>
           What I do
         </p>
-        <div className="flex items-center gap-1.5 p-1 rounded-full"
+        {/* 스위처 — 회사(경력) 단위로 그룹핑. 라벨은 클릭 불가, 구분 역할만 */}
+        <div className="flex flex-wrap items-center justify-end gap-1 p-1 rounded-full"
           style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)' }}>
-          {PROJECTS.map((it, i) => (
-            <button key={it.id} onClick={() => i !== idx && swapTo(it.tab)}
-              className="px-3.5 py-1.5 rounded-full text-[11.5px] font-bold cursor-pointer transition-all"
-              style={{
-                background: i === idx ? '#fff' : 'transparent',
-                color: i === idx ? p.bg : 'rgba(255,255,255,0.7)',
-              }}>
-              {it.label}
-            </button>
-          ))}
+          {PROJECTS.map((it, i) => {
+            const firstOfCompany = i === 0 || PROJECTS[i - 1].company !== it.company;
+            return [
+              firstOfCompany && (
+                <span key={`co-${it.company}`}
+                  className={`text-[9px] font-bold tracking-[0.12em] uppercase select-none ${isMobile ? 'hidden' : ''}`}
+                  style={{
+                    color: 'rgba(255,255,255,0.42)',
+                    padding: '0 7px 0 10px',
+                    borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.18)' : 'none',
+                    marginLeft: i > 0 ? 4 : 0,
+                  }}>
+                  {it.company}
+                </span>
+              ),
+              <button key={it.id} onClick={() => i !== idx && swapTo(it.tab)}
+                className="px-3 md:px-3.5 py-1.5 rounded-full text-[11px] md:text-[11.5px] font-bold cursor-pointer transition-all"
+                style={{
+                  background: i === idx ? '#fff' : 'transparent',
+                  color: i === idx ? p.bg : 'rgba(255,255,255,0.7)',
+                }}>
+                {it.label}
+              </button>,
+            ];
+          })}
         </div>
       </div>
 
