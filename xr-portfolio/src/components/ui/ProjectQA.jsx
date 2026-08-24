@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import ScreenExplorer from './ScreenExplorer';
 
 /* ══════════════════════════════════════════
    ProjectQA — 프로젝트 상세 본문 공통 구조
@@ -240,7 +241,16 @@ function Loops({ block }) {
   );
 }
 
-const BLOCK_RENDERERS = { photos: Photos, cards: Cards, swaps: Swaps, stats: Stats, posts: Posts, loops: Loops };
+/* 화면별 개선 전/후 탐색기 — 답변 아래 증거로 붙는다.
+   ScreenExplorer가 자체 폭을 갖지 않아 이 섹션 폭에 딱 맞는다. */
+function Explorer({ block }) {
+  return <ScreenExplorer screens={block.items} accent={block.accent} label={block.label} />;
+}
+
+const BLOCK_RENDERERS = {
+  photos: Photos, cards: Cards, swaps: Swaps, stats: Stats,
+  posts: Posts, loops: Loops, explorer: Explorer,
+};
 
 export default function ProjectQA({ items }) {
   return (

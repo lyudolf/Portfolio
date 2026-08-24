@@ -21,6 +21,8 @@ const INK_34 = 'rgba(24,32,27,0.34)';
 const BORDER = 'rgba(24,32,27,0.09)';
 const CARD = 'rgba(255,255,255,0.7)';
 
+/* 부모(ProjectQA 섹션)의 폭을 그대로 채운다 — 자체 maxWidth·좌우 패딩 없음.
+   그래야 Q&A 본문과 좌우 끝이 딱 맞는다. */
 export default function ScreenExplorer({ screens, accent = '#1540c9', label }) {
   const [idx, setIdx] = useState(0);
   const [ver, setVer] = useState('new');
@@ -30,7 +32,7 @@ export default function ScreenExplorer({ screens, accent = '#1540c9', label }) {
   const pick = (i) => { setIdx(i); setVer('new'); };
 
   return (
-    <section className="px-6 md:px-8 pb-4" style={{ maxWidth: 1100, margin: '0 auto' }}>
+    <div className="w-full">
       {label && (
         <p className="text-[10.5px] font-bold tracking-[0.18em] uppercase mb-4 mt-9"
           style={{ color: INK_34 }}>
@@ -39,7 +41,7 @@ export default function ScreenExplorer({ screens, accent = '#1540c9', label }) {
       )}
 
       <div className="grid gap-4" style={{ gridTemplateColumns: 'minmax(0,1fr)' }}>
-        <div className="grid gap-4 lg:grid-cols-[150px_minmax(0,1fr)_240px]">
+        <div className="grid gap-4 lg:grid-cols-[132px_minmax(0,1fr)_212px]">
 
           {/* 좌 — 화면 목록 (모바일에선 가로 스크롤 칩) */}
           <nav className="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0"
@@ -116,6 +118,6 @@ export default function ScreenExplorer({ screens, accent = '#1540c9', label }) {
       <p className="text-[11.5px] mt-4" style={{ color: INK_34 }}>
         ※ 화면 속 이름·영상은 개인정보 보호를 위해 가렸습니다.
       </p>
-    </section>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 import ProjectShowcase from '../ui/ProjectShowcase';
 import ProjectQA from '../ui/ProjectQA';
-import ScreenExplorer from '../ui/ScreenExplorer';
 
 /* 교수자 런처 화면별 개선 전/후.
    실제 인수 시점 화면과 재설계 후 화면 — 실명·영상은 마스킹 처리됨. */
@@ -89,6 +88,12 @@ const QA = [
           },
         ],
       },
+      {
+        type: 'explorer',
+        label: '화면별 개선 — 인수 시점 vs 재설계 후',
+        accent: '#1540c9',
+        items: SCREENS,
+      },
     ],
   },
   {
@@ -151,11 +156,6 @@ export default function Kisti({ onNavigate }) {
         <div style={{ maxWidth: 1640, margin: '0 auto' }}>
           <ProjectShowcase activeId="kisti" onNavigate={onNavigate}>
             <ProjectQA items={QA} />
-            <ScreenExplorer
-              screens={SCREENS}
-              accent="#1540c9"
-              label="화면별 개선 — 인수 시점 vs 재설계 후"
-            />
           </ProjectShowcase>
         </div>
       </div>
