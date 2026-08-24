@@ -92,7 +92,7 @@ function BentoCard({ card, index }) {
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
       style={{
-        background: 'rgba(255,255,255,0.03)',
+        background: 'rgba(255,255,255,0.72)',
         border: `1px solid ${card.border}`,
       }}
     >
@@ -110,7 +110,7 @@ function BentoCard({ card, index }) {
         <div className={card.wide ? 'flex-1' : ''}>
           <p
             className="text-[11px] font-bold tracking-[0.25em] uppercase mb-4"
-            style={{ color: 'rgba(74,222,128,0.55)' }}
+            style={{ color: 'rgba(20,140,80,0.75)' }}
           >
             {card.label}
           </p>
@@ -118,7 +118,7 @@ function BentoCard({ card, index }) {
           <h3
             className="font-bold leading-tight mb-1"
             style={{
-              color: 'rgba(243,246,251,0.92)',
+              color: 'rgba(24,32,27,0.9)',
               fontSize: card.wide ? '28px' : '22px',
               letterSpacing: '-0.02em',
             }}
@@ -128,19 +128,19 @@ function BentoCard({ card, index }) {
 
           <p
             className="text-[13px] font-medium mb-4"
-            style={{ color: 'rgba(243,246,251,0.35)' }}
+            style={{ color: 'rgba(24,32,27,0.45)' }}
           >
             {card.subtitle}
           </p>
 
           {!card.wide && (
-            <div className="h-px w-full mb-5" style={{ background: 'rgba(255,255,255,0.05)' }} />
+            <div className="h-px w-full mb-5" style={{ background: 'rgba(24,32,27,0.08)' }} />
           )}
 
           <p
             className="text-[13px] leading-[1.85]"
             style={{
-              color: 'rgba(243,246,251,0.45)',
+              color: 'rgba(24,32,27,0.62)',
               fontFamily: '"Noto Serif KR", serif',
               maxWidth: card.wide ? '520px' : '100%',
             }}
@@ -152,8 +152,8 @@ function BentoCard({ card, index }) {
             <p
               className="text-[12px] font-semibold mt-4 px-3 py-2 rounded-lg inline-block"
               style={{
-                color: 'rgba(111,216,255,0.8)',
-                background: 'rgba(111,216,255,0.06)',
+                color: 'rgba(23,118,166,0.9)',
+                background: 'rgba(111,216,255,0.14)',
                 maxWidth: card.wide ? '520px' : '100%',
               }}
             >
@@ -169,9 +169,9 @@ function BentoCard({ card, index }) {
               key={t}
               className="text-[11px] font-semibold px-3 py-1.5 rounded-full"
               style={{
-                background: 'rgba(255,255,255,0.04)',
+                background: 'rgba(255,255,255,0.6)',
                 border: `1px solid ${card.border}`,
-                color: 'rgba(243,246,251,0.45)',
+                color: 'rgba(24,32,27,0.55)',
               }}
             >
               {t}
@@ -186,7 +186,7 @@ function BentoCard({ card, index }) {
 /* ── Main Page ── */
 export default function WhyMe() {
   return (
-    <div style={{ background: '#090B10', minHeight: '100vh' }}>
+    <div style={{ background: '#eff1ed', minHeight: '100vh' }}>
       <section className="max-w-6xl mx-auto px-6 pt-20 pb-32">
 
         {/* Header */}
@@ -200,19 +200,19 @@ export default function WhyMe() {
           {/* 어깨 라벨 = 네비 문장의 완성형 — "Bring" 탭이 이 페이지로 연결된다 */}
           <p
             className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5"
-            style={{ color: '#546178' }}
+            style={{ color: 'rgba(15,143,116,0.85)' }}
           >
             What I bring
           </p>
           <h1
             className="text-[34px] md:text-[44px] font-extrabold leading-tight mb-4"
-            style={{ color: 'rgba(243,246,251,0.92)', letterSpacing: '-0.025em' }}
+            style={{ color: 'rgba(24,32,27,0.9)', letterSpacing: '-0.025em' }}
           >
             기획과 엔지니어링의<br className="hidden md:block" /> 간극을 없앱니다.
           </h1>
           <p
             className="text-[15px] leading-relaxed"
-            style={{ color: 'rgba(243,246,251,0.4)', maxWidth: '520px', fontFamily: '"Noto Serif KR", serif' }}
+            style={{ color: 'rgba(24,32,27,0.55)', maxWidth: '520px', fontFamily: '"Noto Serif KR", serif' }}
           >
             본질적인 비즈니스 임팩트에 집중하는 Technical PM.
           </p>

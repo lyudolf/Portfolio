@@ -1,397 +1,293 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+/* 이력서 — 사람인/링크드인식 구조 문서.
+   화면에서는 포슬린 배경 위 A4 시트, 인쇄(PDF 저장) 시 시트만 남는다.
+   ⚠️ 연봉·클라이언트 내부 발언(사업비 증액 일화)은 공개 문서 비노출 방침.
+   데이터 출처: 사람인 이력서(career-history) + 수정 문구(handoff-saramin-fixes),
+   미니앱 상태는 4종 전부 출시로 갱신(appsintoss-traction). */
 
-/* ═══════════════════════════════════════════
-   /resume — "해상도를 높이는 기획자"
-   인트로: 씨앗 노드 → click me! → 옵시디언식 그래프 증식(노드+연결선) →
-   노드들이 재배치되며 프로필 초상 형성(별자리) → 실사진 리빌 → 이력서
-   ═══════════════════════════════════════════ */
+const PROFILE_IMG = '/resume-profile.jpg';
 
-const PROFILE_IMG = '/resume-profile.jpg'; // TODO: 실제 프로필 사진으로 교체 (현재 임시)
-const INTRO_SEEN_KEY = 'resumeIntroSeen';
+const INK = 'rgba(20,26,22,0.92)';
+const INK_70 = 'rgba(20,26,22,0.7)';
+const INK_50 = 'rgba(20,26,22,0.5)';
+const INK_38 = 'rgba(20,26,22,0.38)';
+const LINE = 'rgba(20,26,22,0.1)';
+const ACCENT = '#0f8f74';
 
-/* ── 옵시디언식 그래프 → 초상 형성 캔버스 ── */
-function GraphPortrait({ src, size = 400, onDone }) {
-  const ref = useRef(null);
-  const doneRef = useRef(onDone);
-  doneRef.current = onDone;
+/* ── 데이터 ── */
 
-  useEffect(() => {
-    const cv = ref.current;
-    if (!cv) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    cv.width = size * dpr;
-    cv.height = size * dpr;
-    const ctx = cv.getContext('2d');
-    ctx.scale(dpr, dpr);
+const SUMMARY =
+  "'Why'로 문제를 정의하고, 실현 가능한 'How'를 설계하는 서비스 기획자입니다. " +
+  'CS 전공과 프론트·백엔드 실무 경험을 바탕으로 기술 제약을 개발팀의 언어로 조율하고, ' +
+  'LLM·AI 도구로 문서화와 실행 속도를 높입니다. 초기 R&D 환경의 불확실성을 데이터 기반으로 구조화하고 ' +
+  '직군 간 이견을 조율하여, 1차 임상 테스트 60명 크리티컬 이슈 없이 완료(2차 진행 중), ' +
+  '전년 대비 3배 이상의 팀 매출 성장(3.8억 원 → 11.5억 원)을 달성했습니다.';
 
-    let raf, t0, done = false;
-    let nodes = [], edges = [];
-    const N = 230;
-    const img = new Image();
-    img.src = src;
+const KEY_RESULTS = [
+  { num: '3배+', label: '팀 매출 성장', sub: '3.8억 → 11.5억 (전년 대비)' },
+  { num: '60명', label: '1차 임상 무이슈 완료', sub: '2차 진행 중' },
+  { num: '3년차', label: '1년 용역 → 계속 연장', sub: '5·6년차 논의 중' },
+  { num: '금상', label: '웹어워드 코리아', sub: '리뉴얼 프로젝트 기획' },
+];
 
-    /* 타임라인(ms): 성장 → 초상으로 모핑 → 실사진 리빌 */
-    const MORPH0 = 2600, MORPH1 = 4400, REVEAL0 = 4800, REVEAL1 = 5900, END = 6400;
-    const ease = (t) => (t < 0.5 ? 4 * t ** 3 : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const CAREERS = [
+  {
+    company: '㈜이트라이브 (ETRIBE)',
+    role: 'CTS본부 · 매니저 · PM/서비스 기획',
+    period: '2024.07 — 재직 중',
+    intro: '메타버스·XR 기반 B2G 프로젝트 기획·PM 총괄. 제안 → 기획 → 개발 관리 → 검증 → 납품 전 사이클 수행.',
+    bullets: [
+      'KISTI 고령자 XR 인지·운동 훈련 시스템 — 단독 기획·PM. 1차 임상 테스트 60명 크리티컬 이슈 없이 완료(2차 진행 중), 1년 단위 용역이 성과를 인정받아 3년차 운영까지 연장(5·6년차 논의 중)',
+      '고령자 UX 재설계 — 진입 6단계 메뉴를 1~2 depth로 단축, 교수자 중앙 제어 구조, 임상 데이터 정합성·시스템 안정성을 품질 기준으로 확립',
+      '꿈키올래 Vision Pro 직업체험 9종 — PM·기획·QA. 초기 기획 전면 폐기 후 3세계관×3직업 프레임워크로 재설계, 2개월 실개발 납품 및 클라이언트 후속 제안 획득',
+      '한국콘텐츠진흥원 AI 직업체험 국가과제 — 초기 기획 참여. 페르소나·난이도 파라미터·평가지표 설계가 LLM 생성 시스템의 토대가 됨',
+      '전년 대비 팀 매출 3배 이상 성장 견인 (3.8억 원 → 11.5억 원)',
+    ],
+  },
+  {
+    company: '웹마인드',
+    role: '기획 · 주임',
+    period: '2023.04 — 2024.07',
+    intro: 'B2B 웹/앱 서비스 구축 기획 전 과정(IA·요구사항 정의·화면설계·일정/예산) 주도.',
+    bullets: [
+      '주차 솔루션 기업 브랜드 사이트 리뉴얼 — 경쟁사 분석·화면정의서 기반 기획, 웹어워드 코리아(K-Award) 금상 수상, 유지보수 계약 연장',
+      '물질성분 분석 기업 사이트 고도화 — IA 개선, GA 트래킹 환경 구축으로 오픈 후 사용자 행동 측정 체계 마련',
+      '건설사 공식 사이트 구축 — 제안 PT부터 참여, 신규 제안 수주 100% 기여',
+    ],
+  },
+  {
+    company: '캐파 (CAPA)',
+    role: '개발 인턴',
+    period: '2023.01 — 2023.02',
+    intro: null,
+    bullets: ['React·Spring Boot 웹 서비스 파일첨부(Dropzone) UI 구현 및 API 연동'],
+  },
+];
 
-    img.onload = () => {
-      /* 1) 밝기 기반 스티플 샘플링 — 밝은 픽셀 위치에 노드 배치(흑백 실루엣) */
-      const S = 96;
-      const s = Math.min(img.width, img.height);
-      const sx = (img.width - s) / 2, sy = (img.height - s) / 2 * 0.6;
-      const oc = document.createElement('canvas');
-      oc.width = S; oc.height = S;
-      const octx = oc.getContext('2d');
-      octx.drawImage(img, sx, sy, s, s, 0, 0, S, S);
-      const d = octx.getImageData(0, 0, S, S).data;
-      const cand = [];
-      for (let y = 0; y < S; y++) {
-        for (let x = 0; x < S; x++) {
-          const i = (y * S + x) * 4;
-          const b = (d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114) / 255;
-          if (b > 0.28) cand.push({ x, y, b });
-        }
-      }
-      const picked = [];
-      while (picked.length < N && cand.length) {
-        const idx = Math.floor(Math.random() * cand.length);
-        if (Math.random() < cand[idx].b) picked.push(cand.splice(idx, 1)[0]);
-      }
-      const pad = 16;
-      nodes = picked.map((c, i) => ({
-        /* 최종(초상) 위치 */
-        tx: pad + (c.x + Math.random()) / S * (size - pad * 2),
-        ty: pad + (c.y + Math.random()) / S * (size - pad * 2),
-        /* 성장기(유기적 산개) 위치 */
-        gx: size / 2 + (Math.random() - 0.5) * size * 1.15,
-        gy: size / 2 + (Math.random() - 0.5) * size * 1.15,
-        r: 1.2 + c.b * 2.2,
-        spawn: 2400 * Math.pow(i / N, 0.5), // 가속 스폰 — 톡..톡..토도도독
-        stagger: (i % 40) * 9,
-      }));
+const SIDE_PROJECTS = {
+  title: '개인 프로젝트 — AI 활용 서비스 기획·출시',
+  period: '2026.01 — 진행 중',
+  bullets: [
+    '토스 앱인토스 미니앱 4종을 기획·개발·심사 대응·출시까지 단독 수행 — 성격유형 퀴즈왕 · 반려동물 산책지수 · 소비유형 테스트 · 오늘은 누가 쏠래? (리워드 광고 BM, 랭킹 시스템, 공공데이터 API 연동 설계 포함)',
+    "웹 3D 게임 'Leaf It Alone' 7일 단독 개발·배포 — React Three Fiber, ONNX 딥러닝 AI, 8,000개 객체 렌더링 최적화 (라이브 서비스 중)",
+    "기획서가 아닌 '출시된 제품'으로 아이디어를 검증하는 AI 기반 실행 사이클 확립",
+  ],
+};
 
-      /* 2) 초상 좌표 기준 최근접 2개 연결 — 별자리/옵시디언 링크 */
-      for (let i = 0; i < nodes.length; i++) {
-        const dists = [];
-        for (let j = 0; j < nodes.length; j++) {
-          if (j === i) continue;
-          const dx = nodes[i].tx - nodes[j].tx, dy = nodes[i].ty - nodes[j].ty;
-          dists.push({ j, d2: dx * dx + dy * dy });
-        }
-        dists.sort((a, b) => a.d2 - b.d2);
-        for (let k = 0; k < 2; k++) {
-          const a = Math.min(i, dists[k].j), b = Math.max(i, dists[k].j);
-          if (!edges.some((e) => e[0] === a && e[1] === b)) edges.push([a, b]);
-        }
-      }
+const EDUCATION = [
+  { name: '강남대학교', detail: '컴퓨터공학 전공 · 미디어공학 복수전공', period: '2014.03 — 2020.02 졸업' },
+];
 
-      t0 = performance.now();
-      raf = requestAnimationFrame(tick);
-    };
+const CERTS = [
+  { name: '정보처리기사', detail: '한국산업인력공단', period: '2021.06' },
+  { name: '웹어워드 코리아(K-Award) 금상', detail: '한국인터넷전문가협회 — 리뉴얼 프로젝트 기획 담당', period: '수상' },
+  { name: '컴퓨터활용능력 1급 (필기)', detail: '대한상공회의소', period: '' },
+  { name: 'ICDL', detail: '국제 컴퓨터 활용 자격', period: '' },
+];
 
-    const tick = (now) => {
-      const t = now - t0;
-      ctx.clearRect(0, 0, size, size);
-      const gAlpha = t < REVEAL0 ? 1 : Math.max(0.1, 1 - (t - REVEAL0) / (REVEAL1 - REVEAL0));
+const TRAININGS = [
+  { name: '멀티캠퍼스 Java/Spring · DB · API 개발 교육', period: '2021 — 2022' },
+  { name: '한국기술교육대학교 협동로봇 연수 · KSA IoT/데이터 교육', period: '2020 — 2021' },
+];
 
-      /* 노드 현재 위치 (성장 위치 → 초상 위치로 이징) */
-      const pos = nodes.map((n) => {
-        if (t < n.spawn) return null;
-        const m = Math.min(1, Math.max(0, (t - MORPH0 - n.stagger) / (MORPH1 - MORPH0)));
-        const e = ease(m);
-        return {
-          x: n.gx + (n.tx - n.gx) * e,
-          y: n.gy + (n.ty - n.gy) * e,
-          r: n.r,
-          pop: Math.min(1, (t - n.spawn) / 260),
-        };
-      });
+const SKILLS = {
+  '기획·운영': ['서비스 기획', '요구사항 정의', 'IA 설계', '화면정의서', 'WBS/일정 관리', 'QA', 'KPI 관리', 'Agile'],
+  '데이터·도구': ['Google Analytics', 'SQL', 'Figma', 'Notion', 'Jira', 'draw.io', 'Slack'],
+  'AI·기술': ['프롬프트 엔지니어링', 'ChatGPT', 'Claude', 'Cursor', 'Midjourney', 'React', 'Spring Boot', 'Unity(협업)'],
+};
 
-      /* 연결선 */
-      ctx.lineWidth = 1;
-      for (const [a, b] of edges) {
-        const pa = pos[a], pb = pos[b];
-        if (!pa || !pb) continue;
-        ctx.strokeStyle = `rgba(255,255,255,${0.22 * gAlpha * Math.min(pa.pop, pb.pop)})`;
-        ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
-      }
-      /* 노드 */
-      for (const p of pos) {
-        if (!p) continue;
-        const sc = 0.4 + 0.6 * p.pop;
-        ctx.fillStyle = `rgba(255,255,255,${0.85 * gAlpha * p.pop})`;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * sc, 0, Math.PI * 2); ctx.fill();
-      }
+const MILITARY = '육군 병장 만기전역 (2016.01 — 2017.10)';
 
-      /* 실사진 리빌 (원형 클립 크로스페이드) */
-      if (t > REVEAL0) {
-        const a = Math.min(1, (t - REVEAL0) / (REVEAL1 - REVEAL0));
-        ctx.save();
-        ctx.globalAlpha = a;
-        ctx.beginPath(); ctx.arc(size / 2, size / 2, size / 2 - 6, 0, Math.PI * 2); ctx.clip();
-        const s3 = Math.min(img.width, img.height);
-        ctx.drawImage(img, (img.width - s3) / 2, (img.height - s3) / 2 * 0.6, s3, s3, 0, 0, size, size);
-        ctx.restore();
-      }
+/* ── 프리미티브 ── */
 
-      if (t > END) {
-        if (!done) { done = true; doneRef.current?.(); }
-        return;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-
-    return () => cancelAnimationFrame(raf);
-  }, [src, size]);
-
-  return <canvas ref={ref} style={{ width: size, height: size }} />;
-}
-
-/* ── 유리 필 ── */
-function GlassPill({ children, big = false, onClick, style }) {
+function SectionTitle({ children }) {
   return (
-    <button onClick={onClick}
-      className={`rounded-full font-semibold cursor-pointer ${big ? 'px-8 py-4 text-[18px]' : 'px-4 py-2 text-[13px]'}`}
-      style={{
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%)',
-        backdropFilter: 'blur(14px) saturate(1.15)',
-        WebkitBackdropFilter: 'blur(14px) saturate(1.15)',
-        border: '1px solid rgba(255,255,255,0.4)',
-        color: 'rgba(255,255,255,0.92)',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-        ...style,
-      }}>
+    <h2 className="text-[13px] font-bold tracking-[0.16em] uppercase mb-4 pb-2"
+      style={{ color: ACCENT, borderBottom: `1.5px solid ${LINE}` }}>
       {children}
-    </button>
+    </h2>
   );
 }
 
-/* ── 이력서 본문 데이터 ── */
-const CAREERS = [
-  {
-    company: '㈜이트라이브', role: 'PM · 서비스 기획', period: '2024.07 — 현재',
-    bullets: [
-      'XR·기능성 게임 B2G 프로젝트 제안→기획→개발→검증→납품 전 사이클 총괄',
-      'KISTI 고령자 XR 훈련: 1차 임상 60명 무이슈 완료, 1년 용역 → 3년차 연장(5·6년차 논의)',
-      '꿈키올래(Vision Pro 직업체험 9종): 기획 전면 재설계로 2개월 실개발 납품, 후속 제안 획득',
-      '전년 대비 팀 매출 3배+ 성장 견인 (3.8억 → 11.5억)',
-    ],
-  },
-  {
-    company: '웹마인드', role: '웹/앱 서비스 기획', period: '2023.04 — 2024.07',
-    bullets: [
-      'B2B 웹 서비스 구축 전 과정 주도 (IA·요구사항 정의·화면설계·일정/예산)',
-      '주차 솔루션 기업 리뉴얼: 웹어워드 코리아 금상 수상, 유지보수 계약 연장',
-      '제안서·PT 참여로 신규 프로젝트 수주 100% 기여, GA 트래킹 환경 구축',
-    ],
-  },
-  {
-    company: '캐파(CAPA)', role: '프론트·백엔드 인턴', period: '2023.01 — 2023.02',
-    bullets: ['React·Spring Boot 웹 서비스 파일첨부 UI 구현 및 API 연동'],
-  },
-];
-
-const SIDE_PROJECTS = [
-  { name: 'Leaf It Alone', desc: '웹 3D 게임 7일 단독 개발·배포 — React Three Fiber, ONNX 딥러닝 AI, 8,000개 객체 최적화' },
-  { name: '토스 앱인토스 미니앱 3종', desc: '기획→개발→심사→출시 단독 수행 — 리워드 광고 BM·랭킹 설계 (출시·심사 진행)' },
-  { name: 'AI 영상 프로덕션', desc: 'Midjourney·Runway 기반 사내 공모전 1위, 외주 대비 약 70% 리소스 절감' },
-];
-
-const SKILLS = ['서비스 기획', 'PM/WBS', 'IA 설계', 'Figma', 'GA', 'SQL', 'Agile', 'Notion', 'React', 'Unity', '프롬프트 엔지니어링', 'AI 프로토타이핑'];
-
-/* ═══ 메인 페이지 ═══ */
-export default function Resume() {
-  const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const seen = typeof window !== 'undefined' && sessionStorage.getItem(INTRO_SEEN_KEY);
-  const [stage, setStage] = useState(seen || reduced ? 'resume' : 'seed'); // seed → graph → resume
-  const [clickMe, setClickMe] = useState(false);
-
-  useEffect(() => {
-    if (stage === 'seed') { const t = setTimeout(() => setClickMe(true), 1100); return () => clearTimeout(t); }
-    if (stage === 'resume') sessionStorage.setItem(INTRO_SEEN_KEY, '1');
-  }, [stage]);
-
-  const onGraphDone = useCallback(() => { setTimeout(() => setStage('resume'), 350); }, []);
-  const skip = () => setStage('resume');
-
+function Bullet({ children }) {
   return (
-    <div className="relative min-h-screen overflow-hidden" style={{ background: '#080A0F' }}>
+    <li className="flex gap-2.5 text-[13px] leading-[1.8]" style={{ color: INK_70 }}>
+      <span style={{ color: INK_38, flexShrink: 0 }}>·</span>
+      <span>{children}</span>
+    </li>
+  );
+}
 
-      {/* ── 이력서 본문 ── */}
-      <div className="relative z-10 transition-opacity duration-700"
+/* ═══ 메인 ═══ */
+export default function Resume({ onNavigate }) {
+  return (
+    <div className="min-h-screen print:bg-white" style={{ background: '#eef0ec' }}>
+      {/* 인쇄 여백 설정 */}
+      <style>{`@media print { @page { size: A4; margin: 14mm 12mm; } }`}</style>
+
+      {/* 상단 액션 바 — 인쇄 시 숨김 */}
+      <div className="print:hidden sticky top-0 z-40 flex items-center justify-between px-5 py-3"
+        style={{ background: 'rgba(238,240,236,0.9)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${LINE}` }}>
+        <button onClick={() => onNavigate?.('about')}
+          className="text-[13px] font-semibold cursor-pointer"
+          style={{ color: INK_50 }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = INK; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = INK_50; }}>
+          ← 포트폴리오로
+        </button>
+        <button onClick={() => window.print()}
+          className="px-4 py-2 rounded-full text-[12.5px] font-bold cursor-pointer transition-transform"
+          style={{ background: '#12211a', color: '#fff' }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; }}>
+          PDF로 저장
+        </button>
+      </div>
+
+      {/* A4 시트 */}
+      <div className="mx-auto my-8 print:my-0 px-8 md:px-12 py-10 md:py-12 print:px-0 print:py-0 print:shadow-none print:border-0"
         style={{
-          opacity: stage === 'resume' ? 1 : 0,
-          pointerEvents: stage === 'resume' ? 'auto' : 'none',
+          maxWidth: 860,
+          background: '#fff',
+          border: `1px solid ${LINE}`,
+          borderRadius: 18,
+          boxShadow: '0 16px 48px rgba(20,28,24,0.1)',
         }}>
-        <div className="max-w-4xl mx-auto px-6 py-16 md:py-20">
 
-          {/* 헤더 */}
-          <motion.div className="flex flex-col md:flex-row md:items-end gap-6 mb-14"
-            initial={false}
-            animate={stage === 'resume' ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}>
-            <img src={PROFILE_IMG} alt="유희수 프로필"
-              className="w-28 h-28 rounded-full object-cover flex-shrink-0"
-              style={{ objectPosition: '50% 30%', border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 12px 40px rgba(0,0,0,0.4)' }} />
-            <div>
-              <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: 'rgba(126,241,214,0.7)' }}>
-                Resume
-              </p>
-              <h1 className="text-[32px] md:text-[40px] font-extrabold leading-tight" style={{ color: 'rgba(255,255,255,0.95)' }}>
-                해상도를 높이는 기획자, 유희수
-              </h1>
-              <p className="mt-2 text-[15px]" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                모호한 문제(Why)를 선명한 실행(How)으로. — Service Planner · PM
-              </p>
-              <div className="mt-3 flex flex-wrap gap-4 text-[13px]" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                <a href="mailto:iplay3473@gmail.com" className="hover:text-white transition-colors">iplay3473@gmail.com</a>
-                <a href="https://github.com/lyudolf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">github.com/lyudolf</a>
-                <a href="https://lyuheesu.com" className="hover:text-white transition-colors">lyuheesu.com</a>
-              </div>
+        {/* ── 헤더 ── */}
+        <header className="flex items-start justify-between gap-6 mb-8">
+          <div className="min-w-0">
+            <h1 className="text-[30px] md:text-[34px] font-extrabold leading-tight" style={{ color: INK, letterSpacing: '-0.02em' }}>
+              유희수
+            </h1>
+            <p className="text-[14px] font-semibold mt-1" style={{ color: ACCENT }}>
+              서비스 기획 · PM — &lsquo;Why&rsquo;로 정의하고 &lsquo;How&rsquo;로 실행합니다
+            </p>
+            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[12.5px]" style={{ color: INK_50 }}>
+              <a href="mailto:iplay3473@gmail.com" style={{ color: 'inherit' }}>iplay3473@gmail.com</a>
+              <a href="https://lyuheesu.com" style={{ color: 'inherit' }}>lyuheesu.com</a>
+              <a href="https://github.com/lyudolf" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>github.com/lyudolf</a>
+              <span>서울 동작구 · {MILITARY}</span>
             </div>
-          </motion.div>
+          </div>
+          <img src={PROFILE_IMG} alt="유희수 프로필"
+            className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover flex-shrink-0"
+            style={{ objectPosition: '50% 30%', border: `1px solid ${LINE}` }} />
+        </header>
 
-          {/* Key Results */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-14">
-            {[
-              { num: '3배+', label: '팀 매출 성장 (3.8→11.5억)' },
-              { num: '60명', label: '1차 임상 무이슈 완료' },
-              { num: '3년차', label: '1년 용역 → 계속 연장' },
-              { num: '금상', label: '웹어워드 코리아' },
-            ].map((s) => (
-              <div key={s.label} className="rounded-2xl p-4 text-center"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <p className="text-[24px] font-extrabold" style={{ color: 'rgba(126,241,214,0.9)' }}>{s.num}</p>
-                <p className="text-[12px] mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>{s.label}</p>
+        {/* ── 요약 ── */}
+        <section className="mb-8">
+          <SectionTitle>Summary</SectionTitle>
+          <p className="text-[13.5px] leading-[1.9]" style={{ color: INK_70 }}>{SUMMARY}</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-5">
+            {KEY_RESULTS.map((s) => (
+              <div key={s.label} className="rounded-xl px-3 py-3 text-center"
+                style={{ background: 'rgba(15,143,116,0.05)', border: `1px solid rgba(15,143,116,0.16)` }}>
+                <p className="text-[19px] font-extrabold leading-none" style={{ color: ACCENT }}>{s.num}</p>
+                <p className="text-[11px] font-semibold mt-1.5" style={{ color: INK_70 }}>{s.label}</p>
+                <p className="text-[10px] mt-0.5" style={{ color: INK_38 }}>{s.sub}</p>
               </div>
             ))}
           </div>
+        </section>
 
-          {/* 경력 */}
-          <SectionTitle>경력 <span className="text-[13px] font-normal" style={{ color: 'rgba(255,255,255,0.45)' }}>— 총 3년 4개월</span></SectionTitle>
-          <div className="flex flex-col gap-8 mb-14">
+        {/* ── 경력 ── */}
+        <section className="mb-8">
+          <SectionTitle>경력 — 총 3년 4개월</SectionTitle>
+          <div className="flex flex-col gap-6">
             {CAREERS.map((c) => (
-              <div key={c.company} className="rounded-2xl p-6"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-                  <h3 className="text-[17px] font-bold" style={{ color: 'rgba(255,255,255,0.92)' }}>
-                    {c.company} <span className="text-[13px] font-medium ml-2" style={{ color: 'rgba(126,241,214,0.7)' }}>{c.role}</span>
-                  </h3>
-                  <span className="text-[12px]" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.period}</span>
+              <div key={c.company} style={{ breakInside: 'avoid' }}>
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 mb-0.5">
+                  <h3 className="text-[15.5px] font-bold" style={{ color: INK }}>{c.company}</h3>
+                  <span className="text-[12px] font-semibold" style={{ color: INK_38 }}>{c.period}</span>
                 </div>
-                <ul className="flex flex-col gap-2">
-                  {c.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2.5 text-[13.5px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                      <span className="mt-[8px] w-1 h-1 rounded-full flex-shrink-0" style={{ background: 'rgba(126,241,214,0.6)' }} />
-                      {b}
-                    </li>
-                  ))}
+                <p className="text-[12.5px] font-semibold mb-2" style={{ color: INK_50 }}>{c.role}</p>
+                {c.intro && (
+                  <p className="text-[13px] leading-[1.8] mb-2" style={{ color: INK_70 }}>{c.intro}</p>
+                )}
+                <ul className="flex flex-col gap-1.5">
+                  {c.bullets.map((b) => <Bullet key={b.slice(0, 20)}>{b}</Bullet>)}
                 </ul>
               </div>
             ))}
           </div>
+        </section>
 
-          {/* 사이드 프로젝트 */}
-          <SectionTitle>사이드 프로젝트 <span className="text-[13px] font-normal" style={{ color: 'rgba(255,255,255,0.45)' }}>— 기획서가 아닌, 출시된 제품으로</span></SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-14">
-            {SIDE_PROJECTS.map((p) => (
-              <div key={p.name} className="rounded-2xl p-5"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <h4 className="text-[14px] font-bold mb-2" style={{ color: 'rgba(255,255,255,0.9)' }}>{p.name}</h4>
-                <p className="text-[12.5px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>{p.desc}</p>
+        {/* ── 개인 프로젝트 ── */}
+        <section className="mb-8" style={{ breakInside: 'avoid' }}>
+          <SectionTitle>개인 프로젝트</SectionTitle>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 mb-2">
+            <h3 className="text-[15px] font-bold" style={{ color: INK }}>{SIDE_PROJECTS.title}</h3>
+            <span className="text-[12px] font-semibold" style={{ color: INK_38 }}>{SIDE_PROJECTS.period}</span>
+          </div>
+          <ul className="flex flex-col gap-1.5">
+            {SIDE_PROJECTS.bullets.map((b) => <Bullet key={b.slice(0, 20)}>{b}</Bullet>)}
+          </ul>
+        </section>
+
+        {/* ── 학력 · 자격/수상 ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8" style={{ breakInside: 'avoid' }}>
+          <section>
+            <SectionTitle>학력</SectionTitle>
+            {EDUCATION.map((e) => (
+              <div key={e.name}>
+                <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                  <h3 className="text-[14px] font-bold" style={{ color: INK }}>{e.name}</h3>
+                  <span className="text-[11.5px]" style={{ color: INK_38 }}>{e.period}</span>
+                </div>
+                <p className="text-[12.5px] mt-0.5" style={{ color: INK_70 }}>{e.detail}</p>
+              </div>
+            ))}
+            <div className="mt-5">
+              <SectionTitle>교육</SectionTitle>
+              <ul className="flex flex-col gap-1.5">
+                {TRAININGS.map((t) => (
+                  <li key={t.name} className="text-[12.5px] leading-[1.7]" style={{ color: INK_70 }}>
+                    {t.name} <span style={{ color: INK_38 }}>({t.period})</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+          <section>
+            <SectionTitle>자격 · 수상</SectionTitle>
+            <ul className="flex flex-col gap-2.5">
+              {CERTS.map((c) => (
+                <li key={c.name}>
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                    <span className="text-[13px] font-bold" style={{ color: INK }}>{c.name}</span>
+                    {c.period && <span className="text-[11.5px]" style={{ color: INK_38 }}>{c.period}</span>}
+                  </div>
+                  <p className="text-[12px] mt-0.5" style={{ color: INK_50 }}>{c.detail}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
+        {/* ── 스킬 ── */}
+        <section style={{ breakInside: 'avoid' }}>
+          <SectionTitle>스킬</SectionTitle>
+          <div className="flex flex-col gap-3">
+            {Object.entries(SKILLS).map(([group, items]) => (
+              <div key={group} className="flex flex-col md:flex-row md:items-baseline gap-1.5 md:gap-4">
+                <span className="text-[11.5px] font-bold flex-shrink-0 md:w-[88px]" style={{ color: INK_50 }}>{group}</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {items.map((s) => (
+                    <span key={s} className="text-[11.5px] font-medium px-2.5 py-1 rounded-full"
+                      style={{ background: 'rgba(20,26,22,0.045)', border: `1px solid ${LINE}`, color: INK_70 }}>
+                      {s}
+                    </span>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-
-          {/* 스킬 & 학력 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-            <div>
-              <SectionTitle>스킬</SectionTitle>
-              <div className="flex flex-wrap gap-2">
-                {SKILLS.map((s) => (
-                  <span key={s} className="rounded-full px-3.5 py-1.5 text-[12px] font-medium"
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.75)' }}>
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <SectionTitle>학력 · 자격</SectionTitle>
-              <ul className="flex flex-col gap-2 text-[13.5px]" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                <li>강남대학교 — 컴퓨터공학 전공 · 미디어공학 복수전공 (2020 졸업)</li>
-                <li>정보처리기사 (2021)</li>
-                <li>컴퓨터활용능력 1급 필기 · ICDL</li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
+        </section>
       </div>
 
-      {/* ── 인트로 오버레이 ── */}
-      <AnimatePresence>
-        {stage !== 'resume' && (
-          <motion.div key="intro" className="fixed inset-0 z-40" style={{ background: '#080A0F' }}
-            exit={{ opacity: 0, transition: { duration: 0.7 } }}>
-
-            {/* 스킵 */}
-            <button onClick={skip}
-              className="absolute top-6 right-7 z-50 text-[13px] font-semibold rounded-full px-4 py-2 cursor-pointer transition-colors"
-              style={{ color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.25)' }}
-              onMouseOver={(e) => { e.currentTarget.style.color = '#fff'; }}
-              onMouseOut={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}>
-              바로 보기 →
-            </button>
-
-            {/* 씨앗 노드 + click me */}
-            {stage === 'seed' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}>
-                  <GlassPill big onClick={() => setStage('graph')}>#서비스기획</GlassPill>
-                </motion.div>
-                <AnimatePresence>
-                  {clickMe && (
-                    <motion.p key="cm" className="mt-5 text-[13px] tracking-widest uppercase"
-                      style={{ color: 'rgba(126,241,214,0.85)' }}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: [0.4, 1, 0.4], y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ opacity: { repeat: Infinity, duration: 1.6 }, y: { duration: 0.4 } }}>
-                      click me!
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
-
-            {/* 그래프 증식 → 초상 → 실사진 */}
-            {stage === 'graph' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <GraphPortrait src={PROFILE_IMG} onDone={onGraphDone} />
-                <motion.p className="mt-7 text-[15px] font-medium tracking-wide"
-                  style={{ color: 'rgba(255,255,255,0.75)' }}
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.2, duration: 0.9 }}>
-                  흩어진 점들을 연결하면, 하나의 그림이 됩니다.
-                </motion.p>
-              </div>
-            )}
-
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <p className="print:hidden text-center text-[11.5px] pb-10" style={{ color: INK_38 }}>
+        &ldquo;PDF로 저장&rdquo;을 누르면 브라우저 인쇄 대화상자에서 PDF로 내려받을 수 있습니다.
+      </p>
     </div>
-  );
-}
-
-function SectionTitle({ children }) {
-  return (
-    <h2 className="text-[18px] font-bold mb-5 pb-2.5"
-      style={{ color: 'rgba(255,255,255,0.92)', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
-      {children}
-    </h2>
   );
 }
