@@ -96,7 +96,9 @@ const TRAININGS = [
 
 const SKILLS = {
   '기획·운영': ['서비스 기획', '요구사항 정의', 'IA 설계', '화면정의서', 'WBS/일정 관리', 'QA', 'KPI 관리', 'Agile'],
-  '데이터·도구': ['Google Analytics', 'SQL', 'Figma', 'Notion', 'Jira', 'draw.io', 'Slack'],
+  /* 분석 도구는 실제 사용 깊이대로 — Firebase Analytics는 PillStack에서 직접 연동,
+     GA는 웹마인드에서 트래킹 코드 설치 수준. */
+  '데이터·도구': ['Firebase Analytics', 'GA 트래킹', 'SQL', 'Supabase', 'Figma', 'Notion', 'Jira', 'draw.io', 'Slack'],
   'AI·기술': ['프롬프트 엔지니어링', 'ChatGPT', 'Claude', 'Cursor', 'Midjourney', 'React', 'Spring Boot', 'Unity(협업)'],
 };
 
