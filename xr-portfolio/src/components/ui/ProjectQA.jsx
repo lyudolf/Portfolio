@@ -20,18 +20,21 @@ import ScreenExplorer from './ScreenExplorer';
 
 const INK = 'rgba(24,32,27,0.88)';
 const INK_74 = 'rgba(24,32,27,0.74)';
-const INK_55 = 'rgba(24,32,27,0.55)';
-const INK_40 = 'rgba(24,32,27,0.4)';
+const INK_55 = 'rgba(24,32,27,0.72)';   // 카드 본문 — 0.55는 3.78:1로 AA 미달이라 상향
+const INK_40 = 'rgba(24,32,27,0.64)';   // 라벨·번호 — 0.4는 2.46:1로 거의 안 보였다
 const BORDER = 'rgba(24,32,27,0.08)';
 const CARD_BG = 'rgba(255,255,255,0.66)';
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 
 /* 블록 제목. tools를 주면 오른쪽 끝에 작업 도구를 작게 병기한다 —
    "무엇을 만들었나"가 앞서고 "무엇으로 만들었나"는 그 옆에 붙는 순서. */
-function BlockLabel({ children, tools }) {
+function BlockLabel({ children, tools, accent }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-4 mt-9">
-      <p className="text-[10.5px] font-bold tracking-[0.18em] uppercase" style={{ color: INK_40 }}>
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-5 mt-11">
+      <p className="text-[15px] md:text-[16px] font-bold flex items-center gap-2.5"
+        style={{ color: INK, letterSpacing: '-0.015em' }}>
+        <span className="inline-block flex-shrink-0"
+          style={{ width: 3, height: 15, borderRadius: 2, background: accent ?? INK_40 }} />
         {children}
       </p>
       {tools && (
@@ -92,12 +95,63 @@ function Cards({ block }) {
               </p>
             )}
             <p className="text-[14.5px] font-bold mb-2" style={{ color: INK }}>{c.title}</p>
-            <p className="text-[13px] leading-[1.85]" style={{ color: INK_55 }}>{c.body}</p>
+            <p className="text-[13.5px] leading-[1.85]" style={{ color: INK_55 }}>{c.body}</p>
             {c.foot && (
               <p className="text-[12px] font-semibold mt-3 pt-3"
                 style={{ color: INK_74, borderTop: `1px solid ${BORDER}` }}>
                 → {c.foot}
               </p>
+            )}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/* issues — 문제와 그 대응을 한 행에서 좌우로 대비시킨다.
+   카드 4장을 균등 나열하면 다 비슷해 보여서, 행 단위로 쌓고 대응을 강조 블록으로 뺐다.
+   items는 cards와 같은 모양({num, title, body, foot})을 쓴다. */
+function Issues({ block }) {
+  const accent = block.accent ?? '#1540c9';
+  return (
+    <>
+      {block.label && <BlockLabel tools={block.tools} accent={accent}>{block.label}</BlockLabel>}
+      <div className={block.label ? '' : 'mt-7'} style={{ borderTop: `1px solid ${BORDER}` }}>
+        {block.items.map((c) => (
+          <div key={c.title}
+            className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 py-9"
+            style={{ borderBottom: `1px solid ${BORDER}` }}>
+
+            {/* 문제 — 번호를 큰 앵커로 세워 4개가 각각의 항목으로 보이게 */}
+            <div className="flex gap-4 md:gap-5">
+              {c.num && (
+                <span className="text-[30px] md:text-[38px] font-extrabold flex-shrink-0 leading-none"
+                  style={{ color: accent, opacity: 0.28, letterSpacing: '-0.04em', marginTop: -2 }}>
+                  {c.num}
+                </span>
+              )}
+              <div>
+                <p className="text-[19px] md:text-[21px] font-bold mb-2.5"
+                  style={{ color: INK, letterSpacing: '-0.02em', lineHeight: 1.3 }}>
+                  {c.title}
+                </p>
+                <p className="text-[14px] leading-[1.85]" style={{ color: INK_55 }}>{c.body}</p>
+              </div>
+            </div>
+
+            {/* 대응 — 이 행의 결론. 문제보다 눈에 먼저 들어와야 한다. */}
+            {c.foot && (
+              <div className="px-6 py-5 rounded-2xl self-start"
+                style={{ background: `${accent}14`, borderLeft: `3px solid ${accent}` }}>
+                <p className="text-[11px] font-bold tracking-[0.18em] uppercase mb-2.5" style={{ color: accent }}>
+                  대응
+                </p>
+                <p className="text-[16px] font-bold leading-[1.6]"
+                  style={{ color: INK, letterSpacing: '-0.015em' }}>
+                  {c.foot}
+                </p>
+              </div>
             )}
           </div>
         ))}
@@ -262,7 +316,7 @@ function Explorer({ block }) {
 
 const BLOCK_RENDERERS = {
   photos: Photos, cards: Cards, swaps: Swaps, stats: Stats,
-  posts: Posts, loops: Loops, explorer: Explorer,
+  posts: Posts, loops: Loops, explorer: Explorer, issues: Issues,
 };
 
 export default function ProjectQA({ items }) {
@@ -277,11 +331,17 @@ export default function ProjectQA({ items }) {
           className="py-10 md:py-14"
           style={{ borderTop: i > 0 ? `1px solid ${BORDER}` : 'none' }}
         >
-          {/* 질문 — 작은 캡션 (회색) */}
-          <p className="text-[11.5px] font-bold tracking-[0.12em] uppercase mb-4"
-            style={{ color: INK_40 }}>
-            Q{i + 1}. {it.q}
-          </p>
+          {/* 질문 — 이 섹션의 제목. 본문보다 작으면 구조가 안 읽혀서 헤딩 크기로 세운다. */}
+          <div className="flex items-baseline gap-3 mb-5">
+            <span className="text-[21px] md:text-[26px] font-extrabold flex-shrink-0"
+              style={{ color: INK_40, fontFamily: MONO, letterSpacing: '-0.02em' }}>
+              Q{i + 1}
+            </span>
+            <h2 className="text-[23px] md:text-[29px] font-bold leading-tight"
+              style={{ color: INK, letterSpacing: '-0.025em' }}>
+              {it.q}
+            </h2>
+          </div>
           {/* 답변 — 스캔용 본문 */}
           <div className="flex flex-col gap-3.5">
             {it.a.map((line) => (

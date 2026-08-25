@@ -16,8 +16,8 @@ import { useState } from 'react';
 
 const INK = 'rgba(24,32,27,0.88)';
 const INK_70 = 'rgba(24,32,27,0.7)';
-const INK_45 = 'rgba(24,32,27,0.45)';
-const INK_34 = 'rgba(24,32,27,0.34)';
+const INK_45 = 'rgba(24,32,27,0.68)';   // 본문·캡션 — 0.45는 2.8:1로 AA 미달
+const INK_34 = 'rgba(24,32,27,0.62)';   // 라벨·각주 — 0.34는 2.1:1로 거의 안 보였다
 const BORDER = 'rgba(24,32,27,0.09)';
 const CARD = 'rgba(255,255,255,0.7)';
 
@@ -25,11 +25,11 @@ const CARD = 'rgba(255,255,255,0.7)';
    그래야 Q&A 본문과 좌우 끝이 딱 맞는다. */
 export default function ScreenExplorer({ screens, accent = '#1540c9', label }) {
   const [idx, setIdx] = useState(0);
-  const [ver, setVer] = useState('new');
+  const [ver, setVer] = useState('old'); // 인수 시점이 기본 — 문제를 먼저 보고 개선을 토글로
   const s = screens[idx];
   const src = ver === 'old' ? s.old : s.new;
 
-  const pick = (i) => { setIdx(i); setVer('new'); };
+  const pick = (i) => { setIdx(i); setVer('old'); };
 
   return (
     <div className="w-full">
