@@ -8,8 +8,9 @@ import { motion, AnimatePresence } from 'framer-motion';
  *
  * Props:
  *   items: [{ src, title }]  — 갤러리 아이템 배열
+ *   accent                   — 선택된 썸네일 테두리 색 (프로젝트 시그니처)
  */
-export default function InfiniteGallery({ items = [] }) {
+export default function InfiniteGallery({ items = [], accent = 'rgba(158,106,22,0.65)' }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1: left, 1: right
   const stripRef = useRef(null);
@@ -132,7 +133,7 @@ export default function InfiniteGallery({ items = [] }) {
                   width: isCenter ? 96 : 72,
                   height: isCenter ? 64 : 48,
                   border: isCenter
-                    ? '2px solid rgba(158,106,22,0.65)'
+                    ? `2px solid ${accent}`
                     : '1px solid rgba(24,32,27,0.1)',
                   opacity: isCenter ? 1 : 0.45 + (1 - Math.abs(pos - half) / half) * 0.25,
                 }}

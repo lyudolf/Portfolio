@@ -6,6 +6,21 @@ import ProjectQA from '../ui/ProjectQA';
    출처: 본인 작성 Q&A (memory refs/dream-qa-50.md) + 회고 정제본.
    ⚠️ 팀 내부 사정·클라이언트 개인 성향 언급은 공개 사이트 비노출 방침. */
 
+/* 실제 빌드 화면 8장. 구버전 GALLERY 섹션에서 그대로 가져왔다.
+   ⚠️ 구버전 alt 텍스트는 실제 화면과 어긋난 게 있어(2번을 "밀실사건수사대"로
+   적어놨으나 실제로는 화성 UAM 조종) 이미지를 직접 확인하고 다시 달았다.
+   순서 = 세계관별 진행 흐름: MARS 3 → 수사대 3(수집→분석→특정) → 엔터 2. */
+const SHOTS = [
+  { src: '/images/dream/1.png', title: '꿈키 MARS — 격납고에서 우주선 조립' },
+  { src: '/images/dream/2.png', title: '꿈키 MARS — 손을 쥐면 생성되는 조종간' },
+  { src: '/images/dream/3.png', title: '꿈키 MARS — 재배 환경 조절 (습도·조도·영양분)' },
+  { src: '/images/dream/4.png', title: '밀실사건수사대 — 증거 수집 (지문·족적·혈흔·섬유)' },
+  { src: '/images/dream/5.png', title: '밀실사건수사대 — 증거 분석 (족적 275mm)' },
+  { src: '/images/dream/6.png', title: '밀실사건수사대 — 범인 특정 (용의자 × 증거 교집합)' },
+  { src: '/images/dream/7.png', title: '꿈키 엔터테인먼트 — 트랙 믹싱과 음원 발행' },
+  { src: '/images/dream/8.jpg', title: '꿈키 엔터테인먼트 — 공연 무대 세팅' },
+];
+
 const QA = [
   {
     q: '어떤 문제였나',
@@ -45,14 +60,6 @@ const QA = [
     ],
     blocks: [
       {
-        type: 'photos',
-        items: [
-          { caption: '꿈키 MARS — 손을 쥐면 생성되는 조종간 인터랙션' },
-          { caption: '밀실사건수사대 — 증거 수집·분석 흐름' },
-          { caption: '꿈키 엔터테인먼트 — 광선응원봉 리듬게임' },
-        ],
-      },
-      {
         type: 'cards',
         label: '3개 세계관 — 같은 뼈대, 다른 경험',
         items: [
@@ -72,6 +79,12 @@ const QA = [
             foot: '작곡가 · 공연기획자 · 아이돌',
           },
         ],
+      },
+      {
+        type: 'gallery',
+        label: '실제 화면 — 세 세계관이 같은 뼈대 위에서 갈라지는 방식',
+        accent: 'rgba(158,106,22,0.65)',
+        items: SHOTS,
       },
       {
         type: 'swaps',

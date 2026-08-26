@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import ScreenExplorer from './ScreenExplorer';
+import InfiniteGallery from './InfiniteGallery';
 
 /* ══════════════════════════════════════════
    ProjectQA — 프로젝트 상세 본문 공통 구조
@@ -10,6 +11,7 @@ import ScreenExplorer from './ScreenExplorer';
 
    각 답변 아래에는 그 답의 "증거"가 블록으로 붙는다:
    - photos: 사진 그리드 (src 없으면 placeholder)
+   - gallery: 큰 이미지 + 무한 루프 썸네일 스트립 (실제 화면이 여러 장일 때)
    - cards:  카드 그리드 (문제 목록·결정 상세·세계관 등)
    - swaps:  before → after 판단 목록
    - stats:  정량 지표 스트립 (+ note 각주)
@@ -76,6 +78,19 @@ function Photos({ block }) {
         </figure>
       ))}
     </div>
+  );
+}
+
+/* 실제 화면이 여러 장일 때. 그리드로 늘어놓으면 한 장도 제대로 안 보여서,
+   한 장을 크게 보여주고 나머지는 썸네일로 넘기는 구버전 갤러리 형식을 그대로 쓴다. */
+function Gallery({ block }) {
+  return (
+    <>
+      {block.label && <BlockLabel tools={block.tools} accent={block.accent}>{block.label}</BlockLabel>}
+      <div className={block.label ? '' : 'mt-7'}>
+        <InfiniteGallery items={block.items} accent={block.accent} />
+      </div>
+    </>
   );
 }
 
@@ -315,7 +330,7 @@ function Explorer({ block }) {
 }
 
 const BLOCK_RENDERERS = {
-  photos: Photos, cards: Cards, swaps: Swaps, stats: Stats,
+  photos: Photos, gallery: Gallery, cards: Cards, swaps: Swaps, stats: Stats,
   posts: Posts, loops: Loops, explorer: Explorer, issues: Issues,
 };
 
