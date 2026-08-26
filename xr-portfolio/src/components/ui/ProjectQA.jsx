@@ -334,7 +334,40 @@ const BLOCK_RENDERERS = {
   posts: Posts, loops: Loops, explorer: Explorer, issues: Issues,
 };
 
-export default function ProjectQA({ items }) {
+/* 본문 맨 아래 붙는 보충 설명.
+   Q1~Q3 본문은 "무엇을 판단했나"를 다루느라, 정작 "이게 뭐 하는 프로젝트냐"는
+   질문이 비어 있다. 그걸 읽는 사람 눈높이로 받아주는 자리.
+   접는 아코디언은 쓰지 않는다 — 훑고 지나가는 독자에게 접힌 내용은 없는 내용이다. */
+function Faq({ items, accent }) {
+  return (
+    <div className="pt-10 md:pt-14" style={{ borderTop: `1px solid ${BORDER}` }}>
+      <p className="text-[11px] font-bold tracking-[0.28em] uppercase mb-7"
+        style={{ color: accent ?? INK_40 }}>
+        더 궁금할 만한 것
+      </p>
+      <div className="flex flex-col gap-8">
+        {items.map((f) => (
+          <div key={f.q} style={{ maxWidth: 760 }}>
+            <h3 className="text-[16px] md:text-[17.5px] font-bold mb-2.5 leading-snug"
+              style={{ color: INK, letterSpacing: '-0.02em' }}>
+              {f.q}
+            </h3>
+            <div className="flex flex-col gap-2.5">
+              {f.a.map((line) => (
+                <p key={line.slice(0, 24)} className="text-[14px] md:text-[14.5px] leading-[1.95]"
+                  style={{ color: INK_74 }}>
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function ProjectQA({ items, faq, accent }) {
   return (
     <section className="px-6 md:px-8 pb-24" style={{ maxWidth: 980, margin: '0 auto' }}>
       {items.map((it, i) => (
@@ -374,6 +407,7 @@ export default function ProjectQA({ items }) {
           })}
         </motion.div>
       ))}
+      {faq?.length > 0 && <Faq items={faq} accent={accent} />}
     </section>
   );
 }
