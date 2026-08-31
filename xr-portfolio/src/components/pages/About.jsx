@@ -73,16 +73,19 @@ const PROJECTS = [
 const WEB_PROJECTS = [
   {
     tab: 'webmind', name: 'Intertek', sub: '공식 사이트 고도화',
+    thumb: '/images/webmind/intertek.jpg',
     meta: 'IA 개선 · 정보 접근성 향상',
     bg: '#0d6b46', bgSoft: '#1d9a68', accent: '#8ff0c0',
   },
   {
     tab: 'webmind', name: '아마노코리아', sub: '브랜드 사이트 리뉴얼',
+    thumb: '/images/webmind/amano.jpg',
     meta: '웹어워드 코리아 금상 · 유지보수 연장',
     bg: '#14614f', bgSoft: '#248a72', accent: '#93ead6',
   },
   {
     tab: 'webmind', name: '건설품질협의회', sub: '공식 사이트 구축 — 대우건설 진행',
+    thumb: '/images/webmind/kacq.jpg',
     meta: '제안 PT 참여 · 수주 100%',
     bg: '#16603a', bgSoft: '#26905a', accent: '#97eeb8',
   },

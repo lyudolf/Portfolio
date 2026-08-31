@@ -32,18 +32,21 @@ const QA = [
         items: [
           {
             client: 'Intertek — 글로벌 시험·인증 기업',
+            thumb: '/images/webmind/intertek.jpg',
             title: '공식 사이트 고도화',
             body: '방대한 기술·연구 콘텐츠가 기준 없이 쌓여 있어, 사용자가 찾는 정보에 닿지 못하는 상태였습니다. IA부터 다시 잡아 정보 접근성을 끌어올렸습니다.',
             tags: ['IA 개선', '정보 접근성'],
           },
           {
             client: '아마노코리아 — 주차 설비·솔루션',
+            thumb: '/images/webmind/amano.jpg',
             title: '브랜드 사이트 리뉴얼',
             body: '경쟁사 분석과 화면정의서 기반으로 리뉴얼 전 과정을 기획했습니다. 웹어워드 코리아 금상을 수상했고 유지보수 계약이 연장됐습니다.',
             tags: ['리뉴얼', '웹어워드 금상', '유지보수 연장'],
           },
           {
             client: '한국건설품질협의회 — 대우건설 진행',
+            thumb: '/images/webmind/kacq.jpg',
             title: '공식 사이트 구축',
             body: '제안 PT부터 참여해 수주를 만들고 구축까지 이어갔습니다. 참여한 신규 제안이 전부 수주로 이어졌습니다.',
             tags: ['제안 PT', '수주 100%'],
