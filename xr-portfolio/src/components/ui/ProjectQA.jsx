@@ -234,10 +234,22 @@ function Posts({ block }) {
       {block.label && <BlockLabel tools={block.tools}>{block.label}</BlockLabel>}
       <div className={`grid gap-4 ${block.label ? '' : 'mt-7'}`}
         style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
-        {block.items.map((post) => (
-          <div key={post.title} className="overflow-hidden rounded-2xl"
-            style={{ background: '#fff', border: `1px solid ${BORDER}`, boxShadow: '0 6px 18px rgba(24,32,27,0.05)' }}>
-            {/* 썸네일 */}
+        {block.items.map((post) => {
+          const Tag = post.href ? 'a' : 'div';
+          return (
+          <Tag key={post.title}
+            {...(post.href ? { href: post.href, target: '_blank', rel: 'noopener noreferrer' } : {})}
+            className="block overflow-hidden rounded-2xl transition-all duration-200"
+            style={{ background: '#fff', border: `1px solid ${BORDER}`, boxShadow: '0 6px 18px rgba(24,32,27,0.05)' }}
+            onMouseEnter={post.href ? (e) => {
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 14px 30px rgba(24,32,27,0.12)';
+            } : undefined}
+            onMouseLeave={post.href ? (e) => {
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = '0 6px 18px rgba(24,32,27,0.05)';
+            } : undefined}>
+            {/* 썸네일 — 캡처의 흰 영역이 카드 배경과 섞이지 않게 이미지에 직접 테두리 */}
             <div className="w-full"
               style={{
                 aspectRatio: '16 / 10',
@@ -246,7 +258,11 @@ function Posts({ block }) {
               }}>
               {post.thumb ? (
                 <img src={post.thumb} alt={post.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  style={{
+                    width: '100%', height: '100%', objectFit: 'cover',
+                    boxSizing: 'border-box', border: '1px solid rgba(24,32,27,0.1)',
+                    borderBottom: 'none', borderRadius: '16px 16px 0 0',
+                  }} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="text-[11px] font-semibold" style={{ color: INK_40 }}>
@@ -259,7 +275,10 @@ function Posts({ block }) {
               <p className="text-[10px] font-bold tracking-[0.14em] uppercase mb-1.5" style={{ color: INK_40 }}>
                 {post.client}
               </p>
-              <p className="text-[14px] font-bold mb-1.5" style={{ color: INK }}>{post.title}</p>
+              <p className="text-[14px] font-bold mb-1.5" style={{ color: INK }}>
+                {post.title}
+                {post.href && <span style={{ marginLeft: 6, fontSize: 11.5, color: INK_40 }}>↗</span>}
+              </p>
               <p className="text-[12.5px] leading-[1.8] mb-3" style={{ color: INK_55 }}>{post.body}</p>
               {post.tags && (
                 <div className="flex flex-wrap gap-1.5">
@@ -272,8 +291,9 @@ function Posts({ block }) {
                 </div>
               )}
             </div>
-          </div>
-        ))}
+          </Tag>
+          );
+        })}
       </div>
     </>
   );
