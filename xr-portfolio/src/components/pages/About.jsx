@@ -34,6 +34,15 @@ const CAPABILITIES = [
   '프롬프트 · 가드레일 설계',
 ];
 
+/* Background — 산출물이 아니라 그 산출물이 나오는 배경.
+   deliver 목록과 성격이 달라 줄을 분리한다. 전부 이력으로 증명되는 것만
+   (컴공 전공·정보처리기사·캐파 인턴·개발자 취준·웹마인드 1년 4개월). */
+const BACKGROUND = [
+  '컴퓨터공학 전공 · 정보처리기사',
+  'B2B 웹 서비스 기획 — 에이전시 1년 4개월',
+  '백엔드 개발 경험 — Spring Boot · React',
+];
+
 /* 실무 프로젝트 — 색·워드마크를 Work 쇼케이스 패널과 맞춰 같은 계보로 읽히게 한다.
    desc는 데스크톱 아코디언의 펼친 패널에서만 노출.
    thumb: 펼친 패널 배경으로 깔리는 실화면 이미지 (없으면 그라디언트만) */
@@ -149,6 +158,26 @@ function CapabilitiesSection() {
             style={{ background: CARD, border: `1px solid ${BORDER}`, color: INK }}
           >
             {c}
+          </motion.span>
+        ))}
+      </div>
+
+      {/* 배경 — 위 산출물이 나오는 이력. 채움 없는 칩으로 층위를 낮춘다. */}
+      <p className="text-[11px] font-bold tracking-[0.3em] uppercase mt-8 mb-4"
+        style={{ color: INK_45 }}>
+        Background
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {BACKGROUND.map((b, i) => (
+          <motion.span
+            key={b}
+            initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.4, delay: i * 0.05 }}
+            className="text-[12.5px] font-medium px-4 py-2 rounded-full"
+            style={{ background: 'transparent', border: `1px dashed rgba(24,32,27,0.22)`, color: INK_60 }}
+          >
+            {b}
           </motion.span>
         ))}
       </div>
