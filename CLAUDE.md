@@ -67,10 +67,10 @@ Vite 규칙상 클라이언트에 노출하려면 변수명이 반드시 `VITE_`
 
 ## 작업 이어하기 (다른 PC에서 시작할 때)
 
-- **최신 작업은 `feat/hero-redesign` 브랜치에 있음** (main 아님). 히어로 3D 오브 랜딩 + 프로젝트 모프 섹션 + `/resume` 이력서 페이지가 여기 들어있고, main 머지 전임.
+- **2026-09-01 main 머지 완료 — 이제 main이 최신.** feat/hero-redesign은 main과 동일 커밋. 새 작업은 어느 쪽이든 시작 전 `git pull` 필수.
 
 ```bash
-git checkout feat/hero-redesign && cd xr-portfolio && npm install && npm run dev
+cd xr-portfolio && npm install && npm run dev
 ```
 
 - 남은 작업 목록·프로젝트 배경 자료는 **별도 비공개 저장소 `claude-memory-backup`의 `TODO.md`** 참고 (Claude 메모리 폴더에 clone해서 사용).
