@@ -69,7 +69,7 @@ const PROJECTS = [
 ];
 
 /* 웹 프로젝트 — 웹마인드에서 구축한 B2B 사이트들. 전부 /webmind로 연결.
-   클라이언트 실명 공개 확정(본인 확인): Intertek · 아마노코리아 · 대우건설 */
+   클라이언트 실명 공개 확정(본인 확인): Intertek · 아마노코리아 · 한국건설품질협의회(대우건설 진행) */
 const WEB_PROJECTS = [
   {
     tab: 'webmind', name: 'Intertek', sub: '공식 사이트 고도화',
@@ -82,7 +82,7 @@ const WEB_PROJECTS = [
     bg: '#14614f', bgSoft: '#248a72', accent: '#93ead6',
   },
   {
-    tab: 'webmind', name: '대우건설', sub: '공식 사이트 구축',
+    tab: 'webmind', name: '건설품질협의회', sub: '공식 사이트 구축 — 대우건설 진행',
     meta: '제안 PT 참여 · 수주 100%',
     bg: '#16603a', bgSoft: '#26905a', accent: '#97eeb8',
   },
