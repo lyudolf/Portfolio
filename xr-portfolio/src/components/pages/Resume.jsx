@@ -20,21 +20,21 @@ const ACCENT = '#0f8f74';
 
 /* ── 데이터 ── */
 
-const SUMMARY =
+export const SUMMARY =
   "'Why'로 문제를 정의하고, 실현 가능한 'How'를 설계하는 서비스 기획자입니다. " +
   'CS 전공과 프론트·백엔드 실무 경험을 바탕으로 기술 제약을 개발팀의 언어로 조율하고, ' +
   'LLM·AI 도구로 문서화와 실행 속도를 높입니다. 초기 R&D 환경의 불확실성을 데이터 기반으로 구조화하고 ' +
   '직군 간 이견을 조율하여, 1차 임상 테스트 60명 크리티컬 이슈 없이 완료(2차 진행 중), ' +
   '전년 대비 3배 이상의 팀 매출 성장(3.8억 원 → 11.5억 원)을 달성했습니다.';
 
-const KEY_RESULTS = [
+export const KEY_RESULTS = [
   { num: '3배+', label: '팀 매출 성장', sub: '3.8억 → 11.5억 (전년 대비)' },
   { num: '60명', label: '1차 임상 무이슈 완료', sub: '2차 진행 중' },
   { num: '3년차', label: '1년 용역 → 계속 연장', sub: '마지막 6년차 연장 논의 중' },
   { num: '금상', label: '웹어워드 코리아', sub: '리뉴얼 프로젝트 기획' },
 ];
 
-const CAREERS = [
+export const CAREERS = [
   {
     company: '㈜이트라이브 (ETRIBE)',
     role: 'CTS본부 · 매니저 · PM/서비스 기획',
@@ -68,7 +68,7 @@ const CAREERS = [
   },
 ];
 
-const SIDE_PROJECTS = {
+export const SIDE_PROJECTS = {
   title: '개인 프로젝트 — AI 활용 서비스 기획·출시',
   period: '2026.01 — 진행 중',
   bullets: [
@@ -94,7 +94,7 @@ const TRAININGS = [
   { name: '한국기술교육대학교 협동로봇 연수 · KSA IoT/데이터 교육', period: '2020 — 2021' },
 ];
 
-const SKILLS = {
+export const SKILLS = {
   '기획·운영': ['서비스 기획', '요구사항 정의', 'IA 설계', '화면정의서', 'WBS/일정 관리', 'QA', 'KPI 관리', 'Agile'],
   /* 분석 도구는 실제 사용 깊이대로 — Firebase Analytics는 PillStack에서 직접 연동,
      GA는 웹마인드에서 트래킹 코드 설치 수준. */

@@ -10,7 +10,7 @@ import ProjectQA from '../ui/ProjectQA';
    ⚠️ 구버전 alt 텍스트는 실제 화면과 어긋난 게 있어(2번을 "밀실사건수사대"로
    적어놨으나 실제로는 화성 UAM 조종) 이미지를 직접 확인하고 다시 달았다.
    순서 = 세계관별 진행 흐름: MARS 3 → 수사대 3(수집→분석→특정) → 엔터 2. */
-const SHOTS = [
+export const SHOTS = [
   { src: '/images/dream/1.png', title: '꿈키 MARS — 격납고에서 우주선 조립' },
   { src: '/images/dream/2.png', title: '꿈키 MARS — 손을 쥐면 생성되는 조종간' },
   { src: '/images/dream/3.png', title: '꿈키 MARS — 재배 환경 조절 (습도·조도·영양분)' },
@@ -21,7 +21,7 @@ const SHOTS = [
   { src: '/images/dream/8.jpg', title: '꿈키 엔터테인먼트 — 공연 무대 세팅' },
 ];
 
-const QA = [
+export const QA = [
   {
     q: '어떤 프로젝트였나',
     a: [

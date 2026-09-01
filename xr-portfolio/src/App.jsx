@@ -17,6 +17,7 @@ import Resume from './components/pages/Resume';
 import RlDetail from './components/pages/RlDetail';
 import KoccaDetail from './components/pages/KoccaDetail';
 import Webmind from './components/pages/Webmind';
+import Print from './components/pages/Print';
 import { TAB_PATHS, PATH_TABS, PAGE_META, SITE_URL } from './lib/site';
 
 const PAGES = { about: About, kisti: Kisti, dream: Dream, 'kocca-detail': KoccaDetail, webmind: Webmind, solo: SoloWork, withai: WithAI, whyme: WhyMe, 'etribe-detail': EtribeDetail, 'leaf-detail': LeafDetail, 'rl-detail': RlDetail, resume: Resume };
@@ -33,6 +34,10 @@ const WORK_GROUP = new Set(['kisti', 'dream', 'kocca-detail', 'webmind']);
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  /* /print/:variant — PDF 조판 라우트. Nav·푸터·전환 없이 문서만 렌더한다.
+     탭 시스템 밖의 경로라 PATH_TABS를 타기 전에 분기. */
+  const printMatch = location.pathname.match(/^\/print(?:\/(b2b|b2c))?\/?$/);
 
   /* 경로 → 탭 (매칭 실패 시 about으로 폴백) */
   const activeTab = PATH_TABS[location.pathname] ?? 'about';
@@ -55,6 +60,8 @@ export default function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
+
+  if (printMatch) return <Print variant={printMatch[1] ?? 'b2b'} />;
 
   const Page = PAGES[activeTab];
   const isDetailPage = DETAIL_PAGES.has(activeTab);

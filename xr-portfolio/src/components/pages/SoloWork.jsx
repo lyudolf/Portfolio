@@ -22,7 +22,7 @@ const INK_45 = 'rgba(24,32,27,0.45)';
 const BORDER = 'rgba(24,32,27,0.08)';
 const CARD = 'rgba(255,255,255,0.6)';
 
-const APPS = [
+export const APPS = [
   /* PillStack — 앱인토스 네 종보다 먼저 만든 실용 도구. 시간순 첫 번째.
      콘텐츠 앱이 아니라 공공 의료 데이터를 다뤘고, 스토어에 직접 낸 유일한 앱.
      서술 근거: 코드 분석 문서(Others/pillstack-portfolio.md).
@@ -178,7 +178,7 @@ const APPS = [
 ];
 
 /* ── 회고 ── */
-const LEARNED = [
+export const LEARNED = [
   {
     t: '만드는 계획은 있었고, 알리는 계획은 없었습니다',
     d: '다섯 개 다 "출시"를 목표로 잡았습니다. 심사 통과가 결승선이었고, 그 뒤는 비어 있었습니다. 획득 채널·초기 시드 유저·공유 동기를 기획서에 한 줄도 적지 않았고, 그래서 다섯 개가 똑같은 지점에서 멈췄습니다.',

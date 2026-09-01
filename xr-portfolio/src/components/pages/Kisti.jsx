@@ -3,7 +3,7 @@ import ProjectQA from '../ui/ProjectQA';
 
 /* 교수자 런처 화면별 개선 전/후.
    실제 인수 시점 화면과 재설계 후 화면 — 실명·영상은 마스킹 처리됨. */
-const SCREENS = [
+export const SCREENS = [
   {
     id: 'login', label: '로그인',
     old: '/images/kisti/login-old.png', new: '/images/kisti/login-new.png',
@@ -54,7 +54,7 @@ const SCREENS = [
    출처: 본인 작성 50문항 Q&A (memory refs/kisti-qa-50.md).
    ⚠️ 사업비 증액 일화·타 용역사 비교는 공개 사이트 비노출 방침(면접용). */
 
-const QA = [
+export const QA = [
   {
     q: '어떤 프로젝트였나',
     a: [
@@ -173,7 +173,7 @@ const QA = [
    무거운 스토리(인수 막막함·클라 요구 충돌·문서 간극·현장 관찰)는 전부
    본문 Q1·Q2·Q3으로 올렸고, 여기엔 가벼운 사실 확인 3개만 남긴다.
    ⚠️ 사업 규모(200억)는 공개 가능 여부 미확인이라 본문에 "대형 국가과제"로 표기. */
-const FAQ = [
+export const FAQ = [
   {
     q: '왜 VR이어야 했나요?',
     a: [

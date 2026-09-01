@@ -6,7 +6,7 @@ import ProjectQA from '../ui/ProjectQA';
    출처: 사람인 이력서 기준 (memory career-history).
    클라이언트 실명 공개 확정(본인 확인): Intertek · 아마노코리아 · 한국건설품질협의회(대우건설 진행). */
 
-const QA = [
+export const QA = [
   {
     q: '어떤 프로젝트였나',
     a: [
