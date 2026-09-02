@@ -177,6 +177,43 @@ export const APPS = [
   },
 ];
 
+/* ── Leaf It Alone — 앱 5종과 별도 축의 웹 게임 ──
+   앱 5종이 "출시 프로세스"의 증명이라면 이건 "기술 제약을 직접 밟아본" 증명.
+   그래서 APPS에 섞지 않고(휠·회고의 "다섯" 서사 유지) 별도 섹션으로 둔다.
+   서술 근거: LeafDetail.jsx TROUBLESHOOTING_ITEMS (상세 페이지 /leaf와 단일 원본). */
+const LEAF = {
+  id: 'leaf',
+  name: 'Leaf It Alone',
+  appName: 'leaf-it-alone-web.vercel.app',
+  category: '웹 3D 게임 · 라이브',
+  released: '7일 단독 개발',
+  color: '#7a8f24',
+  summary: '가을 마당의 낙엽을 치우는 웹 3D 게임. 브라우저 안에서 낙엽 8,000장이 실제 물리로 구르고, 딥러닝 AI 두더지가 플레이어의 경로를 예측해 방해합니다.',
+  why: {
+    pain: '기획자가 "이건 개발 가능합니다"라고 말할 때, 그 근거는 대개 남의 경험입니다. 렌더링이 버티는 선, AI를 클라이언트에 올리는 비용 같은 것을 직접 밟아본 적이 없다면, 제약을 말하는 일도 결국 어림짐작이 됩니다.',
+    gap: '그래서 기획서 없이, 팀 없이, 7일을 정해놓고 혼자 끝까지 만들어 배포했습니다. 위의 앱 다섯 개가 출시 프로세스의 기록이라면, 이건 실무에서 개발자에게 묻기만 하던 기술 제약을 손으로 확인한 기록입니다.',
+    question: '내가 말해온 "개발 가능한 선"을, 직접 밟아서 확인할 수 있을까?',
+  },
+  decisions: [
+    {
+      t: '8,000장을 브라우저에서 굴리기',
+      d: '낙엽 8,000개가 매 프레임 물리 연산을 하면 메인 스레드가 버티지 못합니다. 개별 오브젝트를 하나의 메시로 통합해 드로우콜을 8,000회에서 1회로 줄이고, 멈춘 낙엽은 연산을 재우는 수면 시스템으로 평균 70%의 물리 계산을 걷어냈습니다.',
+    },
+    {
+      t: '패턴이 읽히면 긴장이 죽는다',
+      d: '타이머 기반 장애물은 몇 판이면 패턴이 읽힙니다. 플레이어의 시선 방향과 낙엽 밀도를 입력받는 324차원 딥러닝 모델(ONNX)을 브라우저에 직접 탑재해 이동 경로를 예측하고 선제 타겟팅하게 했고, 도우미 NPC는 유한 상태 머신으로 수집·운반을 분업시켰습니다.',
+    },
+    {
+      t: '도구 추가가 코드 수정이 되지 않게',
+      d: '갈퀴·송풍기처럼 장비마다 물리 방식이 다릅니다. 충돌 범위와 힘의 방향을 컴포넌트로 모듈화해, 새 장비는 기존 코드 수정 없이 데이터 주입만으로 동작하도록 설계했습니다.',
+    },
+    {
+      t: '반복 노동을 경제로 바꾸기',
+      d: '낙엽 치우기는 본질적으로 반복 노동입니다. 수집 → 봉투 생성 → 판매 → 업그레이드로 이어지는 보상 파이프라인을 깔고, 5개 스테이지에 걸쳐 도구와 환경 변수를 점진 해금해 학습 곡선을 조절했습니다.',
+    },
+  ],
+};
+
 /* ── 회고 ── */
 export const LEARNED = [
   {
@@ -330,6 +367,41 @@ function RetroSection() {
             <p className="text-[13px] leading-[1.9]" style={{ color: INK_60 }}>{l.d}</p>
           </motion.div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* 앱 회고 다음, CTA 앞. "다섯 개" 서사가 닫힌 뒤에 다른 축의 증명으로 등장한다. */
+function LeafSection({ onNavigate }) {
+  return (
+    <section className="px-6 md:px-8 pb-16" style={{ maxWidth: 1100, margin: '0 auto' }}>
+      <SectionLabel>Hand-Built</SectionLabel>
+      <h2 className="text-[26px] md:text-[36px] font-extrabold leading-[1.24] mb-5"
+        style={{ color: INK, letterSpacing: '-0.03em' }}>
+        그리고, 손으로 끝까지<br />만들어본 게임 하나
+      </h2>
+      <p className="text-[14px] md:text-[15px] leading-[1.9] mb-8" style={{ color: INK_60, maxWidth: 620 }}>
+        위의 다섯 개가 출시 프로세스의 기록이라면, 이건 기술 제약을 직접 밟아본 기록입니다.
+        기획 단계에서 늘 개발자에게 물어야 했던 것들 — 어디까지 그려지는지, AI가 어디서 도는지 —
+        을 7일 동안 혼자 부딪혀 확인했습니다.
+      </p>
+      <AppCard app={LEAF} index={0} />
+      <div className="flex flex-wrap gap-2.5 mt-5">
+        <a href="https://leaf-it-alone-web.vercel.app/" target="_blank" rel="noopener noreferrer"
+          className="px-5 py-2.5 rounded-full text-[12.5px] font-bold transition-transform inline-block"
+          style={{ background: LEAF.color, color: '#fff' }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; }}>
+          지금 플레이하기 ↗
+        </a>
+        <button onClick={() => onNavigate?.('leaf-detail')}
+          className="px-5 py-2.5 rounded-full text-[12.5px] font-semibold cursor-pointer transition-all"
+          style={{ background: CARD, border: `1px solid ${BORDER}`, color: INK }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#fff'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = CARD; }}>
+          렌더링·AI 설계 상세 보기
+        </button>
       </div>
     </section>
   );
@@ -593,6 +665,7 @@ export default function SoloWork({ onNavigate }) {
           >
             <AppsSection />
             <RetroSection />
+            <LeafSection onNavigate={onNavigate} />
             <CtaSection onNavigate={onNavigate} />
           </FrameCard>
         </div>

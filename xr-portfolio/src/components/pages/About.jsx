@@ -114,6 +114,11 @@ const SIDE_PROJECTS = [
     meta: '앱인토스 · 2026 출시',
     bg: '#12466e', bgSoft: '#2578b5', accent: '#a8dcff',
   },
+  {
+    tab: 'leaf-detail', name: 'Leaf', sub: '웹 3D 낙엽정리 게임',
+    meta: '7일 단독 개발 · 라이브',
+    bg: '#4f5e14', bgSoft: '#7a8f24', accent: '#ddf28a',
+  },
 ];
 
 const CHANNELS = [
