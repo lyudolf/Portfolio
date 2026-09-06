@@ -35,6 +35,11 @@ const CONTACT = {
   github: 'github.com/lyudolf',
 };
 
+/* PDF 하이퍼링크용 앵커 — 시각은 주변 텍스트와 동일 */
+const A = ({ href, children }) => (
+  <a href={href} style={{ color: 'inherit', textDecoration: 'none' }}>{children}</a>
+);
+
 /* ── 톤 ── */
 const INK = 'rgba(20,26,22,0.92)';
 const INK_70 = 'rgba(20,26,22,0.7)';
@@ -99,7 +104,7 @@ function CoverPage() {
           <p className="text-[11px] font-bold tracking-[0.26em] uppercase" style={{ color: 'rgba(255,255,255,0.45)' }}>
             Portfolio · 2026
           </p>
-          <p className="text-[11px] font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>{CONTACT.site}</p>
+          <p className="text-[11px] font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}><A href={`https://${CONTACT.site}`}>{CONTACT.site}</A></p>
         </div>
 
         <div>
@@ -117,8 +122,8 @@ function CoverPage() {
             <p className="text-[21px] font-extrabold">{CONTACT.name} <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.55)' }}>— {CONTACT.position}</span></p>
           </div>
           <div className="text-right text-[11px] leading-[1.9]" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            <p>{CONTACT.email}</p>
-            <p>{CONTACT.site} · {CONTACT.github}</p>
+            <p><A href={`mailto:${CONTACT.email}`}>{CONTACT.email}</A></p>
+            <p><A href={`https://${CONTACT.site}`}>{CONTACT.site}</A> · <A href={`https://${CONTACT.github}`}>{CONTACT.github}</A></p>
           </div>
         </div>
       </div>
@@ -430,7 +435,7 @@ function ClosingPage() {
           <h1 className="text-[28px] font-extrabold leading-[1.45]" style={{ letterSpacing: '-0.03em' }}>
             여기 실린 것은 일부입니다.<br />
             화면별 전후 비교, 앱 5종의 기획 판단 전문,<br />
-            AI 실험 기록까지 — <span style={{ color: '#7ef1d6' }}>{CONTACT.site}</span>
+            AI 실험 기록까지 — <A href={`https://${CONTACT.site}`}><span style={{ color: '#7ef1d6' }}>{CONTACT.site}</span></A>
           </h1>
           <p className="text-[13px] leading-[1.9] mt-[6mm]" style={{ color: 'rgba(255,255,255,0.65)' }}>
             이 문서와 웹사이트는 같은 코드에서 생성됩니다. 사이트의 문장을 고치면 이 PDF도 함께
@@ -440,8 +445,8 @@ function ClosingPage() {
         <div className="flex items-end justify-between">
           <p className="text-[19px] font-extrabold">{CONTACT.name} <span className="text-[12px] font-semibold" style={{ color: 'rgba(255,255,255,0.55)' }}>— {CONTACT.position}</span></p>
           <div className="text-right text-[11px] leading-[1.9]" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            <p>{CONTACT.email}</p>
-            <p>{CONTACT.site} · {CONTACT.github}</p>
+            <p><A href={`mailto:${CONTACT.email}`}>{CONTACT.email}</A></p>
+            <p><A href={`https://${CONTACT.site}`}>{CONTACT.site}</A> · <A href={`https://${CONTACT.github}`}>{CONTACT.github}</A></p>
           </div>
         </div>
       </div>
