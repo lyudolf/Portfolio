@@ -27,8 +27,8 @@ const PARENT_TAB = {
 };
 
 const INK = 'rgba(24,32,27,0.85)';
-const INK_MID = 'rgba(24,32,27,0.55)';
-const INK_DIM = 'rgba(24,32,27,0.38)';
+const INK_MID = 'rgba(24,32,27,0.68)';   // 0.55는 3.5:1 부근 — AA(4.5) 미달이라 상향
+const INK_DIM = 'rgba(24,32,27,0.67)';   // 0.38은 2.2:1로 거의 안 보였다 (0.62도 4.27로 미달)
 
 /* 스크롤 방향 감지 — 내리면 숨김, 올리면 표시. 최상단 근처에선 항상 표시. */
 function useScrollHidden() {

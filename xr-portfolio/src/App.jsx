@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
-import InterestModal from './components/ui/InterestModal';
 import PageTransition from './components/ui/PageTransition';
 import About from './components/pages/About';
 import Kisti from './components/pages/Kisti';
@@ -77,10 +76,13 @@ export default function App() {
       <meta property="og:title" content={meta.title} />
       <meta property="og:description" content={meta.description} />
       <meta property="og:url" content={canonical} />
+      <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta name="twitter:card" content="summary_large_image" />
       <link rel="canonical" href={canonical} />
 
       {!isDetailPage && <Nav activeTab={activeTab} onTabChange={handleTabChange} />}
-      <InterestModal />
       <main>
         <AnimatePresence mode="wait" custom={instantSwap}>
           <PageTransition tabKey={activeTab} instant={instantSwap}>
