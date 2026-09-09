@@ -6,8 +6,8 @@ import InfiniteGallery from './InfiniteGallery';
    ProjectQA — 프로젝트 상세 본문 공통 구조
 
    전 프로젝트가 같은 질문 4개를 반복한다 (상황 → 문제 → 판단 → 결과):
-   Q1 어떤 프로젝트였나 · Q2 무엇이 막고 있었나
-   Q3 무엇을 버리고, 무엇을 택했나 · Q4 그래서 무엇이 달라졌나
+   01 프로젝트 개요 · 02 문제 정의
+   03 방향 설정 · 04 성과
    두 번째 프로젝트부터는 보는 사람이 구조를 학습해 답만 스캔한다.
    "문제"로 시작하지 않는 이유: 판이 뭔지 모르는 채 문제부터 읽게 하지 않는다.
 
@@ -357,7 +357,7 @@ const BLOCK_RENDERERS = {
 };
 
 /* 본문 맨 아래 붙는 보충 설명.
-   Q1~Q3 본문은 "무엇을 판단했나"를 다루느라, 정작 "이게 뭐 하는 프로젝트냐"는
+   01~03 본문은 "무엇을 판단했나"를 다루느라, 정작 "이게 뭐 하는 프로젝트냐"는
    질문이 비어 있다. 그걸 읽는 사람 눈높이로 받아주는 자리.
    접는 아코디언은 쓰지 않는다 — 훑고 지나가는 독자에게 접힌 내용은 없는 내용이다. */
 function Faq({ items, accent }) {
@@ -405,7 +405,7 @@ export default function ProjectQA({ items, faq, accent }) {
           <div className="flex items-baseline gap-3 mb-5">
             <span className="text-[21px] md:text-[26px] font-extrabold flex-shrink-0"
               style={{ color: INK_40, fontFamily: MONO, letterSpacing: '-0.02em' }}>
-              Q{i + 1}
+              {String(i + 1).padStart(2, '0')}
             </span>
             <h2 className="text-[23px] md:text-[29px] font-bold leading-tight"
               style={{ color: INK, letterSpacing: '-0.025em' }}>
