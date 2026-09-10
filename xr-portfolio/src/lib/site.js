@@ -14,7 +14,6 @@ export const TAB_PATHS = {
   solo: '/solo',
   withai: '/ai-lab',
   whyme: '/why-me',
-  'etribe-detail': '/etribe',
   'leaf-detail': '/leaf',
   'rl-detail': '/hide-n-seek',
   resume: '/resume',
@@ -54,7 +53,7 @@ export const PAGE_META = {
   solo: {
     title: 'Solo Work — 혼자 기획하고 출시한 앱 5종 | 유희수',
     description:
-      '앱스토어와 토스 앱인토스에 앱 5종을 단독 출시. 수익 모델·심사·배포까지 직접 통과한 B2C 제품 기획 기록과, 유저를 만들지 못한 이유에 대한 회고.',
+      'Google Play와 토스 앱인토스에 앱 5종을 단독 출시. 수익 모델·심사·배포까지 직접 통과한 B2C 제품 기획 기록과, 유저를 만들지 못한 이유에 대한 회고.',
   },
   withai: {
     title: 'AI-lab — AI로 직접 만든 것들 | 유희수',
@@ -62,13 +61,9 @@ export const PAGE_META = {
       'AI를 인지적 증폭기로 쓰는 기획자의 작업 기록. 7일 만에 만든 웹 3D 게임, 2,700만 step 강화학습 실험, AI 영상 프로덕션.',
   },
   whyme: {
-    title: 'Why Me — Technical PM | 유희수',
+    title: 'Why Me — 해상도를 높이는 기획자 | 유희수',
     description:
-      '기획과 엔지니어링의 간극을 없애는 Technical PM. 개발 feasibility를 아는 기획, AI 활용 빠른 프로토타이핑.',
-  },
-  'etribe-detail': {
-    title: 'ETRIBE 20주년 기념 영상 — AI 프로덕션 | 유희수',
-    description: 'Midjourney·Runway 기반 AI 영상 제작. 사내 공모전 1위, 외주 대비 약 70% 리소스 절감.',
+      '흐린 요구를 착수 가능한 정의로, 안 되는 일정을 구조로, 기술 제약은 직접 확인해서. 프로젝트 페이지에서 그대로 재확인되는 다섯 가지 일하는 방식.',
   },
   'leaf-detail': {
     title: 'Leaf It Alone — 7일 만에 만든 웹 3D 게임 | 유희수',

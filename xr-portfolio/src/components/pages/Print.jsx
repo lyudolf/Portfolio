@@ -139,7 +139,7 @@ function ResumePage() {
       <div className="grid grid-cols-[1.5fr_1fr] gap-[10mm] h-[164mm]">
         {/* 좌: 경력 */}
         <div>
-          <H>경력 — 총 3년 4개월</H>
+          <H>경력 — 총 3년 7개월</H>
           <div className="flex flex-col gap-[5mm]">
             {CAREERS.map((c) => (
               <div key={c.company}>

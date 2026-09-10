@@ -113,7 +113,7 @@ const NAV_LINKS = [
   { tab: 'resume', label: 'resume' },
 ];
 
-const BOOT_LINES = ['$ open what-i-try', '✓ 6 files indexed', '✓ ready'];
+const BOOT_LINES = ['$ open what-i-try', '✓ 5 files indexed', '✓ ready'];
 
 /* 터미널 로그 — 줄 단위로 흘러나오고, 명령줄($)은 글자 단위로 타이핑된다.
    key로 리마운트해 파일이 바뀔 때마다 처음부터 재생한다. */

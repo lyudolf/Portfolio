@@ -39,13 +39,13 @@ export const CAREERS = [
     company: '㈜이트라이브 (ETRIBE)',
     role: 'CTS본부 · 매니저 · PM/서비스 기획',
     period: '2024.07 — 재직 중',
-    intro: '메타버스·XR 기반 B2G 프로젝트 기획·PM 총괄. 제안 → 기획 → 개발 관리 → 검증 → 납품 전 사이클 수행.',
+    intro: '메타버스·XR 기반 B2G 프로젝트 기획·PM 총괄. 제안서 작성 → 수주 → 인력 배정 → 기획 → 개발 관리 → 검증 → 납품 → 정산까지 전 사이클을 직접 수행.',
     bullets: [
       'KISTI 고령자 XR 인지·운동 훈련 시스템 — 단독 기획·PM. 1차 임상 테스트 60명 크리티컬 이슈 없이 완료(2차 진행 중), 1년 단위 용역이 성과를 인정받아 3년차 운영까지 연장(마지막 6년차 연장 논의 중)',
       '고령자 UX 재설계 — 진입 6단계 메뉴를 1~2 depth로 단축, 교수자 중앙 제어 구조, 임상 데이터 정합성·시스템 안정성을 품질 기준으로 확립',
       '꿈키올래 Vision Pro 직업체험 9종 — PM·기획·QA. 초기 기획 전면 폐기 후 3세계관×3직업 프레임워크로 재설계, 2개월 실개발 납품 및 클라이언트 후속 제안 획득',
       '한국콘텐츠진흥원 AI 직업체험 국가과제 — 초기 기획 참여. 페르소나·난이도 파라미터·평가지표 설계가 LLM 생성 시스템의 토대가 됨',
-      '전년 대비 팀 매출 3배 이상 성장 견인 (3.8억 원 → 11.5억 원)',
+      '제안서 작성부터 수주·인력 배정·수행·정산까지 직접 돌려 전년 대비 팀 매출 3배 이상 성장 견인 (3.8억 원 → 11.5억 원)',
     ],
   },
   {
@@ -201,7 +201,7 @@ export default function Resume({ onNavigate }) {
 
         {/* ── 경력 ── */}
         <section className="mb-8">
-          <SectionTitle>경력 — 총 3년 4개월</SectionTitle>
+          <SectionTitle>경력 — 총 3년 7개월</SectionTitle>
           <div className="flex flex-col gap-6">
             {CAREERS.map((c) => (
               <div key={c.company} style={{ breakInside: 'avoid' }}>

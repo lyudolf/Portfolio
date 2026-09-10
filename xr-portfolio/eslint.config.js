@@ -23,7 +23,9 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      /* eslint-plugin-react(jsx-uses-vars)가 없어 <motion.div>처럼 JSX 멤버로만 쓰이는
+         식별자가 미사용으로 오탐된다. motion만 예외 처리. */
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]|^motion$' }],
     },
   },
 ])

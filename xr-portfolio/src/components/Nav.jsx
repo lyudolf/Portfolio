@@ -22,7 +22,6 @@ const PARENT_TAB = {
   'kocca-detail': 'kisti',
   webmind: 'kisti',
   'leaf-detail': 'withai',
-  'etribe-detail': 'withai',
   'rl-detail': 'withai',
 };
 

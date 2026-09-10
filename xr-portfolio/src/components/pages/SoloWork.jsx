@@ -574,7 +574,7 @@ function HeroPanel({ isMobile }) {
         </p>
         <span className="text-[11px] font-semibold px-3 py-1.5 rounded-full"
           style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', color: '#fff' }}>
-          앱스토어 · 앱인토스 · 5종 출시
+          Google Play · 앱인토스 · 5종 출시
         </span>
       </div>
 
@@ -626,7 +626,7 @@ function HeroPanel({ isMobile }) {
             기관 용역 밖에서도<br />제품이 굴러가는지 확인했습니다
           </h2>
           <p className="text-[13px] leading-[1.85] mb-5" style={{ color: 'rgba(255,255,255,0.78)' }}>
-            앱스토어와 토스 앱인토스에 앱 5종을 올렸습니다. B2C 서비스의 수익 모델·심사·배포·운영을
+            Google Play와 토스 앱인토스에 앱 5종을 올렸습니다. B2C 서비스의 수익 모델·심사·배포·운영을
             직접 겪으면서, 실무에서는 남이 대신 해주던 구간을 전부 통과했습니다.
           </p>
           <div className="flex gap-5">

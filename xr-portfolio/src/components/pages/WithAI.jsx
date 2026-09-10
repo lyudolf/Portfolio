@@ -190,27 +190,6 @@ const PROJECT_FILES = [
       '✓ exported → HiderBrain.onnx, SeekerBrain.onnx',
     ],
   },
-  {
-    id: 'etribe',
-    name: 'etribe-20th.md',
-    kind: 'md',
-    detailPage: 'etribe-detail',
-    title: 'ETRIBE 20주년 기념 영상',
-    sub: 'AI 이미지 생성과 모션 합성으로 전 과정을 자체 제작. 사내 공모전 1위.',
-    tags: ['Midjourney', 'Runway Gen-2', 'After Effects'],
-    meta: [{ k: 'duration', v: '2일' }, { k: 'award', v: '사내 공모전 1위' }],
-    body: [
-      '기획부터 최종 편집까지 외주 없이 직접 만든 사내 기념 영상입니다. 기존 외주 대비 약 70%의 리소스를 절감했습니다.',
-      'AI를 데모가 아니라 실제 납품물 제작에 쓴 첫 사례였고, 이후 꿈키올래의 컨셉아트 파이프라인으로 이어졌습니다.',
-    ],
-    terminal: [
-      '$ 프롬프트 이터레이션 로그',
-      '  seated perspective → 의자가 계속 생성됨',
-      '  as if sitting in the chair → 여전히 의자',
-      '✓ 낮은 카메라 위치에서 정면 1인칭 → 해결',
-      '! AI에게 이유를 설명하면 불필요한 오브젝트가 생긴다',
-    ],
-  },
 ];
 
 const PROTOCOL_RULES = [

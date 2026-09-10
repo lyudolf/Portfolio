@@ -1,72 +1,82 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
-/* ── 카드 데이터 ── */
+/* ══════════════════════════════════════════
+   Why Me — "What I bring"
+   2026-09-10 재작성. 이전 버전은 영어 제목("Impact-Driven", "Never Just No")과
+   있어보이는 용어(Feature Creep, 인지적 간극) 위주의 "Technical PM" 자기소개였는데,
+   8월에 정리한 포지셔닝(XR은 도메인, 본체는 서비스 기획 — "해상도를 높이는 기획자")과
+   직업관 B안(plan-pdf-portfolio.md) 톤으로 맞췄다.
+   원칙: 형용사로 주장하지 않고 본문 프로젝트에서 재확인되는 행동으로만 증명한다.
+   ══════════════════════════════════════════ */
+
+const INK = 'rgba(24,32,27,0.9)';
+const INK_60 = 'rgba(24,32,27,0.62)';
+const INK_45 = 'rgba(24,32,27,0.45)';
+const ACCENT = '#0f8f74';
+
+const WORLDVIEW =
+  '기획은 그럴듯한 문서가 아니라 실제로 굴러가는 결과로 끝난다고 생각합니다. ' +
+  '그래서 화면 뒤에 숨은 리스크까지 미리 짚고, 만든 뒤에는 예상대로 움직이는지 확인될 때까지 손을 떼지 않습니다. ' +
+  '깊게 파고들어 세운 가설이 현실에서 맞아떨어질 때의 희열 — 그게 저를 계속 움직이는 힘입니다.';
+
+/* ── 카드 데이터 ──
+   title = 하는 일(행동), subtitle = 그 일의 이름, body = 어떻게, proof = 어디서 확인되는가 */
 const CARDS = [
   {
-    id: 'technical-pm',
-    label: '01. Core Strength',
-    title: 'Technical PM',
-    subtitle: '엔지니어링 해상도를 갖춘 기획',
-    body: '단순히 요구사항(What)을 나열하는 것에 그치지 않고, 시스템의 동작 원리와 기술적 구현 가능성(Feasibility)을 기획 초기부터 함께 고민합니다. 프론트엔드 렌더링이나 데이터 파이프라인 등 개발 생태계의 맥락을 이해하고 문서를 작성하여, 기획과 개발 사이의 인지적 간극을 줄이고 협업 과정의 병목을 최소화합니다.',
-    proof: 'CS 전공 + React/Spring Boot 실무 경험 — 개발 일정 산정과 기술 검증을 직접 수행해, 1년 XR 임상 용역을 3년차 운영까지 연장시켰습니다.',
+    id: 'define',
+    label: '01 · 문제 정의',
+    title: '흐린 요구를 착수 가능한 정의로',
+    body: '"사이트를 더 좋게", "고령자가 쓰기 편하게" 같은 문장은 요구가 아니라 방향입니다. 무엇을 만들고 무엇을 안 만들지, 어디까지 확정이고 어디부터 열려 있는지를 먼저 적어서, 개발과 디자인이 그 문서 한 장으로 바로 착수하게 합니다.',
+    proof: 'KISTI 인수 2주 만에 기획서·런처 UX·레벨 설계를 들고 선제 미팅 — 클라이언트 신뢰의 기점. 웹마인드 3사 전건 IA·요구사항 정의서부터 잡음.',
     col: 'md:col-span-2',
-    accent: 'rgba(99,179,237,0.12)',
-    border: 'rgba(99,179,237,0.18)',
-    tag: ['Feasibility', 'System Thinking', 'Dev Collab'],
+    accent: 'rgba(21,64,201,0.10)',
+    border: 'rgba(21,64,201,0.18)',
   },
   {
-    id: 'impact-driven',
-    label: '02. Mindset',
-    title: 'Impact-Driven',
-    subtitle: '본질에 집중하는 MVP',
-    body: '불필요한 개발 리소스가 낭비되는 기능 팽창(Feature Creep)을 경계합니다. 비즈니스 목표와 유저의 핵심 과제 해결에만 집중하여, 시장 검증이 가능한 최소 기능 제품(MVP)을 명확히 정의합니다.',
-    proof: '초기 기획 전면 폐기 후 프레임워크화 — XR 직업체험 9종을 2개월 만에 딜리버리.',
+    id: 'structure',
+    label: '02 · 제약 안의 설계',
+    title: '안 되는 일정은 구조로 바꿉니다',
+    body: '일정이 불가능하다는 답이 돌아오면 요구를 깎기 전에 만드는 방식을 먼저 바꿉니다. 같은 뼈대를 공유하고 배리에이션만 달리하는 프레임워크, 폭포수 대신 1종 기획 즉시 개발로 넘기는 병렬 진행 — 구조가 바뀌면 같은 인원으로 다른 결과가 나옵니다.',
+    proof: 'Vision Pro 직업체험 9종 — "3개월 안에 불가능" 판정에서 2개월 실개발로 납품, 클라이언트 후속 제안.',
     col: 'md:col-span-1',
-    accent: 'rgba(74,222,128,0.10)',
-    border: 'rgba(74,222,128,0.18)',
-    tag: ['MVP', 'Anti-Creep'],
+    accent: 'rgba(158,106,22,0.10)',
+    border: 'rgba(158,106,22,0.20)',
   },
   {
-    id: 'agile-proto',
-    label: '03. Workflow',
-    title: 'Agile Prototyping',
-    subtitle: 'AI 툴을 활용한 빠른 검증',
-    body: '기획의 타당성을 문서에만 머물게 하지 않고, AI 어시스턴트(Cursor, v0 등)를 활용해 빠르게 테스트합니다. 아이디어를 실제 동작하는 수준의 프로토타입으로 시각화하여 팀 내 불확실성을 줄이고 의사결정 속도를 극대화합니다.',
-    proof: '웹 3D 게임(Leaf It Alone)을 7일 만에 단독 개발·배포 — 8천 객체 최적화와 ONNX 딥러닝 AI 포함. 토스 앱인토스 미니앱 3종도 기획부터 출시까지 단독 수행.',
+    id: 'feasibility',
+    label: '03 · 기술 제약',
+    title: '"개발 가능합니다"를 직접 확인하고 말합니다',
+    body: '기술 제약을 개발자에게 묻기만 하지 않습니다. 렌더링이 버티는 선, AI를 클라이언트에 올리는 비용, 공공 API의 쿼터 같은 것을 직접 부딪혀본 뒤에 기획서에 씁니다. 그래서 기획자와 개발자가 같은 문서를 다르게 읽는 일이 줄어들고, 일정 산정에 근거가 생깁니다.',
+    proof: '웹 3D 게임 7일 단독 개발·배포(8,000객체 단일 드로우콜, ONNX AI), 앱 5종 단독 출시, CS 전공 + React·Spring Boot 실무.',
     col: 'md:col-span-3',
-    accent: 'rgba(168,85,247,0.08)',
-    border: 'rgba(168,85,247,0.18)',
-    tag: ['Cursor', 'v0', 'Prototype', 'AI-Assisted'],
+    accent: 'rgba(122,143,36,0.10)',
+    border: 'rgba(122,143,36,0.20)',
     wide: true,
   },
   {
-    id: 'alternatives',
-    label: '04. Collaboration',
-    title: 'Never Just "No"',
-    subtitle: '거절 대신 판단 가능한 선택지로',
-    body: '클라이언트의 요구가 기술적으로 어려울 때 "안 됩니다"로 끝내지 않습니다. 대체 구현안, 우회 방식, 각각의 리스크와 비용을 함께 올려 상대가 직접 판단할 수 있는 형태로 만듭니다. 결정권을 가져오지 않고 해상도만 올리는 방식이라, 거절보다 신뢰가 빨리 쌓입니다.',
-    proof: 'KISTI·꿈키올래 두 프로젝트 모두에서 클라이언트 재요청으로 이어졌습니다 — 1년 용역의 3년차 연장, 그리고 후속 과제 제안.',
+    id: 'options',
+    label: '04 · 클라이언트 협업',
+    title: '"안 됩니다" 대신 고를 수 있는 선택지를',
+    body: '요구가 기술적으로 어려울 때 거절로 끝내지 않습니다. 대체안과 우회안, 각각의 비용과 리스크를 나란히 올려 상대가 직접 고르게 합니다. 결정권을 가져오지 않고 해상도만 올리는 방식이라, 거절보다 신뢰가 빨리 쌓입니다.',
+    proof: 'KISTI 1년 용역 → 3년차 운영, 마지막 6년차 연장 논의. 꿈키올래 후속 제안 요청. 웹마인드 유지보수 계약 연장.',
     col: 'md:col-span-2',
-    accent: 'rgba(251,191,36,0.10)',
-    border: 'rgba(251,191,36,0.18)',
-    tag: ['Trade-off', 'Client Trust'],
+    accent: 'rgba(15,143,116,0.10)',
+    border: 'rgba(15,143,116,0.20)',
   },
   {
-    id: 'device-aware',
-    label: '05. Craft',
-    title: 'Constraint-Aware Design',
-    subtitle: '디바이스의 한계를 설계로 흡수',
-    body: 'Vision Pro의 아이트래킹은 정밀하지만 긴 플레이에서 눈 피로가 큽니다. Quest의 핸드트래킹은 자유롭지만 고령자에게는 정확도가 부족합니다. 한계를 회피하거나 사용자에게 떠넘기지 않고, 상호작용 설계 자체로 흡수하는 쪽을 택합니다.',
-    proof: '고정 시점 + 콜라이더 확대로 핸드트래킹 오차를 흡수 — 고령자 임상 60명 무이슈 완료.',
+    id: 'verify',
+    label: '05 · 현장 검증',
+    title: '확인하기 전엔 완성이라 부르지 않습니다',
+    body: '기획서의 가설과 실제 사용자의 행동은 어긋납니다. 임상 현장에 직접 내려가 관찰하고, 출시한 앱의 지표를 보고, 어긋난 만큼 그 자리에서 고칩니다. 증명할 수 없는 숫자는 쓰지 않고, 실패는 지우지 않습니다.',
+    proof: 'KISTI 임상 현장에서 색상 가시성·멀미·그랩 난이도 즉시 수정. 퀴즈왕 "시작까지의 거리" 가설 → 완주율 반응. 앱 5종 유입 실패 회고 공개.',
     col: 'md:col-span-1',
-    accent: 'rgba(236,72,153,0.10)',
-    border: 'rgba(236,72,153,0.18)',
-    tag: ['XR UX', 'Accessibility'],
+    accent: 'rgba(109,79,214,0.10)',
+    border: 'rgba(109,79,214,0.20)',
   },
 ];
 
-/* ── Hover glow card ── */
+/* ── 커서를 따라오는 글로우 카드 ── */
 function BentoCard({ card, index }) {
   const ref = useRef(null);
   const mouseX = useMotionValue(0);
@@ -91,139 +101,85 @@ function BentoCard({ card, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
-      style={{
-        background: 'rgba(255,255,255,0.72)',
-        border: `1px solid ${card.border}`,
-      }}
+      style={{ background: 'rgba(255,255,255,0.72)', border: `1px solid ${card.border}` }}
     >
-      {/* Radial glow follow cursor */}
       <motion.div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: `radial-gradient(280px circle at ${glowX} ${glowY}, ${card.accent}, transparent 70%)`,
-        }}
+        style={{ background: `radial-gradient(280px circle at ${glowX} ${glowY}, ${card.accent}, transparent 70%)` }}
       />
 
-      {/* Content */}
-      <div className={`relative z-10 h-full flex flex-col justify-between ${card.wide ? 'p-8 md:flex-row md:items-center md:gap-12' : 'p-7'}`}>
-        {/* Text block */}
+      <div className={`relative z-10 h-full flex flex-col ${card.wide ? 'p-8 md:flex-row md:items-start md:gap-12' : 'p-7'}`}>
         <div className={card.wide ? 'flex-1' : ''}>
-          <p
-            className="text-[11px] font-bold tracking-[0.25em] uppercase mb-4"
-            style={{ color: 'rgba(20,140,80,0.75)' }}
-          >
+          <p className="text-[11px] font-bold tracking-[0.22em] uppercase mb-4" style={{ color: ACCENT }}>
             {card.label}
           </p>
-
-          <h3
-            className="font-bold leading-tight mb-1"
-            style={{
-              color: 'rgba(24,32,27,0.9)',
-              fontSize: card.wide ? '28px' : '22px',
-              letterSpacing: '-0.02em',
-            }}
-          >
+          <h3 className="font-extrabold leading-[1.3] mb-4"
+            style={{ color: INK, fontSize: card.wide ? 26 : 21, letterSpacing: '-0.025em' }}>
             {card.title}
           </h3>
-
-          <p
-            className="text-[13px] font-medium mb-4"
-            style={{ color: 'rgba(24,32,27,0.45)' }}
-          >
-            {card.subtitle}
-          </p>
-
-          {!card.wide && (
-            <div className="h-px w-full mb-5" style={{ background: 'rgba(24,32,27,0.08)' }} />
-          )}
-
-          <p
-            className="text-[13px] leading-[1.85]"
-            style={{
-              color: 'rgba(24,32,27,0.62)',
-              fontFamily: '"Noto Serif KR", serif',
-              maxWidth: card.wide ? '520px' : '100%',
-            }}
-          >
+          <p className="text-[13.5px] leading-[1.9]" style={{ color: INK_60, maxWidth: card.wide ? 540 : '100%' }}>
             {card.body}
           </p>
-
-          {card.proof && (
-            <p
-              className="text-[12px] font-semibold mt-4 px-3 py-2 rounded-lg inline-block"
-              style={{
-                color: 'rgba(23,118,166,0.9)',
-                background: 'rgba(111,216,255,0.14)',
-                maxWidth: card.wide ? '520px' : '100%',
-              }}
-            >
-              → {card.proof}
-            </p>
-          )}
         </div>
 
-        {/* Tags */}
-        <div className={`flex flex-wrap gap-2 ${card.wide ? 'md:flex-col md:items-end md:gap-2 mt-6 md:mt-0' : 'mt-6'}`}>
-          {card.tag.map((t) => (
-            <span
-              key={t}
-              className="text-[11px] font-semibold px-3 py-1.5 rounded-full"
-              style={{
-                background: 'rgba(255,255,255,0.6)',
-                border: `1px solid ${card.border}`,
-                color: 'rgba(24,32,27,0.55)',
-              }}
-            >
-              {t}
-            </span>
-          ))}
+        {/* 근거 — 본문 프로젝트 페이지에서 그대로 재확인되는 사실만 */}
+        <div className={card.wide ? 'md:w-[300px] md:flex-shrink-0 mt-6 md:mt-0' : 'mt-6'}>
+          <p className="text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style={{ color: INK_45 }}>
+            어디서 확인되나
+          </p>
+          <p className="text-[12.5px] font-semibold leading-[1.75] px-3.5 py-3 rounded-xl"
+            style={{ color: INK, background: card.accent, border: `1px solid ${card.border}` }}>
+            {card.proof}
+          </p>
         </div>
       </div>
     </motion.div>
   );
 }
 
-/* ── Main Page ── */
 export default function WhyMe() {
   return (
     <div style={{ background: '#eff1ed', minHeight: '100vh' }}>
       <section className="max-w-6xl mx-auto px-6 pt-20 pb-32">
 
-        {/* Header */}
+        {/* 헤더 — 네비 문장 "What I bring"의 완성형 */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.5 }}
           className="mb-14"
         >
-          {/* 어깨 라벨 = 네비 문장의 완성형 — "Bring" 탭이 이 페이지로 연결된다 */}
-          <p
-            className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5"
-            style={{ color: 'rgba(15,143,116,0.85)' }}
-          >
+          <p className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5" style={{ color: ACCENT }}>
             What I bring
           </p>
-          <h1
-            className="text-[34px] md:text-[44px] font-extrabold leading-tight mb-4"
-            style={{ color: 'rgba(24,32,27,0.9)', letterSpacing: '-0.025em' }}
-          >
-            기획과 엔지니어링의<br className="hidden md:block" /> 간극을 없앱니다.
+          <h1 className="text-[34px] md:text-[44px] font-extrabold leading-tight mb-5"
+            style={{ color: INK, letterSpacing: '-0.025em' }}>
+            해상도를 높이는 기획자입니다
           </h1>
-          <p
-            className="text-[15px] leading-relaxed"
-            style={{ color: 'rgba(24,32,27,0.55)', maxWidth: '520px', fontFamily: '"Noto Serif KR", serif' }}
-          >
-            본질적인 비즈니스 임팩트에 집중하는 Technical PM.
+          <p className="text-[15px] md:text-[16px] leading-[1.9]" style={{ color: INK_60, maxWidth: 620 }}>
+            흐린 요구를 착수 가능한 정의로, 흩어진 화면을 한 흐름으로, 감을 값으로 —
+            도메인이 VR이든 앱이든 웹이든, 흐린 것을 선명하게 만드는 일을 해왔습니다.
+            아래 다섯 가지는 전부 이 사이트의 프로젝트 페이지에서 그대로 확인됩니다.
           </p>
         </motion.div>
 
-        {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {CARDS.map((card, i) => (
-            <BentoCard key={card.id} card={card} index={i} />
-          ))}
+          {CARDS.map((card, i) => <BentoCard key={card.id} card={card} index={i} />)}
         </div>
+
+        {/* 일하는 기준 — PDF 이력서면의 직업관과 같은 문단 (단일 원본) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5 }}
+          className="mt-16 rounded-3xl p-8 md:p-10"
+          style={{ background: '#12211a', color: '#fff' }}
+        >
+          <p className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5" style={{ color: '#7ef1d6' }}>
+            일하는 기준
+          </p>
+          <p className="text-[16px] md:text-[18px] leading-[1.9] font-medium" style={{ color: 'rgba(255,255,255,0.86)', maxWidth: 720 }}>
+            {WORLDVIEW}
+          </p>
+        </motion.div>
       </section>
     </div>
   );
