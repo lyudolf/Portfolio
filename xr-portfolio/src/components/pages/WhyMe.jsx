@@ -210,17 +210,12 @@ export default function WhyMe() {
           className="mt-16"
         >
           <p className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5" style={{ color: ACCENT }}>
-            일하는 순서
+            How I work
           </p>
-          <h2 className="text-[26px] md:text-[32px] font-extrabold leading-[1.28] mb-4"
+          <h2 className="text-[26px] md:text-[32px] font-extrabold leading-[1.28] mb-8"
             style={{ color: INK, letterSpacing: '-0.025em' }}>
-            막히는 데를 먼저 찾고, 막히면 세 번 더 봅니다
+            나의 업무 방식
           </h2>
-          <p className="text-[14px] md:text-[15px] leading-[1.9] mb-8" style={{ color: INK_60, maxWidth: 620 }}>
-            가설을 세우면 바로 만들지 않고, 그대로 갔을 때 어디서 막히는지부터 찾습니다.
-            막히면 뚫을 방법을 보고, 없으면 유저가 보는 결과는 같게 돌아가는 길을 보고,
-            그것도 없으면 가설로 돌아갑니다. "안 됩니다"가 나오기 전에 이 세 갈래를 먼저 거칩니다.
-          </p>
           <div className="rounded-3xl p-6 md:p-8"
             style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(24,32,27,0.08)' }}>
             <div style={{ maxWidth: 560, margin: '0 auto' }}>
