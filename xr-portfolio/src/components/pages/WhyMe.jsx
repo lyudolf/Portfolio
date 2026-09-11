@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import MermaidDiagram from '../ui/MermaidDiagram';
 
 /* ══════════════════════════════════════════
    Why Me — "What I bring"
@@ -14,6 +15,42 @@ const INK = 'rgba(24,32,27,0.9)';
 const INK_60 = 'rgba(24,32,27,0.62)';
 const INK_45 = 'rgba(24,32,27,0.45)';
 const ACCENT = '#0f8f74';
+
+/* 일하는 순서 — 본인 구술(2026-09-11)을 그대로 옮긴 흐름.
+   핵심은 리스크를 찾은 뒤의 세 갈래: 파훼 → 우회(유저가 보는 결과는 같게) → 가설로 복귀.
+   "안 됩니다" 대신 선택지를 만드는 방식이 어디서 나오는지를 이 분기가 설명한다. */
+const WORKFLOW = `%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'fontFamily': 'Pretendard, -apple-system, sans-serif',
+    'fontSize': '13px',
+    'primaryColor': '#ffffff',
+    'primaryTextColor': '#1a231e',
+    'primaryBorderColor': 'rgba(24,32,27,0.22)',
+    'lineColor': 'rgba(24,32,27,0.42)',
+    'secondaryColor': '#f2f4f0',
+    'tertiaryColor': '#f2f4f0',
+    'edgeLabelBackground': '#eff1ed',
+    'clusterBkg': 'transparent'
+  },
+  'flowchart': { 'curve': 'basis', 'nodeSpacing': 34, 'rankSpacing': 44, 'padding': 10 }
+}}%%
+flowchart TD
+  A["<b>문제 정의</b><br/>어디가 문제인가"] --> B["<b>가설 수립</b><br/>풀려면 어떤 방법이 있는가"]
+  B --> C["<b>리스크 탐색</b><br/>이대로 가면 막히는 데가 있는가"]
+  C -->|없음| GO(["진행"])
+  C -->|있음| D{"파훼 방법이<br/>있는가"}
+  D -->|있음| GO
+  D -->|없음| E{"유저가 보는 결과는 같게<br/>돌아가는 길이 있는가"}
+  E -->|있음| GO
+  E -->|없음| B
+  classDef step fill:#ffffff,stroke:#c9ccc8,stroke-width:1px,rx:10,ry:10;
+  classDef ask fill:#f2f4f0,stroke:#c9ccc8,stroke-width:1px;
+  classDef go fill:#0f8f74,stroke:#0f8f74,color:#ffffff,font-weight:700;
+  class A,B,C step;
+  class D,E ask;
+  class GO go;
+`;
 
 const WORLDVIEW =
   '기획은 그럴듯한 문서가 아니라 실제로 굴러가는 결과로 끝난다고 생각합니다. ' +
@@ -165,6 +202,32 @@ export default function WhyMe() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {CARDS.map((card, i) => <BentoCard key={card.id} card={card} index={i} />)}
         </div>
+
+        {/* 일하는 순서 — 위 다섯 카드가 실제로 어떤 순서로 굴러가는지 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5 }}
+          className="mt-16"
+        >
+          <p className="text-[11px] font-bold tracking-[0.3em] uppercase mb-5" style={{ color: ACCENT }}>
+            일하는 순서
+          </p>
+          <h2 className="text-[26px] md:text-[32px] font-extrabold leading-[1.28] mb-4"
+            style={{ color: INK, letterSpacing: '-0.025em' }}>
+            막히는 데를 먼저 찾고, 막히면 세 번 더 봅니다
+          </h2>
+          <p className="text-[14px] md:text-[15px] leading-[1.9] mb-8" style={{ color: INK_60, maxWidth: 620 }}>
+            가설을 세우면 바로 만들지 않고, 그대로 갔을 때 어디서 막히는지부터 찾습니다.
+            막히면 뚫을 방법을 보고, 없으면 유저가 보는 결과는 같게 돌아가는 길을 보고,
+            그것도 없으면 가설로 돌아갑니다. "안 됩니다"가 나오기 전에 이 세 갈래를 먼저 거칩니다.
+          </p>
+          <div className="rounded-3xl p-6 md:p-8"
+            style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(24,32,27,0.08)' }}>
+            <div style={{ maxWidth: 560, margin: '0 auto' }}>
+              <MermaidDiagram chart={WORKFLOW} />
+            </div>
+          </div>
+        </motion.div>
 
         {/* 일하는 기준 — PDF 이력서면의 직업관과 같은 문단 (단일 원본) */}
         <motion.div
