@@ -17,7 +17,7 @@ const CARD = 'rgba(255,255,255,0.6)';
 const ACCENT = '#0f8f74';
 /* 섹션 라벨 색 = 그 섹션이 이어지는 페이지의 시그니처.
    색만 봐도 어디로 가는 목록인지 알 수 있게 한다. */
-const XR_ACCENT = '#1540c9';     // Work(KISTI·꿈키·한콘진)
+const XR_ACCENT = '#1540c9';     // Work(KISTI·ZING·꿈키·한콘진)
 const WEB_ACCENT = '#0d6b46';    // 웹마인드
 const SIDE_ACCENT = '#6d4fd6';   // Solo Work
 
@@ -55,6 +55,13 @@ const PROJECTS = [
     bg: '#1540c9', bgSoft: '#2f66ee', accent: '#8ee4ff',
   },
   {
+    tab: 'zing', name: 'ZING', sub: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
+    meta: '2026.09 — 진행 중 · 기획 · 개발',
+    desc: '프로토타입을 6영업일에 실서비스 구조로. 상태 6벌을 4축으로, 규칙은 DB로.',
+    thumb: '/images/zing/01-home.png',
+    bg: '#1f2326', bgSoft: '#3a4045', accent: '#ff5a3c',
+  },
+  {
     tab: 'dream', name: '꿈키올래', sub: 'Vision Pro 직업체험 9종',
     meta: '2025 · PM · 기획 · QA',
     desc: '불가능한 일정을 3컨셉 × 3직업 프레임워크 구조로 해결했습니다.',
@@ -65,13 +72,6 @@ const PROJECTS = [
     meta: '2026 · 국가과제 진행 중',
     desc: '매 플레이마다 LLM이 사건을 새로 생성합니다. LLM은 제안, 코드가 보증.',
     bg: '#3b1428', bgSoft: '#5c1f3d', accent: '#f9a8d4',
-  },
-  {
-    tab: 'zing', name: 'ZING', sub: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
-    meta: '2026.09 — 진행 중 · 기획 · 개발',
-    desc: '프로토타입을 6영업일에 실서비스 구조로. 상태 6벌을 4축으로, 규칙은 DB로.',
-    thumb: '/images/zing/01-home.png',
-    bg: '#1f2326', bgSoft: '#3a4045', accent: '#ff5a3c',
   },
 ];
 
@@ -517,7 +517,7 @@ export default function About({ onNavigate }) {
             <CapabilitiesSection />
             <section className="px-8 pt-16 pb-10" style={{ maxWidth: 1100, margin: '0 auto' }}>
               <div className="flex items-baseline justify-between mb-6">
-                <SectionLabel color={XR_ACCENT}>XR Project</SectionLabel>
+                <SectionLabel color={XR_ACCENT}>Work</SectionLabel>
                 <button onClick={() => onNavigate?.('kisti')}
                   className="text-[12px] font-semibold cursor-pointer transition-colors"
                   style={{ color: INK_45 }}

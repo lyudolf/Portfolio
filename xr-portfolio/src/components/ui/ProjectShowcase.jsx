@@ -26,7 +26,7 @@ const PROJECTS = [
     display: ['KIS', 'TI'],
     subtitle: '고령자용 비대면 인지-운동 융합 훈련',
     eyebrow: 'Clinical XR · 2024 — 현재 · 단독 기획 · PM',
-    headline: '고령자를 위한 XR은 “재미있는 콘텐츠”로 완성되지 않습니다',
+    headline: '병원에서 3년째 쓰는 고령자 인지·운동 훈련 VR',
     summary:
       '고령자 인지·운동 훈련 VR. 교수자 PC와 VR 앱 두 종이 서버를 사이에 두고 움직이는 구조를 기획 단계에서 정의하고, 임상 데이터가 실제로 수집되는 운영 체계까지 설계했습니다.',
     stats: [
@@ -43,6 +43,28 @@ const PROJECTS = [
       { dir: [-1.1, 0.25, 0.7], title: '진행 권한은 교수자 PC에', desc: '생성·미션·시간·기록을 한곳에 모아, 문제가 생겨도 교수자가 그 자리에서 수습할 수 있게 했다.' },
       { dir: [0.1, -0.95, 0.9], title: 'VR은 무대, 측정은 장비가', desc: '검사 4종 중 VR이 직접 재는 건 인지검사뿐. 균형·심혈관·운동성은 검증된 장비가 측정한다.' },
     ],
+  },
+  {
+    id: 'zing',
+    tab: 'zing',
+    company: 'ETRIBE',
+    label: 'ZING',
+    display: ['ZING'],
+    subtitle: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
+    eyebrow: 'Platform · 2026.09 — 진행 중 · 기획 · 개발',
+    headline: '프로토타입을 실서비스 구조로 재편했습니다',
+    summary:
+      '백엔드 없는 Figma Make 프로토타입을 받아 광고주·인플루언서·어드민 세 콘솔이 같은 데이터를 읽는 구조로 다시 세웠습니다. 상태는 네 축, 규칙은 DB 설정값, 기본값은 진행.',
+    stats: [
+      { num: '6영업일', label: '67커밋 · 1인' },
+      { num: '73 · 47', label: '화면 · 테이블' },
+      { num: '4축', label: '상태 모델 통합' },
+    ],
+    bg: '#1f2326',
+    bgSoft: '#3a4045',
+    accent: '#ff5a3c',
+    model: null,
+    hotspots: [],
   },
   {
     id: 'dream',
@@ -97,28 +119,6 @@ const PROJECTS = [
     ],
   },
   {
-    id: 'zing',
-    tab: 'zing',
-    company: 'ETRIBE',
-    label: 'ZING',
-    display: ['ZING'],
-    subtitle: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
-    eyebrow: 'Platform · 2026.09 — 진행 중 · 기획 · 개발',
-    headline: '프로토타입을 실서비스 구조로 재편했습니다',
-    summary:
-      '백엔드 없는 Figma Make 프로토타입을 받아 광고주·인플루언서·어드민 세 콘솔이 같은 데이터를 읽는 구조로 다시 세웠습니다. 상태는 네 축, 규칙은 DB 설정값, 기본값은 진행.',
-    stats: [
-      { num: '6영업일', label: '67커밋 · 1인' },
-      { num: '73 · 47', label: '화면 · 테이블' },
-      { num: '4축', label: '상태 모델 통합' },
-    ],
-    bg: '#1f2326',
-    bgSoft: '#3a4045',
-    accent: '#ff5a3c',
-    model: null,
-    hotspots: [],
-  },
-  {
     id: 'webmind',
     tab: 'webmind',
     company: 'WEBMIND',
@@ -126,7 +126,7 @@ const PROJECTS = [
     display: ['WEB', 'MIND'],
     subtitle: 'B2B 웹/앱 서비스 구축',
     eyebrow: 'B2B Web · 2023.04 — 2024.07 · 기획',
-    headline: '발주사의 요구를 서비스 구조로 번역했습니다',
+    headline: 'B2B 사이트 3건, 제안 PT부터 유지보수까지',
     summary:
       'B2B 웹/앱 구축의 기획 전 과정 — 경쟁사 분석부터 IA, 요구사항 정의, 화면정의서까지. 제안 PT부터 유지보수까지 클라이언트와 서비스 사이를 오가며 기준을 세웠습니다.',
     stats: [

@@ -209,15 +209,14 @@ export default function HeroShowcase({ onNavigate, children }) {
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.08 }}>
               <p className="text-[10.5px] font-semibold mb-2.5" style={{ color: ACCENT }}>
-                XR · AI 프로덕트 · 2023 — 현재
+                서비스 기획 · PM · 2023 — 현재
               </p>
               <h2 className="text-[20px] md:text-[25px] font-extrabold leading-[1.28] mb-3"
                 style={{ color: '#fff', letterSpacing: '-0.025em' }}>
-                &lsquo;Why&rsquo;로 문제를 정의하고,<br />실현 가능한 &lsquo;How&rsquo;를 설계합니다
+                임상 XR 시스템 3년 운영,<br />캠페인 플랫폼 1인 구축, 앱 5종 출시
               </h2>
               <p className="text-[13px] leading-[1.85] mb-4" style={{ color: 'rgba(255,255,255,0.78)' }}>
-                기술 이해와 AI로 실행 속도를 높이는 서비스 기획자.
-                문서로 끝내지 않고 현장에서 작동하는 상태까지 만듭니다.
+                몰입에서 즐거움을 찾는 기획자.
               </p>
               <div className="flex gap-5 mb-5">
                 {STATS.map((s) => (

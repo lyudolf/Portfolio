@@ -167,7 +167,7 @@ export default function Resume({ onNavigate }) {
               유희수
             </h1>
             <p className="text-[14px] font-semibold mt-1" style={{ color: ACCENT }}>
-              서비스 기획 · PM — &lsquo;Why&rsquo;로 정의하고 &lsquo;How&rsquo;로 실행합니다
+              서비스 기획 · PM — 임상 XR 3년 운영 · 캠페인 플랫폼 1인 구축 · 앱 5종 출시
             </p>
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[12.5px]" style={{ color: INK_50 }}>
               <a href="mailto:iplay3473@gmail.com" style={{ color: 'inherit' }}>iplay3473@gmail.com</a>

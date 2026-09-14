@@ -17,7 +17,7 @@ const QA = [
     blocks: [
       {
         type: 'cards',
-        label: '계보 — 내 콘텐츠가 국가과제의 출발점',
+        label: '꿈키올래 → 한콘진 과제',
         items: [
           {
             badge: '2025 · 꿈키올래', title: '밀실사건수사대',

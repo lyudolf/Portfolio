@@ -17,11 +17,13 @@ import { QA as WEBMIND_QA } from './Webmind';
 import { APPS, LEARNED } from './SoloWork';
 import { KEY_RESULTS, CAREERS, SKILLS } from './Resume';
 
-/* ── 표지·직업관 확정본 (plan-pdf-portfolio.md 2026-09-01) ── */
-const COVER_MAIN_1 = '도메인은 VR, 앱, 웹으로 계속 바뀌었지만,';
-const COVER_MAIN_2 = '하는 일은 같았습니다.';
-const COVER_SUB = '문제를 정의하고, 제약 안에서 구조를 잡고, 현장에서 검증합니다.';
-const COVER_TAG = '해상도를 높이는 기획자';
+/* ── 표지·직업관 확정본 ──
+   표지는 2026-09-15 사실형으로 재확정: 자기소개 한 문장 후보가 열 개 넘게 전부 기각돼,
+   슬로건을 빼고 한 일만 쓴다. 성격은 태그 한 줄(본인 문장)이 받는다. */
+const COVER_MAIN_1 = '임상 XR 시스템 3년 운영 · 캠페인 플랫폼 1인 구축';
+const COVER_MAIN_2 = '앱 5종 출시 · 웹어워드 코리아 금상';
+const COVER_SUB = '서비스 기획 · PM 3년 7개월 (이트라이브 · 웹마인드)';
+const COVER_TAG = '몰입에서 즐거움을 찾는 기획자';
 const WORLDVIEW =
   '기획은 그럴듯한 문서가 아니라 실제로 굴러가는 결과로 끝난다고 생각합니다. ' +
   '그래서 화면 뒤에 숨은 리스크까지 미리 짚고, 만든 뒤에는 예상대로 움직이는지 확인될 때까지 손을 떼지 않습니다. ' +
@@ -328,7 +330,7 @@ function WebmindPage({ sub = false, order = 'Project 02' }) {
       <RunningHead section={`${order} — 웹마인드 · B2B 웹 구축`} accent={WEB_ACCENT} />
       <div className="grid grid-cols-[1fr_1.5fr] gap-[10mm] h-[164mm]">
         <div className="flex flex-col">
-          <H accent={WEB_ACCENT}>발주사의 추상적 요구를<br />서비스 구조로 번역하기</H>
+          <H accent={WEB_ACCENT}>B2B 사이트 3건,<br />제안 PT부터 유지보수까지</H>
           <p className="text-[11px] leading-[1.85] mb-2.5" style={{ color: INK_70 }}>{q1.a[0]}</p>
           <p className="text-[11px] leading-[1.85] mb-2.5" style={{ color: INK_70 }}>{q2.a[0]}</p>
           {!sub && <p className="text-[11px] leading-[1.85]" style={{ color: INK_70 }}>{q3.a[0]}</p>}
@@ -413,9 +415,6 @@ function SoloPages({ sub = false, order = 'Project 02' }) {
                 </div>
               ))}
             </div>
-            <p className="text-[9px] mt-auto" style={{ color: INK_35 }}>
-              실패를 지우지 않고 적었습니다 — 다음 제품에서 무엇부터 다르게 할지가 여기서 나왔기 때문입니다.
-            </p>
           </div>
         </div>
       </Page>
@@ -438,8 +437,7 @@ function ClosingPage() {
             AI 실험 기록까지 — <A href={`https://${CONTACT.site}`}><span style={{ color: '#7ef1d6' }}>{CONTACT.site}</span></A>
           </h1>
           <p className="text-[13px] leading-[1.9] mt-[6mm]" style={{ color: 'rgba(255,255,255,0.65)' }}>
-            이 문서와 웹사이트는 같은 코드에서 생성됩니다. 사이트의 문장을 고치면 이 PDF도 함께
-            바뀝니다 — 산출물을 하나의 원본으로 관리하는 것도 기획의 일부라고 생각합니다.
+            이 문서와 웹사이트는 같은 코드에서 생성됩니다. 사이트의 문장을 고치면 이 PDF도 함께 바뀝니다.
           </p>
         </div>
         <div className="flex items-end justify-between">

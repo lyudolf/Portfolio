@@ -83,18 +83,18 @@ const MOMENTS = [
   {
     icon: '🧱',
     title: '벽 비비기',
-    desc: '거리 보상 도입 직후 관측. 술래가 탐색을 버리고 벽 너머 신호에 밀착. 지표를 주면 지표만 최적화된다.',
+    desc: '거리 보상 도입 직후 관측. 술래가 탐색을 버리고 벽 너머 신호에 밀착.',
   },
   {
     icon: '🕳️',
     title: '물리 버그 착취',
-    desc: '180만 step, 도망자가 램프를 벽 밖으로 떨어뜨려 라운드 내 발각 불가 상태를 만드는 버그 발견. 빈틈은 반드시 착취된다.',
+    desc: '180만 step, 도망자가 램프를 벽 밖으로 떨어뜨려 라운드 내 발각 불가 상태를 만드는 버그 발견.',
     video: '/withai/rl/bug-ramp.mp4',
   },
   {
     icon: '📦',
     title: '창발적 전략',
-    desc: 'V5 2,700만 step. 학습시킨 적 없는 입구 봉쇄·상자 고정 출현. 어설픈 힌트보다 명확한 결과 목표가 강하다.',
+    desc: 'V5 2,700만 step. 학습시킨 적 없는 입구 봉쇄·상자 고정 출현.',
   },
 ];
 
@@ -296,8 +296,8 @@ function MomentsSection() {
       <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         className="text-[14px] font-semibold leading-relaxed pl-4"
         style={{ color: C.accent, borderLeft: '2px solid rgba(167,139,250,0.35)' }}>
-        실험이 남긴 결론 세 줄. 지표를 주면 지표만 최적화된다. 빈틈은 반드시 착취된다.
-        중간 보상보다 명확한 결과 목표가 강하다. — KPI와 정책을 설계할 때 마주치는 문제와 정확히 같았다.
+        보상 설계를 다섯 번 바꾸면서 확인한 것: 거리 보상은 거리만 최적화됐고, 물리 버그는 바로 이용됐고,
+        중간 보상을 전부 뺀 뒤에야 가르친 적 없는 전략이 나왔습니다.
       </motion.p>
     </section>
   );

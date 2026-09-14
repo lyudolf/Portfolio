@@ -345,8 +345,7 @@ function RetroSection() {
       <p className="text-[14px] md:text-[15px] leading-[1.9] mb-10" style={{ color: INK_60, maxWidth: 620 }}>
         퀴즈왕이 2026년 7월에 70여 명 방문한 뒤로 유입이 멈췄고, 나머지도 마찬가지입니다.
         들어온 사람이 화면 안에서 어떻게 움직이는지는 관찰하고 고칠 수 있었지만,
-        애초에 들어오는 사람 자체를 만들지 못했습니다. 숨길 이유가 없어서 그대로 적습니다.
-        이 페이지에서 제가 보여드릴 수 있는 건 성과가 아니라, 실패의 원인을 어디까지 짚었는가입니다.
+        애초에 들어오는 사람 자체를 만들지 못했습니다.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

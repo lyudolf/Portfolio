@@ -8,16 +8,17 @@ import MermaidDiagram from '../ui/MermaidDiagram';
 
 const META_BADGES = [
   { label: '2026.01 (7일 소요)' },
+  { label: 'Next.js' },
   { label: 'React Three Fiber' },
   { label: 'ONNX Runtime' },
-  { label: 'Vercel' },
+  { label: 'Zustand' },
 ];
 
 const TROUBLESHOOTING_ITEMS = [
   {
     id: 'rendering',
     category: '렌더링 / 물리 최적화',
-    title: '웹 브라우저의 한계를 돌파한\n렌더링 파이프라인 최적화',
+    title: '8,000장을\n브라우저에서 굴리기',
     problem:
       '8,000개의 낙엽 객체가 매 프레임 물리 연산을 수행할 경우, 웹 브라우저의 메인 스레드가 과부하 상태에 빠져 심각한 프레임 드랍이 발생했습니다.',
     bullets: [
@@ -31,7 +32,7 @@ const TROUBLESHOOTING_ITEMS = [
   {
     id: 'ai',
     category: 'AI 아키텍처',
-    title: '딥러닝(ONNX)과 상태 머신(FSM)을\n결합한 지능형 에이전트 설계',
+    title: '패턴이 읽히면\n긴장이 죽는다',
     problem:
       '단순한 타이머 기반 장애물만으로는 후반부 스테이지의 몰입도를 유지하기 어려웠습니다. 플레이어가 패턴을 빠르게 파악해 긴장감이 소실되는 문제가 있었습니다.',
     bullets: [
@@ -46,7 +47,7 @@ const TROUBLESHOOTING_ITEMS = [
   {
     id: 'modularity',
     category: '시스템 모듈화',
-    title: '확장성을 고려한\n모듈형 도구(Tool) 아키텍처 설계',
+    title: '도구 추가가\n코드 수정이 되지 않게',
     problem:
       '장비 성장에 따라 물리 연산 방식이 달라지며, 하드코딩 시 신규 도구 추가·변경 때마다 전체 로직 수정이 필요한 유지보수 문제가 있었습니다.',
     bullets: [
@@ -60,7 +61,7 @@ const TROUBLESHOOTING_ITEMS = [
   {
     id: 'core-loop',
     category: '프로덕트 설계',
-    title: '리텐션을 극대화하는\n레벨 디자인',
+    title: '반복 노동을\n경제로 바꾸기',
     problem:
       '대량의 낙엽을 치우는 단순 반복 작업만으로는 장기 플레이 동기를 유지하기 어렵습니다. 유저 이탈을 방지하는 보상 구조 설계가 필요했습니다.',
     bullets: [
@@ -595,18 +596,8 @@ function GameplayVideoSection() {
 /* ── PhilosophySection ── */
 const PHILOSOPHY_BLOCKS = [
   {
-    id: 'mvp',
-    title: "기능의 나열에서 '핵심 가치(MVP)'로의 전환",
-    body: '이 프로젝트는 "유저가 필요한 서비스가 아닌, 보여주고 싶은 기능만 나열하다가 무산되는 패턴(Feature Creep)"에 대한 반성에서 출발했습니다. 성공적인 서비스의 본질은 \'단 하나의 핵심 기능에 집중하는 것\'입니다. 따라서 복잡한 기획을 덜어내고, "수많은 낙엽을 주워서 정리한다"라는 명확한 코어 액션(Core Action)에 집중하여 완벽한 MVP를 구축하는 것을 최우선 목표로 삼았습니다.',
-  },
-  {
-    id: 'engineering',
-    title: '한계 돌파와 시스템 최적화에 대한 호기심',
-    body: '단순한 코어 액션 이면에는 기술적 호기심이 있었습니다. "단순히 몇십 개가 아니라, 화면을 뒤덮는 수만 개의 낙엽(물리 객체)을 브라우저 환경에서 어떻게 렌더링하고 처리할 것인가?"라는 엔지니어링 과제를 증명해 보고 싶었습니다. 이는 향후 대규모 트래픽이나 복잡한 데이터를 다루는 SaaS 플랫폼의 병목을 해결하는 아키텍처 설계 역량과 맞닿아 있습니다.',
-  },
-  {
     id: 'ai-mode',
-    title: 'API 연동을 통한 서비스 확장 (생성형 AI 모드)',
+    title: '생성형 AI 모드',
     body: '기본적인 게임플레이(Core Loop)가 안정화된 후, 유저의 자유도(UGC)를 극대화하기 위해 \'생성형 AI 모드\'를 기획 및 도입했습니다. Hyper3D API와 Skybox AI API를 연동하여 유저의 프롬프트에 따라 3D 자산이 실시간으로 교체되도록 설계했습니다. 또한, 외부 API 모델 렌더링 시 발생하는 WebGL 메모리 오버플로우를 방지하기 위해 생성 단계에서 폴리곤(Polygon) 수를 강제 통제하는 파이프라인을 구축하여 서비스 안정성을 확보했습니다.',
   },
 ];
@@ -629,7 +620,7 @@ function PhilosophySection() {
               className="text-[11px] font-bold tracking-[0.3em] uppercase mb-4"
               style={{ color: 'rgba(74,222,128,0.55)' }}
             >
-              Project Philosophy
+              Extension
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 16 }}
@@ -639,7 +630,7 @@ function PhilosophySection() {
               className="text-[28px] md:text-[34px] font-bold leading-tight"
               style={{ color: 'rgba(243,246,251,0.92)', letterSpacing: '-0.02em' }}
             >
-              Product<br />Philosophy
+              확장 기능
             </motion.h2>
           </div>
         </div>

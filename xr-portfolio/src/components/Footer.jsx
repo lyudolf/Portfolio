@@ -49,8 +49,7 @@ export default function Footer({ compact = false }) {
         <div className={`flex flex-col md:flex-row items-center justify-between gap-6 ${compact ? '' : 'pt-8'}`}
           style={compact ? undefined : { borderTop: `1px solid ${LINE}` }}>
           <div className="text-center md:text-left">
-            <p className="text-sm font-semibold mb-1" style={{ color: INK_55 }}>유희수 · Service Planner / PM</p>
-            <p className="text-xs" style={{ color: INK_40 }}>이 포트폴리오는 실제 프로젝트 경험을 기반으로 구성되었습니다.</p>
+            <p className="text-sm font-semibold" style={{ color: INK_55 }}>유희수 · Service Planner / PM</p>
           </div>
           <div className="flex gap-6 text-xs" style={{ color: INK_40 }}>
             <a href="https://github.com/lyudolf" target="_blank" rel="noopener noreferrer"
