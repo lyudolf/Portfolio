@@ -97,6 +97,28 @@ const PROJECTS = [
     ],
   },
   {
+    id: 'zing',
+    tab: 'zing',
+    company: 'ETRIBE',
+    label: 'ZING',
+    display: ['ZING'],
+    subtitle: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
+    eyebrow: 'Platform · 2026.09 — 진행 중 · 기획 · 개발',
+    headline: '프로토타입을 실서비스 구조로 재편했습니다',
+    summary:
+      '백엔드 없는 Figma Make 프로토타입을 받아 광고주·인플루언서·어드민 세 콘솔이 같은 데이터를 읽는 구조로 다시 세웠습니다. 상태는 네 축, 규칙은 DB 설정값, 기본값은 진행.',
+    stats: [
+      { num: '6영업일', label: '67커밋 · 1인' },
+      { num: '73 · 47', label: '화면 · 테이블' },
+      { num: '4축', label: '상태 모델 통합' },
+    ],
+    bg: '#1f2326',
+    bgSoft: '#3a4045',
+    accent: '#ff5a3c',
+    model: null,
+    hotspots: [],
+  },
+  {
     id: 'webmind',
     tab: 'webmind',
     company: 'WEBMIND',

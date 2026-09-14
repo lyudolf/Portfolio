@@ -10,6 +10,7 @@ export const TAB_PATHS = {
   kisti: '/kisti',
   dream: '/dream',
   'kocca-detail': '/kocca',
+  zing: '/zing',
   webmind: '/webmind',
   solo: '/solo',
   withai: '/ai-lab',
@@ -44,6 +45,11 @@ export const PAGE_META = {
     title: '꿈키올래 — Apple Vision Pro XR 직업체험 9종 | 유희수',
     description:
       'Vision Pro 기반 XR 직업체험 콘텐츠 9종을 2개월 실개발로 딜리버리. 초기 기획 전면 폐기 후 프레임워크화로 불가능한 일정을 구조로 해결.',
+  },
+  zing: {
+    title: 'ZING — 중국 인플루언서 × 한국 광고주 캠페인 플랫폼 | 유희수',
+    description:
+      '이트라이브 신사업. 백엔드 없는 Figma Make 프로토타입을 6영업일에 실서비스 구조로 재편 — 상태 6벌을 4축으로, 규칙은 DB 설정값으로, 자동화 8종. 기획·설계·개발 1인.',
   },
   webmind: {
     title: '웹마인드 — B2B 웹/앱 서비스 구축 | 유희수',

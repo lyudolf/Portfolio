@@ -66,6 +66,13 @@ const PROJECTS = [
     desc: '매 플레이마다 LLM이 사건을 새로 생성합니다. LLM은 제안, 코드가 보증.',
     bg: '#3b1428', bgSoft: '#5c1f3d', accent: '#f9a8d4',
   },
+  {
+    tab: 'zing', name: 'ZING', sub: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
+    meta: '2026.09 — 진행 중 · 기획 · 개발',
+    desc: '프로토타입을 6영업일에 실서비스 구조로. 상태 6벌을 4축으로, 규칙은 DB로.',
+    thumb: '/images/zing/01-home.png',
+    bg: '#1f2326', bgSoft: '#3a4045', accent: '#ff5a3c',
+  },
 ];
 
 /* 웹 프로젝트 — 웹마인드에서 구축한 B2B 사이트들. 전부 /webmind로 연결.
