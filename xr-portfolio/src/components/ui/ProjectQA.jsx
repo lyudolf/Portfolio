@@ -351,9 +351,49 @@ function Explorer({ block }) {
   );
 }
 
+/* steps — 순서가 있는 항목(작업 일자·단계)을 세로 타임라인으로.
+   카드 그리드에 넣으면 분량 차이(첫 날은 벽, 마지막 날은 한 줄)로 답답해져서,
+   왼쪽 레일에 단계 표시를 세우고 본문은 전폭으로 흘린다. items는 cards와 같은 모양. */
+function Steps({ block }) {
+  const accent = block.accent ?? '#1540c9';
+  return (
+    <>
+      {block.label && <BlockLabel tools={block.tools} accent={accent}>{block.label}</BlockLabel>}
+      <ol className={block.label ? '' : 'mt-7'} style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+        {block.items.map((c, i) => {
+          const last = i === block.items.length - 1;
+          return (
+            <li key={c.title} className="grid gap-x-5 md:gap-x-8"
+              style={{ gridTemplateColumns: '64px minmax(0, 1fr)' }}>
+              {/* 레일 — 단계 표시 + 다음 항목까지 잇는 선 */}
+              <div className="flex flex-col items-center">
+                <span className="text-[11px] font-bold px-2 py-1 rounded-md flex-shrink-0"
+                  style={{ fontFamily: MONO, color: accent, background: `${accent}14`, letterSpacing: '0.02em' }}>
+                  {c.num}
+                </span>
+                {!last && <span className="flex-1 w-px my-2" style={{ background: BORDER, minHeight: 20 }} />}
+              </div>
+              <div className={last ? 'pb-2' : 'pb-8'}>
+                <p className="text-[16px] md:text-[17px] font-bold mb-1.5"
+                  style={{ color: INK, letterSpacing: '-0.015em', lineHeight: 1.35, paddingTop: 3 }}>
+                  {c.title}
+                </p>
+                <p className="text-[14px] leading-[1.85]" style={{ color: INK_55, maxWidth: 720 }}>{c.body}</p>
+                {c.foot && (
+                  <p className="text-[12.5px] font-semibold mt-2" style={{ color: INK_74 }}>→ {c.foot}</p>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </>
+  );
+}
+
 const BLOCK_RENDERERS = {
   photos: Photos, gallery: Gallery, cards: Cards, swaps: Swaps, stats: Stats,
-  posts: Posts, loops: Loops, explorer: Explorer, issues: Issues,
+  posts: Posts, loops: Loops, explorer: Explorer, issues: Issues, steps: Steps,
 };
 
 /* 본문 맨 아래 붙는 보충 설명.
