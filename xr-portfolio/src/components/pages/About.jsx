@@ -57,7 +57,7 @@ const PROJECTS = [
   {
     tab: 'zing', name: 'ZING', sub: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
     meta: '2026.09 — 진행 중 · 기획 · 개발',
-    desc: '프로토타입을 6영업일에 실서비스 구조로. 상태 6벌을 4축으로, 규칙은 DB로.',
+    desc: '9개월 미뤄지던 홈페이지 구축을 6영업일에. 상태 6벌을 4축으로, 규칙은 DB로.',
     thumb: '/images/zing/01-home.png',
     bg: '#1f2326', bgSoft: '#3a4045', accent: '#ff5a3c',
   },

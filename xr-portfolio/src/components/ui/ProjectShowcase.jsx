@@ -52,7 +52,7 @@ const PROJECTS = [
     display: ['ZING'],
     subtitle: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
     eyebrow: 'Platform · 2026.09 — 진행 중 · 기획 · 개발',
-    headline: '프로토타입을 실서비스 구조로 재편했습니다',
+    headline: '9개월 동안 미뤄지던 마케팅 홈페이지 구축을 6영업일에 끝냈습니다',
     summary:
       '백엔드 없는 Figma Make 프로토타입을 받아 광고주·인플루언서·어드민 세 콘솔이 같은 데이터를 읽는 구조로 다시 세웠습니다. 상태는 네 축, 규칙은 DB 설정값, 기본값은 진행.',
     stats: [
@@ -660,7 +660,7 @@ export default function ProjectShowcase({ activeId, onNavigate, children }) {
               {p.eyebrow}
             </p>
             <h2 className="text-[19px] md:text-[23px] font-extrabold leading-[1.3] mb-3"
-              style={{ color: '#fff', letterSpacing: '-0.02em' }}>
+              style={{ color: '#fff', letterSpacing: '-0.02em', wordBreak: 'keep-all' }}>
               {p.headline}
             </h2>
             <p className="text-[13px] leading-[1.85] mb-4" style={{ color: 'rgba(255,255,255,0.78)' }}>
