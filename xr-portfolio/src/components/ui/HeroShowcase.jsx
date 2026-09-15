@@ -213,10 +213,10 @@ export default function HeroShowcase({ onNavigate, children }) {
               </p>
               <h2 className="text-[20px] md:text-[25px] font-extrabold leading-[1.28] mb-3"
                 style={{ color: '#fff', letterSpacing: '-0.025em' }}>
-                임상 XR 시스템 3년 운영,<br />캠페인 플랫폼 1인 구축, 앱 5종 출시
+                몰입할 환경은 스스로 만들고,<br />결과로 증명합니다.
               </h2>
               <p className="text-[13px] leading-[1.85] mb-4" style={{ color: 'rgba(255,255,255,0.78)' }}>
-                몰입에서 즐거움을 찾는 기획자.
+                임상 XR 시스템 3년 운영 · 캠페인 플랫폼 1인 구축 · 앱 5종 출시
               </p>
               <div className="flex gap-5 mb-5">
                 {STATS.map((s) => (
