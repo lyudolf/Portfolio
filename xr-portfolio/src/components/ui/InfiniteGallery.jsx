@@ -9,8 +9,10 @@ import { motion, AnimatePresence } from 'framer-motion';
  * Props:
  *   items: [{ src, title }]  — 갤러리 아이템 배열
  *   accent                   — 선택된 썸네일 테두리 색 (프로젝트 시그니처)
+ *   fit                      — 'cover'(기본, 화면 캡처) | 'contain'(문서·다이어그램: 잘리지 않게, 클릭 시 원본)
+ *   aspect                   — 메인 영역 비율. 기본 '16 / 9'
  */
-export default function InfiniteGallery({ items = [], accent = 'rgba(158,106,22,0.65)' }) {
+export default function InfiniteGallery({ items = [], accent = 'rgba(158,106,22,0.65)', fit = 'cover', aspect = '16 / 9' }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1: left, 1: right
   const stripRef = useRef(null);
@@ -55,24 +57,34 @@ export default function InfiniteGallery({ items = [], accent = 'rgba(158,106,22,
       <div
         className="relative w-full overflow-hidden rounded-xl mb-4"
         style={{
-          aspectRatio: '16 / 9',
-          background: 'rgba(24,32,27,0.05)',
+          aspectRatio: aspect,
+          background: fit === 'contain' ? '#fff' : 'rgba(24,32,27,0.05)',
           border: '1px solid rgba(24,32,27,0.08)',
         }}
       >
         <AnimatePresence custom={direction} mode="wait">
-          <motion.img
+          <motion.a
             key={activeIndex}
-            src={items[activeIndex].src}
-            alt={items[activeIndex].title}
+            href={fit === 'contain' ? items[activeIndex].src : undefined}
+            target={fit === 'contain' ? '_blank' : undefined}
+            rel={fit === 'contain' ? 'noopener noreferrer' : undefined}
+            title={fit === 'contain' ? '원본 크기로 보기' : undefined}
             custom={direction}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+            className="absolute inset-0 block"
+            style={{ cursor: fit === 'contain' ? 'zoom-in' : 'default' }}
+          >
+            <img
+              src={items[activeIndex].src}
+              alt={items[activeIndex].title}
+              className="w-full h-full"
+              style={{ objectFit: fit, objectPosition: fit === 'contain' ? 'top center' : 'center' }}
+            />
+          </motion.a>
         </AnimatePresence>
       </div>
 

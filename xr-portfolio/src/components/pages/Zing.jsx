@@ -19,6 +19,16 @@ export const SHOTS = [
   { src: '/images/zing/04-advertiser-dashboard.png', title: '광고주 콘솔 — 대시보드' },
 ];
 
+/* 기획 산출물 — docs/08~10 HTML·04 Diagram을 그대로 캡처. 기한 일수·수수료 등 정책 수치는 캡처 단계에서 제거. */
+export const DOCS = [
+  { src: '/images/zing/doc-01-ia-tree.png', title: 'IA 구조도 — 공개 · 광고주 · 인플루언서 · 관리자 화면 46개' },
+  { src: '/images/zing/doc-02-flow.png', title: '진행 흐름도 — 4개 레인 34단계' },
+  { src: '/images/zing/doc-03-status-axes.png', title: '상태값 네 축 — 캠페인 · 지원 · 참여 · 정산' },
+  { src: '/images/zing/doc-05-state-machine.png', title: '캠페인 상태 머신' },
+  { src: '/images/zing/doc-04-erd.png', title: 'DB 핵심 관계도 — 47개 중 흐름에 걸리는 19개' },
+  { src: '/images/zing/doc-06-spec.png', title: '화면 기능명세 — 캠페인 상세 · 지원자 탭' },
+];
+
 export const QA = [
   {
     q: '프로젝트 개요',
@@ -155,6 +165,14 @@ export const QA = [
             body: 'QA 1차 회신 13건 코드 반영.',
           },
         ],
+      },
+      {
+        type: 'gallery',
+        label: '기획 산출물 — IA · 흐름도 · 상태 · ERD · 기능명세',
+        accent: '#ff5a3c',
+        fit: 'contain',
+        aspect: '4 / 3',
+        items: DOCS,
       },
       {
         type: 'gallery',

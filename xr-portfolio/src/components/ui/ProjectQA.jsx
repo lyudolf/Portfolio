@@ -90,7 +90,7 @@ function Gallery({ block }) {
     <>
       {block.label && <BlockLabel tools={block.tools} accent={block.accent}>{block.label}</BlockLabel>}
       <div className={block.label ? '' : 'mt-7'}>
-        <InfiniteGallery items={block.items} accent={block.accent} />
+        <InfiniteGallery items={block.items} accent={block.accent} fit={block.fit} aspect={block.aspect} />
       </div>
     </>
   );
