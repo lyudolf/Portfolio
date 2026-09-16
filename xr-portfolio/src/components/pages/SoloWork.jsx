@@ -35,6 +35,11 @@ export const APPS = [
     released: '프로덕션 출시',
     color: '#7a6ce0',
     summary: '지금 먹는 영양제 조합이 괜찮은지 답하는 앱. 식약처 공공데이터 3종·44,622건 위에서 성분 중복과 충돌을 분석합니다.',
+    shots: [
+      { src: '/images/solo/pillstack/01-home.png', title: '오늘 — 복용 체크와 그룹별 현황' },
+      { src: '/images/solo/pillstack/02-search.png', title: '검색 — "오메가3" 1,516건' },
+      { src: '/images/solo/pillstack/03-detail.png', title: '제품 상세 — 기능성 · 섭취 · 주의' },
+    ],
     why: {
       pain: '영양제는 "많이 먹을수록 좋다"는 인식 때문에 여러 제품을 한꺼번에 먹게 됩니다. 그런데 멀티비타민에 비타민D를 더하면 상한치를 넘고, 칼슘과 철분은 같이 먹으면 서로 흡수를 방해하고, 유산균은 공복·지용성 비타민은 식후로 타이밍마저 제품마다 다릅니다. 정작 이걸 확인할 방법이 없습니다.',
       gap: '기존 영양제 앱은 대부분 기록과 알림에 머물러 있었습니다. "무엇을 먹었는지"는 알려주지만 "지금 이 조합이 괜찮은지"는 답하지 않습니다. 사용자가 실제로 궁금한 건 후자인데, 그 답은 성분 데이터를 직접 대조해야만 나옵니다.',
@@ -71,6 +76,11 @@ export const APPS = [
     released: '2026.06 출시',
     color: '#f0b03c',
     summary: '성격유형별로 갈리는 상식 퀴즈. 12개 카테고리 × 3난이도 × 3,600문제.',
+    shots: [
+      { src: '/images/solo/quizking/01-home.png', title: '홈 — 유형 · 랭크 · 티켓 · 출석' },
+      { src: '/images/solo/quizking/02-quiz.png', title: '풀이 — 타이머와 4지선다' },
+      { src: '/images/solo/quizking/03-result.png', title: '결과 — XP · 유형 평균 비교 · 오답노트' },
+    ],
     why: {
       pain: '성격유형 콘텐츠는 이미 넘칩니다. 그런데 대부분 "당신은 OO형입니다"에서 끝납니다. 결과를 캡처해서 공유하고 나면 그 앱을 다시 열 이유가 없습니다. 유저를 데려오는 비용은 똑같이 드는데, 한 번 쓰고 버려지는 구조입니다.',
       gap: '유형이라는 소재를 한 번 쓰고 버리지 않으려면 결과가 끝이 아니라 소속이 되어야 했습니다. 그래서 유형을 진단하는 앱이 아니라 유형끼리 겨루는 앱으로 방향을 잡았습니다. 내가 푼 점수가 내 유형의 순위에 반영되고, 유형별 랭킹과 전체 랭킹을 함께 보여줍니다. 문제를 푸는 이유가 "내 유형이 몇 등인가"가 되면, 콘텐츠만 채워도 반복이 만들어집니다.',
@@ -103,6 +113,11 @@ export const APPS = [
     released: '2026 출시',
     color: '#5cb2ed',
     summary: '오늘 산책 나가도 되는지를 지수 하나로. 전국 3,564개 읍면동 지원.',
+    shots: [
+      { src: '/images/solo/walk/01-region.png', title: '동네 선택 — 시·군·구 · 동' },
+      { src: '/images/solo/walk/02-index.png', title: '산책지수 카드 — 등급 · 근거 · 시간대' },
+      { src: '/images/solo/walk/03-weekly.png', title: '주간 전망' },
+    ],
     why: {
       pain: '산책 전에 확인해야 할 게 앱 두 개에 흩어져 있습니다. 날씨 앱에서 기온과 비 소식을 보고, 미세먼지 앱에서 대기질을 따로 확인해야 합니다. 그렇게 두 앱을 오가도 나온 건 "체감 31도, PM2.5 55"라는 숫자뿐이라, 나가도 되는지는 결국 본인이 판단해야 합니다.',
       gap: '게다가 그 숫자는 전부 사람 기준입니다. 한낮 33도가 지면에 발을 딛는 반려견에게 무슨 의미인지는 어디에도 없습니다. 필요한 건 데이터가 아니라 판정이었습니다. 그리고 안 되는 날이라면 언제가 괜찮은지까지 — 그래서 5단계 등급과 아침·낮·저녁 시간대 추천을 한 카드에 담았습니다.',
@@ -127,6 +142,11 @@ export const APPS = [
     released: '2026 출시',
     color: '#4ec2a8',
     summary: '2지선다 밸런스 게임으로 소비 성향을 진단. 3축 → 8유형.',
+    shots: [
+      { src: '/images/solo/spending/01-home.png', title: '홈 — 테스트 선택' },
+      { src: '/images/solo/spending/02-question.png', title: '2지선다 문항' },
+      { src: '/images/solo/spending/03-result.png', title: '결과 — 유형 일러스트 · 공유' },
+    ],
     why: {
       pain: '소비 성향을 알려주는 서비스는 대개 가계부입니다. 몇 달치 지출을 쌓아야 결과가 나오는데, 그 몇 달을 버티는 사람이 거의 없습니다. 반대로 밸런스 게임은 진입은 쉽지만 "짜장면파"에서 끝나 남는 게 없습니다.',
       gap: '쉬운 쪽은 알려주는 게 없고, 알려주는 쪽은 시작이 어렵습니다. 그 사이를 노렸습니다. 형식은 2지선다 그대로 두고 문항만 소비 상황으로 짜서, 기록 없이 고른 선택만으로 8유형까지 가게 했습니다. 결과 이름을 "분노의 결제왕", "무덤까지 가져갈 인간 금고"처럼 지은 것도 같은 이유입니다 — 공유하고 싶어지는 문장이 곧 유입 경로였습니다.',
@@ -155,6 +175,11 @@ export const APPS = [
     released: '2026 출시',
     color: '#e8763c',
     summary: '커피 내기 슬롯머신. 이름 2~10명을 넣고 돌리면 한 명을 지목.',
+    shots: [
+      { src: '/images/solo/coffee/01-home.png', title: '이름 입력과 릴' },
+      { src: '/images/solo/coffee/02-spinning.png', title: '릴 회전' },
+      { src: '/images/solo/coffee/03-result.png', title: '결과 팝업' },
+    ],
     why: {
       pain: '커피 내기를 정할 때 쓰는 도구는 대개 사다리타기입니다. 결과는 정확하지만 뽑는 순간이 밋밋하고, 무엇보다 결과 화면 위로 배너가 덮이거나 전면광고가 끼어드는 앱이 많습니다. 내기는 모두가 결과에 승복해야 끝나는데, 광고가 결과에 붙는 순간 "이거 조작 아니야?"가 나옵니다.',
       gap: '그래서 이 도구는 두 가지를 동시에 만족해야 했습니다. 확률이 정말 균등하다는 걸 설명할 수 있을 것, 그리고 결과가 나오기까지가 재미있을 것. 보통 둘 중 하나를 포기합니다 — 재미를 위해 확률을 비틀거나, 신뢰를 위해 연출을 없애거나. 이 둘은 서로 다른 층위라 같이 가질 수 있다고 봤습니다.',
@@ -281,6 +306,26 @@ function AppCard({ app, index }) {
 
       <div className="px-6 md:px-8 py-6">
         <p className="text-[14px] leading-[1.8] mb-6" style={{ color: INK_60 }}>{app.summary}</p>
+
+        {/* 실제 화면 — 모바일 캡처 최대 3장. 없으면 아무것도 안 그린다. */}
+        {app.shots?.length > 0 && (
+          <div className="grid grid-cols-3 gap-3 md:gap-4 mb-7">
+            {app.shots.slice(0, 3).map((s) => (
+              <figure key={s.src} className="min-w-0">
+                <div className="w-full overflow-hidden"
+                  style={{
+                    aspectRatio: '390 / 844', borderRadius: 18,
+                    border: `1px solid ${BORDER}`, background: '#f3f2f8',
+                    boxShadow: '0 6px 18px rgba(24,32,27,0.06)',
+                  }}>
+                  <img src={s.src} alt={s.title} loading="lazy"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+                </div>
+                <figcaption className="text-[11px] mt-2 leading-snug" style={{ color: INK_45 }}>{s.title}</figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
 
         {/* 왜 만들었나 — 페인포인트. 기획 판단 앞에 두어 "무엇을 봤는지"를 먼저 보여줌 */}
         {app.why && (
