@@ -206,7 +206,7 @@ export const APPS = [
    앱 5종이 "출시 프로세스"의 증명이라면 이건 "기술 제약을 직접 밟아본" 증명.
    그래서 APPS에 섞지 않고(휠·회고의 "다섯" 서사 유지) 별도 섹션으로 둔다.
    서술 근거: LeafDetail.jsx TROUBLESHOOTING_ITEMS (상세 페이지 /leaf와 단일 원본). */
-const LEAF = {
+export const LEAF = {
   id: 'leaf',
   name: 'Leaf It Alone',
   appName: 'leaf-it-alone-web.vercel.app',
