@@ -374,7 +374,7 @@ function KistiSlides() {
               <CardTitle>프로젝트 개요</CardTitle>
               <Bullets accent={KISTI} items={q1.a} />
               <div className="rounded-xl mt-5 px-4 py-3" style={{ background: `${KISTI}0a`, border: `1px solid ${KISTI}22` }}>
-                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>왜 VR이어야 했나 — 몰입이 아니라 측정</p>
+                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>왜 VR이었나 — 3차원 움직임 측정</p>
                 <p className="text-[11px] leading-[1.7]" style={{ color: INK_65 }}>{whyVr.a[1]}</p>
               </div>
             </>
@@ -404,7 +404,7 @@ function KistiSlides() {
               <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q2.a[0]}</p>
               <Bullets accent={KISTI} gap={8} size={12} items={issues.map((c) => ({ t: `${c.num} ${c.title}`, d: c.body }))} />
               <div className="rounded-xl mt-5 px-4 py-3" style={{ background: `${KISTI}0a`, border: `1px solid ${KISTI}22` }}>
-                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>가장 막막했던 것 — 어디까지가 확정된 결정인가</p>
+                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>어디까지가 확정된 결정인가</p>
                 <p className="text-[11px] leading-[1.7]" style={{ color: INK_65 }}>{q2.a[1]}</p>
               </div>
             </>
@@ -412,7 +412,7 @@ function KistiSlides() {
             <>
               <CardTitle>전략 Strategies / Objectives</CardTitle>
               <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK }}>
-                <b>고령자에게 조작을 요구하지 않는다</b> — 계정 연결 · 세션 생성 · 진행 제어를 전부 교수자 PC로 옮기고, 훈련자는 쓰고 움직이기만 하면 되게.
+                <b>조작은 교수자 PC로</b> — 계정 연결 · 세션 생성 · 진행 제어를 전부 교수자 PC로 옮기고, 훈련자는 헤드셋을 쓰고 움직이기만 하면 되게 했습니다.
               </p>
               <Bullets accent={KISTI} gap={6} size={12} marker="➤" items={issues.map((c) => c.foot)} />
               <p className="text-[11px] font-bold mt-5 mb-2" style={{ color: KISTI }}>{ops.label}</p>
@@ -518,7 +518,7 @@ function ZingSlides() {
             <>
               <CardTitle>전략 Strategies / Objectives</CardTitle>
               <p className="text-[12px] leading-[1.7] mb-3" style={{ color: INK }}>
-                <b>설계 원칙 네 개</b> — 돈을 움직이지 않는다 · 기본값은 진행 · 상태는 네 축 · 규칙은 DB 설정값
+                <b>설계 원칙 네 개</b> — 플랫폼에서 결제하지 않음 · 기한이 지나면 자동 진행 · 상태는 네 축 · 규칙은 DB 설정값
               </p>
               <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q3.a[1]}</p>
               <p className="text-[11px] font-bold mb-2" style={{ color: ZING }}>버린 것 → 택한 것</p>
@@ -671,7 +671,7 @@ function WebmindSlide() {
 function SideSlides({ full }) {
   const all = [...APPS, LEAF];
   const quiz = APPS.find((a) => a.id === 'quizking');
-  const funnel = quiz.decisions.find((d) => d.t.includes('거리'));
+  const funnel = quiz.decisions.find((d) => d.t.includes('시작까지'));
   const pill = APPS.find((a) => a.id === 'pillstack');
   const judge = pill.decisions[0];
 
@@ -692,7 +692,6 @@ function SideSlides({ full }) {
                 <p className="text-[14px] font-extrabold leading-tight" style={{ color: NAVY }}>{a.name}</p>
                 <p className="text-[10px] font-bold mt-0.5" style={{ color: a.color }}>{a.category} · {a.released}</p>
                 <p className="text-[11px] leading-[1.6] mt-2" style={{ color: INK_65 }}>{a.summary}</p>
-                <p className="text-[10.5px] font-bold mt-auto pt-2 leading-snug" style={{ color: INK }}>“{a.why.question}”</p>
               </div>
             </Card>
           ))}
@@ -721,10 +720,10 @@ function SideSlides({ full }) {
               </div>
             } />
             <Card>
-              <CardTitle>회고 — 다섯 개 다 출시했지만, 유저는 만들지 못했습니다</CardTitle>
+              <CardTitle>회고 — 5종 모두 출시했지만 유입 확보에 실패</CardTitle>
               <Bullets accent={SOLO} gap={12} size={12} items={LEARNED} />
               <p className="text-[10.5px] leading-[1.7] mt-5 rounded-xl px-3.5 py-3" style={{ background: `${SOLO}0a`, border: `1px solid ${SOLO}22`, color: INK_65 }}>
-                표본이 작아 지표로 단정하지 않습니다. 유저 행동을 관측해 가설을 세우고, 제품을 바꾸고, 결과를 확인하는 루프를 실제 출시작에서 돌려본 기록입니다.
+                표본이 작아 지표로 단정하지는 않습니다. 출시한 앱에서 유저 행동을 보고 가설을 세워 수정한 뒤 결과를 확인한 기록입니다.
               </p>
             </Card>
           </div>
@@ -743,9 +742,8 @@ function ClosingSlide() {
         <div>
           <h1 className="text-[64px] font-extrabold leading-none" style={{ letterSpacing: '-0.03em' }}>THANK YOU</h1>
           <p className="text-[15px] leading-[1.9] mt-8" style={{ color: 'rgba(255,255,255,0.7)', maxWidth: 760 }}>
-            화면별 전후 비교 전체, 앱 5종의 기획 판단 전문, ZING 기획 산출물 6종은{' '}
+            화면 전후 비교 전체와 앱 5종 기획 내용, ZING 기획 산출물은{' '}
             <A href={`https://${CONTACT.site}`}><span style={{ color: '#9db4ff', fontWeight: 700 }}>{CONTACT.site}</span></A>에 있습니다.
-            이 문서와 웹사이트는 같은 코드에서 생성됩니다.
           </p>
         </div>
         <div className="flex items-end justify-between">

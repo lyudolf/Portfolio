@@ -151,8 +151,8 @@ function HeroSection() {
         </motion.p>
         <motion.p variants={fadeUp} className="text-[14px] leading-[1.9] mb-10" style={{ color: C.text45, maxWidth: '620px' }}>
           OpenAI Hide &amp; Seek을 Unity ML-Agents로 재현한 개인 실험.
-          누적 2,700만 step, 보상 설계 5회 개편. 남은 것은 강화학습 지식이 아니라
-          <span style={{ color: C.text60 }}> 인센티브 설계의 실패 기록</span>.
+          누적 2,700만 step, 보상 설계 5회 개편.
+          <span style={{ color: C.text60 }}> 인센티브 설계의 실패 기록</span>입니다.
         </motion.p>
         <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2.5 mb-6">
           {META_BADGES.map((b) => (

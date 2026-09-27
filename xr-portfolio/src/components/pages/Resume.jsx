@@ -127,7 +127,7 @@ export default function Resume({ onNavigate }) {
   return (
     <div className="min-h-screen print:bg-white" style={{ background: '#eef0ec' }}>
       {/* 인쇄 여백 설정 */}
-      <style>{`@media print { @page { size: A4; margin: 14mm 12mm; } }`}</style>
+      <style>{`@media print { @page { size: A4; margin: 14mm 12mm; } html, body { background: #fff !important; } .resume-sheet { border: 0 !important; box-shadow: none !important; border-radius: 0 !important; max-width: none !important; } }`}</style>
 
       {/* 상단 액션 바 — 인쇄 시 숨김 */}
       <div className="print:hidden sticky top-0 z-40 flex items-center justify-between px-5 py-3"
@@ -149,7 +149,7 @@ export default function Resume({ onNavigate }) {
       </div>
 
       {/* A4 시트 */}
-      <div className="mx-auto my-8 print:my-0 px-8 md:px-12 py-10 md:py-12 print:px-0 print:py-0 print:shadow-none print:border-0"
+      <div className="resume-sheet mx-auto my-8 print:my-0 px-8 md:px-12 py-10 md:py-12 print:px-0 print:py-0 print:shadow-none print:border-0"
         style={{
           maxWidth: 860,
           background: '#fff',
