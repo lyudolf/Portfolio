@@ -33,8 +33,9 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  /* /print/:variant — PDF 조판 라우트. Nav·푸터·전환 없이 문서만 렌더한다.
-     탭 시스템 밖의 경로라 PATH_TABS를 타기 전에 분기. */
+  /* /print — PDF 조판 라우트. Nav·푸터·전환 없이 문서만 렌더한다.
+     탭 시스템 밖의 경로라 PATH_TABS를 타기 전에 분기.
+     2026-09-28 단일본으로 통합 — 옛 주소 /print/b2b · /print/b2c 도 같은 문서. */
   const printMatch = location.pathname.match(/^\/print(?:\/(b2b|b2c))?\/?$/);
 
   /* 경로 → 탭 (매칭 실패 시 about으로 폴백) */
@@ -59,7 +60,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
 
-  if (printMatch) return <Print variant={printMatch[1] ?? 'b2b'} />;
+  if (printMatch) return <Print />;
 
   const Page = PAGES[activeTab];
   const isDetailPage = DETAIL_PAGES.has(activeTab);

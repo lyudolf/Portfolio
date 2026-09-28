@@ -1,13 +1,14 @@
 /* ══════════════════════════════════════════
-   /print/:variant — PDF 포트폴리오 조판 라우트
+   /print — PDF 포트폴리오 조판 라우트 (단일본)
 
    포맷: 원티드 제공 [PO] 포트폴리오 샘플(2026-09-16 본인 공유)을 따른다.
    - 16:9 슬라이드 24p 구조 → 프로필 표지 / MAIN PROJECTS 요약 / 프로젝트별
      (개요 → 문제정의 | 전략 → 결과 Key Result + 우측 표·배지 → 화면) / SIDE PROJECTS / THANK YOU
    - 밝은 회색 배경 + 흰 라운드 카드 + 네이비 제목 + 점선 2단 분할.
 
-   - /print/b2b : 웹마인드를 ZING 바로 뒤에, Side Projects 1p
-   - /print/b2c : 꿈키올래·Side Projects 2p를 앞에, 웹마인드는 마지막
+   - 2026-09-28 B2B/B2C 두 판을 하나로 합침(본인 결정). 차이가 순서와 1장뿐이라
+     받는 쪽에 한 파일만 가도록. 순서: KISTI → ZING → 꿈키올래 → Side 2p → 웹마인드.
+     옛 주소 /print/b2b · /print/b2c 도 같은 문서를 보여준다.
 
    원칙: 콘텐츠는 전부 기존 페이지의 export 데이터를 재사용한다(단일 원본).
    PDF 추출: `npm run pdf` (scripts/make-pdf.mjs, 링크 보존) 또는 Ctrl+P. */
@@ -668,7 +669,7 @@ function WebmindSlide() {
 }
 
 /* ══ 7. SIDE PROJECTS (1~2p) ══ */
-function SideSlides({ full }) {
+function SideSlides() {
   const all = [...APPS, LEAF];
   const quiz = APPS.find((a) => a.id === 'quizking');
   const funnel = quiz.decisions.find((d) => d.t.includes('시작까지'));
@@ -698,8 +699,7 @@ function SideSlides({ full }) {
         </div>
       </Slide>
 
-      {full && (
-        <Slide>
+      <Slide>
           <Head kicker="Side Projects" accent={SOLO} title="출시작에서 돌려본 관측 → 가설 → 조치 → 확인" />
           <div className="grid" style={{ gridTemplateColumns: '1.2fr 1fr', gap: 28, flex: 1, minHeight: 0 }}>
             <Split ratio="1fr 118px" gap={24} left={
@@ -728,7 +728,6 @@ function SideSlides({ full }) {
             </Card>
           </div>
         </Slide>
-      )}
     </>
   );
 }
@@ -759,11 +758,10 @@ function ClosingSlide() {
 }
 
 /* ═══ 메인 ═══ */
-export default function Print({ variant = 'b2b' }) {
-  const isB2c = variant === 'b2c';
+export default function Print() {
   return (
     <div style={{ background: '#2c3040', counterReset: 'pn' }}>
-      <title>{`유희수 포트폴리오 PDF (${isB2c ? 'B2C' : 'B2B'})`}</title>
+      <title>유희수 포트폴리오 PDF</title>
       <meta name="robots" content="noindex" />
       <style>{`
         @page { size: 1280px 720px; margin: 0; }
@@ -789,14 +787,9 @@ export default function Print({ variant = 'b2b' }) {
       <div className="print-toolbar sticky top-0 z-40 flex items-center justify-between px-5 py-2.5"
         style={{ background: 'rgba(27,36,97,0.94)', backdropFilter: 'blur(10px)' }}>
         <p className="text-[12px] font-bold" style={{ color: 'rgba(255,255,255,0.85)' }}>
-          PDF 조판 미리보기 (16:9) · {isB2c ? 'B2C/플랫폼용' : 'B2B/SaaS용'}
+          PDF 조판 미리보기 (16:9)
         </p>
         <div className="flex gap-2">
-          <a href={isB2c ? '/print/b2b' : '/print/b2c'}
-            className="px-3.5 py-1.5 rounded-full text-[11.5px] font-bold"
-            style={{ background: 'rgba(255,255,255,0.12)', color: '#fff' }}>
-            {isB2c ? 'B2B판 보기' : 'B2C판 보기'}
-          </a>
           <button onClick={() => window.print()}
             className="px-3.5 py-1.5 rounded-full text-[11.5px] font-bold cursor-pointer"
             style={{ background: '#9db4ff', color: NAVY }}>
@@ -809,19 +802,9 @@ export default function Print({ variant = 'b2b' }) {
       <MainProjectsSlide />
       <KistiSlides />
       <ZingSlides />
-      {isB2c ? (
-        <>
-          <DreamSlides />
-          <SideSlides full />
-          <WebmindSlide />
-        </>
-      ) : (
-        <>
-          <WebmindSlide />
-          <DreamSlides />
-          <SideSlides full={false} />
-        </>
-      )}
+      <DreamSlides />
+      <SideSlides />
+      <WebmindSlide />
       <ClosingSlide />
     </div>
   );
