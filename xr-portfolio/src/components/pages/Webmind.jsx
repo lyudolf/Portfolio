@@ -1,7 +1,7 @@
 import ProjectShowcase from '../ui/ProjectShowcase';
 import ProjectQA from '../ui/ProjectQA';
 
-/* 웹마인드 — B2B 웹/앱 서비스 구축 (2023.04 — 2024.07).
+/* 웹마인드 — B2B 웹/앱 서비스 구축 (2023.04 ~ 2024.07).
    본문 = 공통 Q&A 3문 + 노션 갤러리 카드(구축 건별 썸네일 게시물).
    출처: 사람인 이력서 기준 (memory career-history).
    클라이언트 실명 공개 확정(본인 확인): Intertek · 아마노코리아 · 한국건설품질협의회(대우건설 진행). */
@@ -10,7 +10,7 @@ export const QA = [
   {
     q: '프로젝트 개요',
     a: [
-      '웹에이전시 웹마인드에서 1년 4개월간(2023.04 — 2024.07) B2B 웹/앱 구축을 기획했습니다. 제안 PT부터 참여해 수주하고, 구축 후 유지보수까지 맡았습니다.',
+      '웹에이전시 웹마인드에서 1년 4개월간(2023.04 ~ 2024.07) B2B 웹/앱 구축을 기획했습니다. 제안 PT부터 참여해 수주하고, 구축 후 유지보수까지 맡았습니다.',
     ],
   },
   {
@@ -31,7 +31,7 @@ export const QA = [
         label: '구축 프로젝트',
         items: [
           {
-            client: 'Intertek — 글로벌 시험·인증 기업',
+            client: 'Intertek (글로벌 시험·인증 기업)',
             thumb: '/images/webmind/intertek.jpg',
             href: 'https://www.intertek.co.kr/',
             title: '공식 사이트 고도화',
@@ -39,7 +39,7 @@ export const QA = [
             tags: ['IA 개선', '정보 접근성'],
           },
           {
-            client: '아마노코리아 — 주차 설비·솔루션',
+            client: '아마노코리아 (주차 설비·솔루션)',
             thumb: '/images/webmind/amano.jpg',
             href: 'https://www.amano.co.kr/',
             title: '브랜드 사이트 리뉴얼',
@@ -47,7 +47,7 @@ export const QA = [
             tags: ['리뉴얼', '웹어워드 금상', '유지보수 연장'],
           },
           {
-            client: '한국건설품질협의회 — 대우건설 진행',
+            client: '한국건설품질협의회 (대우건설 진행)',
             thumb: '/images/webmind/kacq.jpg',
             href: 'https://www.kacq.or.kr/',
             title: '공식 사이트 구축',
@@ -70,7 +70,7 @@ export const QA = [
           { num: '100%', label: '신규 제안 수주', sub: '제안 PT 참여 건 기준' },
           { num: '금상', label: '웹어워드 코리아', sub: '아마노코리아 리뉴얼' },
           { num: '연장', label: '유지보수 계약', sub: '구축 → 운영 관계 지속' },
-          { num: '1년 4개월', label: 'B2B 웹 기획', sub: '2023.04 — 2024.07' },
+          { num: '1년 4개월', label: 'B2B 웹 기획', sub: '2023.04 ~ 2024.07' },
         ],
       },
     ],

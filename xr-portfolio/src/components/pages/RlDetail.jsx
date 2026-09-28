@@ -42,10 +42,10 @@ const VERSIONS = [
   {
     v: 'V1',
     title: '기본 추격 · 도주',
-    problem: '4만~5만 step 구간 보상 편차 0.000. 매 에피소드 동일 행동 반복 — 학습 정체.',
+    problem: '4만~5만 step 구간 보상 편차 0.000. 매 에피소드 동일 행동 반복, 학습 정체.',
     action: 'Local Minimum 진단. 커리큘럼 러닝으로 재설계: 기본 추격·도주 → 고정 장애물 → 장애물 조작 순.',
     video: '/withai/rl/v1-60k.mp4',
-    mediaTag: '6만 step — 안전한 구석에서 같은 행동만 반복',
+    mediaTag: '6만 step: 안전한 구석에서 같은 행동만 반복',
   },
   {
     v: 'V2',
@@ -53,15 +53,15 @@ const VERSIONS = [
     problem: '"가까울수록 보상"을 넣자 술래가 벽 너머 신호에 반응, 벽에 밀착한 채 이탈하지 않음(벽 비비기). 도구 "잡기" 보상 탓에 도망자는 도주 대신 상자 옮기기에 집착.',
     action: '거리 보상·잡기 보상 삭제. 잠금 후 생존 시에만 보상하도록 조건 변경.',
     video: '/withai/rl/v2-distance.mp4',
-    mediaTag: '20만 step — 도망자의 구석 선호를 술래가 역이용',
+    mediaTag: '20만 step: 도망자의 구석 선호를 술래가 역이용',
   },
   {
     v: 'V3',
     title: 'LSTM(기억) 추가',
-    problem: '기억 부재 — 매 순간을 처음처럼 판단, 전략이 누적되지 않음.',
+    problem: '기억 부재. 매 순간을 처음처럼 판단, 전략이 누적되지 않음.',
     action: 'LSTM 추가. 94만 step에 술래의 수색 반경 확장, 이후 상대의 구석 선호를 학습해 미리 대기하는 예측 행동 관측.',
     video: '/withai/rl/v3-940k.mp4',
-    mediaTag: '94만 step — 구석만 돌던 술래의 수색 반경 확장',
+    mediaTag: '94만 step: 구석만 돌던 술래의 수색 반경 확장',
   },
   {
     v: 'V4',
@@ -71,11 +71,11 @@ const VERSIONS = [
   },
   {
     v: 'V5',
-    title: 'Pure RL — 중간 보상 전량 삭제',
+    title: 'Pure RL: 중간 보상 전량 삭제',
     problem: '중간 보상을 넣을 때마다 전략 대신 보상의 지름길이 최적화됨.',
-    action: '승 +1 / 패 -1만 잔존. 2,700만 step — 입구 봉쇄, 상자 고정 등 가르친 적 없는 전략 출현.',
+    action: '승 +1 / 패 -1만 잔존. 2,700만 step에서 입구 봉쇄, 상자 고정 등 가르친 적 없는 전략 출현.',
     video: '/withai/rl/v5-27m.mp4',
-    mediaTag: '2,700만 step — 입구를 막고 상자를 고정하는 도망자',
+    mediaTag: '2,700만 step: 입구를 막고 상자를 고정하는 도망자',
   },
 ];
 

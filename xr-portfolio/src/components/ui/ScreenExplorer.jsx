@@ -86,7 +86,7 @@ export default function ScreenExplorer({ screens, accent = '#1540c9', label }) {
 
             <div className="w-full overflow-hidden rounded-2xl"
               style={{ border: `1px solid ${BORDER}`, background: '#fff' }}>
-              <img src={src} alt={`${s.label} — ${ver === 'old' ? '인수 시점' : '재설계 후'}`}
+              <img src={src} alt={`${s.label}: ${ver === 'old' ? '인수 시점' : '재설계 후'}`}
                 style={{ width: '100%', display: 'block' }} />
             </div>
           </div>

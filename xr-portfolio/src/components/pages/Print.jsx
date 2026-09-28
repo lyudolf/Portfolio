@@ -305,8 +305,8 @@ function CoverSlide() {
 /* ══ 2. MAIN PROJECTS 요약 (샘플 p2) ══ */
 const MAIN = [
   {
-    key: 'KI', name: 'KISTI 고령자 XR 훈련 시스템', role: '기획 · PM (단독)', accent: KISTI, period: '2024.07 — 재직 중 · 국가과제',
-    bullets: ['인수 콘텐츠 재설계 — 진입 6단계 → 1~2 depth', '교수자 중앙 제어 운영 구조 확립', '1차 임상 60명 무이슈 · 1년 용역 → 3년차 연장'],
+    key: 'KI', name: 'KISTI 고령자 XR 훈련 시스템', role: '기획 · PM (단독)', accent: KISTI, period: '2024.07 ~ 재직 중 · 국가과제',
+    bullets: ['인수 콘텐츠 재설계 (진입 6단계 → 1~2 depth)', '교수자 중앙 제어 운영 구조 확립', '1차 임상 60명 무이슈 · 1년 용역 → 3년차 연장'],
   },
   {
     key: 'ZI', name: 'ZING 캠페인 매칭 플랫폼', role: '기획 · 설계 · 개발 (1인)', accent: ZING, period: '2026.09 · 사내 신사업',
@@ -317,15 +317,15 @@ const MAIN = [
     bullets: ['"불가능" 판정을 프레임워크 기획서로 뒤집음', '3 세계관 × 3 직업, 실개발 2개월 납품', '클라이언트 후속 제안 → 한콘진 국가과제로 연결'],
   },
   {
-    key: 'WM', name: '웹마인드 B2B 웹 구축 3건', role: '기획 · 주임', accent: WEB, period: '2023.04 — 2024.07',
-    bullets: ['제안 PT → 수주 → IA · 화면정의서 → 유지보수', '아마노코리아 리뉴얼 — 웹어워드 코리아 금상', '참여 신규 제안 수주 100%'],
+    key: 'WM', name: '웹마인드 B2B 웹 구축 3건', role: '기획 · 주임', accent: WEB, period: '2023.04 ~ 2024.07',
+    bullets: ['제안 PT → 수주 → IA · 화면정의서 → 유지보수', '아마노코리아 리뉴얼로 웹어워드 코리아 금상', '참여 신규 제안 수주 100%'],
   },
 ];
 
 function MainProjectsSlide() {
   return (
     <Slide>
-      <Head kicker="Main Projects" title="주요 프로젝트 4건 — 역할과 한 일" />
+      <Head kicker="Main Projects" title="주요 프로젝트 4건과 역할" />
       <div className="grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, flex: 1, alignContent: 'center', paddingBottom: 40 }}>
         {MAIN.map((m, i) => (
           <div key={m.key} className="flex flex-col items-center text-center"
@@ -360,7 +360,7 @@ function KistiSlides() {
   const stats = q4.blocks.find((b) => b.type === 'stats').items;
   const whyVr = KISTI_FAQ.find((f) => f.q.includes('VR'));
   const team = KISTI_FAQ.find((f) => f.q.includes('몇 명'));
-  const chip = 'ETRIBE · 2024.07 — 재직 중 · 국가과제 XR';
+  const chip = 'ETRIBE · 2024.07 ~ 재직 중 · 국가과제 XR';
   const pairs = ['prepare', 'class', 'monitor'].map((id) => SCREENS.find((s) => s.id === id));
 
   return (
@@ -374,17 +374,17 @@ function KistiSlides() {
               <CardTitle>프로젝트 개요</CardTitle>
               <Bullets accent={KISTI} items={q1.a} />
               <div className="rounded-xl mt-5 px-4 py-3" style={{ background: `${KISTI}0a`, border: `1px solid ${KISTI}22` }}>
-                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>왜 VR이었나 — 3차원 움직임 측정</p>
+                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>왜 VR이었나: 3차원 움직임 측정</p>
                 <p className="text-[11px] leading-[1.7]" style={{ color: INK_65 }}>{whyVr.a[1]}</p>
               </div>
             </>
           } right={
             <>
-              <Shot src="/images/kisti/prepare-new.png" title="교수자 런처 — 수업 준비 (재설계 후)" />
+              <Shot src="/images/kisti/prepare-new.png" title="교수자 런처 수업 준비 화면 (재설계 후)" />
               <div className="mt-5">
                 <Meta accent={KISTI} rows={[
                   ['역할', '기획 → PM. 제안 · 일정 · 기획 · 매니징 · QA · 클라이언트 응대'],
-                  ['팀', team.a[0].split(' — ')[0]],
+                  ['팀', team.a[0].split(', 총')[0]],
                   ['사용자', '50세 이상 훈련자 · 진행을 주관하는 교수자 (병원)'],
                   ['기간', '6년 사업의 3년차 투입 → 1년 용역이 3년차 운영까지 연장'],
                 ]} />
@@ -412,7 +412,7 @@ function KistiSlides() {
             <>
               <CardTitle>전략 Strategies / Objectives</CardTitle>
               <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK }}>
-                <b>조작은 교수자 PC로</b> — 계정 연결 · 세션 생성 · 진행 제어를 전부 교수자 PC로 옮기고, 훈련자는 헤드셋을 쓰고 움직이기만 하면 되게 했습니다.
+                <b>조작은 교수자 PC로.</b> 계정 연결 · 세션 생성 · 진행 제어를 전부 교수자 PC로 옮기고, 훈련자는 헤드셋을 쓰고 움직이기만 하면 되게 했습니다.
               </p>
               <Bullets accent={KISTI} gap={6} size={12} marker="➤" items={issues.map((c) => c.foot)} />
               <p className="text-[11px] font-bold mt-5 mb-2" style={{ color: KISTI }}>{ops.label}</p>
@@ -436,9 +436,9 @@ function KistiSlides() {
             <Panel title="인수 시점 → 현재" accent={KISTI}>
               <Table accent={KISTI} head={['', '인수 시점', '현재']} rows={[
                 ['운영 depth', '진입 6단계', '1~2 depth'],
-                ['임상', '—', '1차 60명 완료 · 2차 진행'],
+                ['임상', '-', '1차 60명 완료 · 2차 진행'],
                 ['계약', '1년 용역', '3년차 운영 · 6년차 논의'],
-                ['다음 단계', '—', '기술이전 준비 (클라이언트)'],
+                ['다음 단계', '-', '기술이전 준비 (클라이언트)'],
               ]} />
             </Panel>
             <Badges accent={KISTI} items={[stats[0], stats[1]].map((s) => ({ num: s.num, label: s.label }))} />
@@ -448,7 +448,7 @@ function KistiSlides() {
 
       {/* 화면 재설계 */}
       <Slide>
-        <Head chip={chip} accent={KISTI} title="화면 재설계 — 인수 시점과 개선 후"
+        <Head chip={chip} accent={KISTI} title="화면 재설계: 인수 시점과 개선 후"
           right={<p className="text-[10.5px] font-semibold text-right" style={{ color: INK_45 }}>7개 화면 전체 비교 → {CONTACT.site}/kisti<br />화면 속 이름 · 영상은 개인정보 보호를 위해 가렸습니다</p>} />
         <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
           {pairs.map((s) => (
@@ -482,7 +482,7 @@ function ZingSlides() {
   return (
     <>
       <Slide>
-        <Head chip={chip} accent={ZING} title="ZING — 한국 광고주 × 중국 인플루언서 캠페인 매칭 플랫폼" />
+        <Head chip={chip} accent={ZING} title="ZING: 한국 광고주 × 중국 인플루언서 캠페인 매칭 플랫폼" />
         <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
           <Split ratio="1.15fr 1fr" left={
             <>
@@ -496,7 +496,7 @@ function ZingSlides() {
                 <Meta accent={ZING} rows={[
                   ['역할', '기획 · 설계 · 개발 · 문서화 · QA 설계 (1인)'],
                   ['입력', '디자인 시안 · 사업 개요 · 마케터 요건 · Figma Make 프로토타입'],
-                  ['사용자', '광고주 · 인플루언서 · ZING 관리자 — 세 콘솔'],
+                  ['사용자', '광고주 · 인플루언서 · ZING 관리자 (콘솔 3종)'],
                   ['기간', '6영업일 67커밋 → 비공개 테스트 환경. 다음: 클로즈드 베타'],
                 ]} />
               </div>
@@ -518,7 +518,7 @@ function ZingSlides() {
             <>
               <CardTitle>전략 Strategies / Objectives</CardTitle>
               <p className="text-[12px] leading-[1.7] mb-3" style={{ color: INK }}>
-                <b>설계 원칙 네 개</b> — 플랫폼에서 결제하지 않음 · 기한이 지나면 자동 진행 · 상태는 네 축 · 규칙은 DB 설정값
+                <b>설계 원칙 네 개:</b> 플랫폼에서 결제하지 않음 · 기한이 지나면 자동 진행 · 상태는 네 축 · 규칙은 DB 설정값
               </p>
               <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q3.a[1]}</p>
               <p className="text-[11px] font-bold mb-2" style={{ color: ZING }}>버린 것 → 택한 것</p>
@@ -536,7 +536,7 @@ function ZingSlides() {
             <Bullets accent={ZING} marker="➤" size={12.5} items={q4.a} />
             <p className="text-[11px] font-bold mt-5 mb-2" style={{ color: ZING }}>{autos.label}</p>
             <Bullets accent={ZING} gap={6} size={11.5} marker="▪" items={autos.items.map((c) => ({ t: c.title, d: c.body }))} />
-            <p className="text-[11px] font-bold mt-auto mb-2" style={{ color: ZING }}>만든 순서 — 6영업일</p>
+            <p className="text-[11px] font-bold mt-auto mb-2" style={{ color: ZING }}>만든 순서 (6영업일)</p>
             <div className="grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
               {steps.map((s) => (
                 <div key={s.num} className="rounded-lg px-2.5 py-2" style={{ background: `${ZING}0c`, border: `1px solid ${ZING}22` }}>
@@ -552,7 +552,7 @@ function ZingSlides() {
                 ['화면', '라우팅 41 · 미연결 40', '73 (문서화)'],
                 ['상태 모델', 'enum 6벌 이상', '4축 통합'],
                 ['데이터', 'mock · localStorage', '테이블 47 · 자동화 8종'],
-                ['QA', '—', '96항목 · 1차 13건 반영'],
+                ['QA', '-', '96항목 · 1차 13건 반영'],
               ]} />
             </Panel>
             <Badges accent={ZING} items={[stats[0], stats[2]].map((s) => ({ num: s.num, label: s.label }))} />
@@ -584,7 +584,7 @@ function DreamSlides() {
   return (
     <>
       <Slide>
-        <Head chip={chip} accent={DREAM} title="꿈키올래 — Vision Pro 직업체험 9종, 실개발 2개월" />
+        <Head chip={chip} accent={DREAM} title="꿈키올래: Vision Pro 직업체험 9종, 실개발 2개월" />
         <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
           <Split left={
             <>
@@ -598,11 +598,11 @@ function DreamSlides() {
               <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q3.a[0]}</p>
               <Bullets accent={DREAM} gap={8} size={12} marker="➤" items={[
                 { t: '수주 판단을 미루고 기획서를 먼저', d: '주말 · 연휴에 모든 직업이 같은 절차(인트로 · 메인 미션 · 미니게임 · 진로 정보)를 공유하는 프레임워크 기획서를 썼고, 개발자의 판단이 "불가능"에서 "가능"으로 바뀌었습니다.' },
-                { t: '한 달치 상세 기획을 스스로 폐기', d: '"이 분량이면 2종에 두 달" — 직업당 30분 깊이를 버리고 전체 40~50분으로 조정했습니다.' },
+                { t: '한 달치 상세 기획을 스스로 폐기', d: '"이 분량이면 2종에 두 달"이라는 계산이 나와, 직업당 30분 깊이를 버리고 전체 40~50분으로 조정했습니다.' },
                 { t: '폭포수 대신 병렬 파이프라인', d: '1종을 기획하는 즉시 개발로 넘겨 기획 · 개발 · 검수를 반복. 외주 없이 9종이 일정 안에 들어왔습니다.' },
               ]} />
               <p className="text-[11px] font-bold mt-4 mb-2" style={{ color: DREAM }}>3 세계관 × 3 직업</p>
-              <Bullets accent={DREAM} gap={3} size={11.5} marker="▪" items={worlds.map((w) => `${w.title} — ${w.foot}`)} />
+              <Bullets accent={DREAM} gap={3} size={11.5} marker="▪" items={worlds.map((w) => `${w.title}: ${w.foot}`)} />
             </>
           } />
         </div>
@@ -641,7 +641,7 @@ function WebmindSlide() {
   const stats = q4.blocks.find((b) => b.type === 'stats').items;
   return (
     <Slide>
-      <Head chip="웹마인드 · 2023.04 — 2024.07 · B2B 웹 구축" accent={WEB} title="B2B 웹 구축 3건 — 제안 PT부터 유지보수까지" />
+      <Head chip="웹마인드 · 2023.04 ~ 2024.07 · B2B 웹 구축" accent={WEB} title="B2B 웹 구축 3건, 제안 PT부터 유지보수까지" />
       <div className="grid" style={{ gridTemplateColumns: '1.35fr 1fr', gap: 28, flex: 1, minHeight: 0 }}>
         <Card style={{ display: 'flex', flexDirection: 'column' }}>
           <CardTitle>결과 Key Result</CardTitle>
@@ -658,7 +658,7 @@ function WebmindSlide() {
         </Card>
         <div className="flex flex-col" style={{ gap: 20 }}>
           <Panel title="프로젝트별 성과" accent={WEB}>
-            <Table accent={WEB} head={['클라이언트', '한 일', '결과']} rows={posts.map((p) => [p.client.split(' — ')[0], p.title, p.tags.slice(-1)[0]])} />
+            <Table accent={WEB} head={['클라이언트', '한 일', '결과']} rows={posts.map((p) => [p.client.split(' (')[0], p.title, p.tags.slice(-1)[0]])} />
           </Panel>
           <Badges accent={WEB} items={[stats[1], stats[0]].map((s) => ({ num: s.num, label: s.label }))} />
         </div>
@@ -700,14 +700,14 @@ function SideSlides({ full }) {
 
       {full && (
         <Slide>
-          <Head kicker="Side Projects" accent={SOLO} title="출시작에서 돌려본 것 — 관측 → 가설 → 조치 → 확인" />
+          <Head kicker="Side Projects" accent={SOLO} title="출시작에서 돌려본 관측 → 가설 → 조치 → 확인" />
           <div className="grid" style={{ gridTemplateColumns: '1.2fr 1fr', gap: 28, flex: 1, minHeight: 0 }}>
             <Split ratio="1fr 118px" gap={24} left={
               <>
                 <CardTitle>기획 판단</CardTitle>
                 <Bullets accent={SOLO} gap={12} size={12} marker="➤" items={[
-                  { t: `${quiz.name} — ${funnel.t}`, d: funnel.d },
-                  { t: `${pill.name} — ${judge.t}`, d: judge.d },
+                  { t: `${quiz.name}: ${funnel.t}`, d: funnel.d },
+                  { t: `${pill.name}: ${judge.t}`, d: judge.d },
                 ]} />
               </>
             } right={
@@ -720,7 +720,7 @@ function SideSlides({ full }) {
               </div>
             } />
             <Card>
-              <CardTitle>회고 — 5종 모두 출시했지만 유입 확보에 실패</CardTitle>
+              <CardTitle>회고: 5종 모두 출시했지만 유입 확보에 실패</CardTitle>
               <Bullets accent={SOLO} gap={12} size={12} items={LEARNED} />
               <p className="text-[10.5px] leading-[1.7] mt-5 rounded-xl px-3.5 py-3" style={{ background: `${SOLO}0a`, border: `1px solid ${SOLO}22`, color: INK_65 }}>
                 표본이 작아 지표로 단정하지는 않습니다. 출시한 앱에서 유저 행동을 보고 가설을 세워 수정한 뒤 결과를 확인한 기록입니다.
@@ -747,7 +747,7 @@ function ClosingSlide() {
           </p>
         </div>
         <div className="flex items-end justify-between">
-          <p className="text-[22px] font-extrabold">{CONTACT.name} <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.55)' }}>— {CONTACT.position}</span></p>
+          <p className="text-[22px] font-extrabold">{CONTACT.name} <span className="text-[13px] font-semibold" style={{ color: 'rgba(255,255,255,0.55)' }}>· {CONTACT.position}</span></p>
           <div className="text-right text-[12px] leading-[1.9]" style={{ color: 'rgba(255,255,255,0.65)' }}>
             <p><A href={`mailto:${CONTACT.email}`}>{CONTACT.email}</A></p>
             <p><A href={`https://${CONTACT.site}`}>{CONTACT.site}</A> · <A href={`https://${CONTACT.github}`}>{CONTACT.github}</A></p>
@@ -763,7 +763,7 @@ export default function Print({ variant = 'b2b' }) {
   const isB2c = variant === 'b2c';
   return (
     <div style={{ background: '#2c3040', counterReset: 'pn' }}>
-      <title>{`유희수 — 포트폴리오 PDF (${isB2c ? 'B2C' : 'B2B'})`}</title>
+      <title>{`유희수 포트폴리오 PDF (${isB2c ? 'B2C' : 'B2B'})`}</title>
       <meta name="robots" content="noindex" />
       <style>{`
         @page { size: 1280px 720px; margin: 0; }
@@ -789,7 +789,7 @@ export default function Print({ variant = 'b2b' }) {
       <div className="print-toolbar sticky top-0 z-40 flex items-center justify-between px-5 py-2.5"
         style={{ background: 'rgba(27,36,97,0.94)', backdropFilter: 'blur(10px)' }}>
         <p className="text-[12px] font-bold" style={{ color: 'rgba(255,255,255,0.85)' }}>
-          PDF 조판 미리보기 (16:9) — {isB2c ? 'B2C/플랫폼용' : 'B2B/SaaS용'}
+          PDF 조판 미리보기 (16:9) · {isB2c ? 'B2C/플랫폼용' : 'B2B/SaaS용'}
         </p>
         <div className="flex gap-2">
           <a href={isB2c ? '/print/b2b' : '/print/b2c'}

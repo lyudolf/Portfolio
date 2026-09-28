@@ -25,7 +25,7 @@ const PROJECTS = [
     label: 'KISTI',
     display: ['KIS', 'TI'],
     subtitle: '고령자용 비대면 인지-운동 융합 훈련',
-    eyebrow: 'Clinical XR · 2024 — 현재 · 단독 기획 · PM',
+    eyebrow: 'Clinical XR · 2024 ~ 현재 · 단독 기획 · PM',
     headline: '병원에서 3년째 쓰는 고령자 인지·운동 훈련 VR',
     summary:
       '고령자 인지·운동 훈련 VR. 교수자 PC와 VR 앱 두 종이 서버를 사이에 두고 움직이는 구조를 기획 단계에서 정의하고, 임상 데이터가 실제로 수집되는 운영 체계까지 설계했습니다.',
@@ -51,7 +51,7 @@ const PROJECTS = [
     label: 'ZING',
     display: ['ZING'],
     subtitle: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
-    eyebrow: 'Platform · 2026.09 — 진행 중 · 기획 · 개발',
+    eyebrow: 'Platform · 2026.09 ~ 진행 중 · 기획 · 개발',
     headline: '9개월 동안 미뤄지던 마케팅 홈페이지 구축을 6영업일에 끝냈습니다',
     summary:
       '백엔드 없는 Figma Make 프로토타입을 받아 광고주·인플루언서·어드민 세 콘솔이 같은 데이터를 읽는 구조로 다시 세웠습니다. 상태는 네 축, 규칙은 DB 설정값, 기본값은 진행.',
@@ -73,7 +73,7 @@ const PROJECTS = [
     label: '꿈키올래',
     display: ['꿈키', '올래'],
     subtitle: 'XR 직업체험 콘텐츠',
-    eyebrow: 'Career XR · 2025.09 — 12 · PM · 기획 · QA',
+    eyebrow: 'Career XR · 2025.09 ~ 12 · PM · 기획 · QA',
     headline: '직업을 설명하는 대신, 세계관 안에서 경험하게 만들었습니다',
     summary:
       'Apple Vision Pro 직업체험 9종. 세 세계관 아래 세 직업이 같은 흐름을 공유하는 프레임워크로 재설계해, 두 달이라는 불가능한 일정을 구조로 해결했습니다.',
@@ -99,7 +99,7 @@ const PROJECTS = [
     label: '한콘진',
     display: ['KOC', 'CA'],
     subtitle: 'AI 직업체험 콘텐츠',
-    eyebrow: 'AI × Career · 2026.04 — 진행 중 · 초기 기획',
+    eyebrow: 'AI × Career · 2026.04 ~ 진행 중 · 초기 기획',
     headline: '같은 사건을 두 번 겪지 않는 과학수사 직업체험',
     summary:
       '한국콘텐츠진흥원 국가과제. 매 플레이마다 LLM이 사건·증거·NPC 대사를 새로 생성합니다. 꿈키올래의 세계관과 난이도 파라미터 설계가 이 과제의 출발점이 됐습니다.',
@@ -125,10 +125,10 @@ const PROJECTS = [
     label: '웹마인드',
     display: ['WEB', 'MIND'],
     subtitle: 'B2B 웹/앱 서비스 구축',
-    eyebrow: 'B2B Web · 2023.04 — 2024.07 · 기획',
+    eyebrow: 'B2B Web · 2023.04 ~ 2024.07 · 기획',
     headline: 'B2B 사이트 3건, 제안 PT부터 유지보수까지',
     summary:
-      'B2B 웹/앱 구축의 기획 전 과정 — 경쟁사 분석부터 IA, 요구사항 정의, 화면정의서까지. 제안 PT부터 유지보수까지 클라이언트와 서비스 사이를 오가며 기준을 세웠습니다.',
+      '경쟁사 분석부터 IA, 요구사항 정의, 화면정의서까지 B2B 웹/앱 구축의 기획 전 과정을 맡았습니다. 제안 PT부터 유지보수까지 클라이언트와 서비스 사이를 오가며 기준을 세웠습니다.',
     stats: [
       { num: '100%', label: '신규 제안 수주' },
       { num: '금상', label: '웹어워드 코리아' },

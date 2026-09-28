@@ -27,62 +27,62 @@ export const PATH_TABS = Object.fromEntries(
 /* 페이지별 SEO 메타 (React 19가 <title>/<meta>를 <head>로 호이스팅) */
 export const PAGE_META = {
   about: {
-    title: "유희수 — 서비스 기획자 · PM 포트폴리오",
+    title: "유희수 | 서비스 기획자 · PM 포트폴리오",
     description:
       '서비스 기획 · PM 유희수 포트폴리오. 임상 XR 시스템 3년 운영, 캠페인 플랫폼 1인 구축, 앱 5종 출시, 웹어워드 코리아 금상.',
   },
   'kocca-detail': {
-    title: '한콘진 AI 직업체험 — LLM 생성형 과학수사 체험 | 유희수',
+    title: '한콘진 AI 직업체험: LLM 생성형 과학수사 체험 | 유희수',
     description:
-      '한국콘텐츠진흥원 국가과제. 매 플레이마다 LLM이 사건을 새로 생성하는 과학수사 직업체험 — 꿈키올래 세계관과 난이도 파라미터 설계가 출발점이 된 초기 기획 참여.',
+      '한국콘텐츠진흥원 국가과제. 매 플레이마다 LLM이 사건을 새로 생성하는 과학수사 직업체험. 꿈키올래 세계관과 난이도 파라미터 설계가 출발점이 된 초기 기획 참여.',
   },
   kisti: {
-    title: 'KISTI 임상 XR — 고령자 인지·운동 훈련 시스템 | 유희수',
+    title: 'KISTI 임상 XR: 고령자 인지·운동 훈련 시스템 | 유희수',
     description:
       '고령자 XR 훈련 시스템 단독 기획·PM. 1차 임상 60명 무이슈 완료, 1년 용역이 3년차 운영으로 연장, 진입 6단계를 1~2 depth로 재설계.',
   },
   dream: {
-    title: '꿈키올래 — Apple Vision Pro XR 직업체험 9종 | 유희수',
+    title: '꿈키올래: Apple Vision Pro XR 직업체험 9종 | 유희수',
     description:
       'Vision Pro 기반 XR 직업체험 콘텐츠 9종을 2개월 실개발로 딜리버리. 초기 기획 전면 폐기 후 프레임워크화로 불가능한 일정을 구조로 해결.',
   },
   zing: {
-    title: 'ZING — 중국 인플루언서 × 한국 광고주 캠페인 플랫폼 | 유희수',
+    title: 'ZING: 중국 인플루언서 × 한국 광고주 캠페인 플랫폼 | 유희수',
     description:
-      '이트라이브 신사업. 9개월 동안 미뤄지던 마케팅 홈페이지 구축을 6영업일에 완료 — 백엔드 없는 Figma Make 프로토타입을 실서비스 구조로 재편, 상태 6벌을 4축으로, 규칙은 DB 설정값으로, 자동화 8종. 기획·설계·개발 1인.',
+      '이트라이브 신사업. 9개월 동안 미뤄지던 마케팅 홈페이지 구축을 6영업일에 완료. 백엔드 없는 Figma Make 프로토타입을 실서비스 구조로 재편, 상태 6벌을 4축으로, 규칙은 DB 설정값으로, 자동화 8종. 기획·설계·개발 1인.',
   },
   webmind: {
-    title: '웹마인드 — B2B 웹/앱 서비스 구축 | 유희수',
+    title: '웹마인드: B2B 웹/앱 서비스 구축 | 유희수',
     description:
-      'B2B 웹/앱 구축 기획 전 과정 — 경쟁사 분석부터 IA·요구사항 정의·화면정의서까지. 참여한 신규 제안 전건 수주, 웹어워드 코리아 금상.',
+      '경쟁사 분석부터 IA·요구사항 정의·화면정의서까지 B2B 웹/앱 구축 기획 전 과정. 참여한 신규 제안 전건 수주, 웹어워드 코리아 금상.',
   },
   solo: {
-    title: 'Solo Work — 혼자 기획하고 출시한 앱 5종 | 유희수',
+    title: 'Solo Work: 혼자 기획하고 출시한 앱 5종 | 유희수',
     description:
       'Google Play와 토스 앱인토스에 앱 5종을 단독 출시. 수익 모델·심사·배포까지 직접 통과한 B2C 제품 기획 기록과, 유저를 만들지 못한 이유에 대한 회고.',
   },
   withai: {
-    title: 'AI-lab — AI로 직접 만든 것들 | 유희수',
+    title: 'AI-lab: AI로 직접 만든 것들 | 유희수',
     description:
       'AI로 직접 만든 것들의 기록. 7일 만에 만든 웹 3D 게임, 2,700만 step 강화학습 실험, 그리고 AI를 쓸 때 지키는 규칙.',
   },
   whyme: {
-    title: 'Why Me — 해상도를 높이는 기획자 | 유희수',
+    title: 'Why Me: 해상도를 높이는 기획자 | 유희수',
     description:
       '흐린 요구를 착수 가능한 정의로, 안 되는 일정을 구조로, 기술 제약은 직접 확인해서. 프로젝트 페이지에서 그대로 재확인되는 다섯 가지 일하는 방식.',
   },
   'leaf-detail': {
-    title: 'Leaf It Alone — 7일 만에 만든 웹 3D 게임 | 유희수',
+    title: 'Leaf It Alone: 7일 만에 만든 웹 3D 게임 | 유희수',
     description:
       'React Three Fiber로 7일 단독 개발·배포. 8,000개 객체 단일 드로우콜 최적화, ONNX 딥러닝 적 AI 직접 구현.',
   },
   'rl-detail': {
-    title: 'Hide & Seek RL — 강화학습으로 배운 인센티브 설계 | 유희수',
+    title: 'Hide & Seek RL: 강화학습으로 배운 인센티브 설계 | 유희수',
     description:
-      'Unity ML-Agents로 OpenAI Hide & Seek 재현. 2,700만 step, 보상 설계 5회 개편 — 보상 해킹과 창발 전략을 관측한 실험 로그.',
+      'Unity ML-Agents로 OpenAI Hide & Seek 재현. 2,700만 step, 보상 설계 5회 개편. 보상 해킹과 창발 전략을 관측한 실험 로그.',
   },
   resume: {
-    title: '이력서 — 서비스 기획 · PM 유희수',
+    title: '이력서 | 서비스 기획 · PM 유희수',
     description:
       '서비스 기획 · PM 3년 7개월. 임상 XR 시스템 3년 운영, 팀 매출 3배 성장, 캠페인 플랫폼 1인 구축, 앱 5종 출시, 웹어워드 코리아 금상.',
   },

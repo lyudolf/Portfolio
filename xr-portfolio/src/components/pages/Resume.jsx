@@ -36,60 +36,60 @@ export const CAREERS = [
   {
     company: '㈜이트라이브 (ETRIBE)',
     role: 'CTS본부 · 매니저 · PM/서비스 기획',
-    period: '2024.07 — 재직 중',
+    period: '2024.07 ~ 재직 중',
     intro: 'XR·플랫폼 B2G/신사업 프로젝트 기획·PM. 제안서 작성 → 수주 → 인력 배정 → 기획 → 개발 관리 → 검증 → 납품 → 정산까지 전 사이클을 직접 수행.',
     bullets: [
-      'KISTI 고령자 XR 인지·운동 훈련 시스템 — 단독 기획·PM. 연구진·개발사·클라이언트 요구를 우선순위로 정렬해 1차 임상 테스트 60명 크리티컬 이슈 없이 완료(2차 진행 중), 1년 단위 용역이 성과를 인정받아 3년차 운영까지 연장(마지막 6년차 연장 논의 중)',
-      '고령자 UX 재설계 — 진입 6단계 메뉴를 1~2 depth로 단축, 교수자 중앙 제어 구조, 임상 데이터 정합성·시스템 안정성을 품질 기준으로 확립',
-      'ZING 캠페인 플랫폼 — 9개월 동안 미뤄지던 마케팅 홈페이지 구축을 6영업일에 완료. 프로토타입을 실서비스 구조로 재편, 기획·설계·개발 1인',
-      '꿈키올래 Vision Pro 직업체험 9종 — PM·기획·QA. 초기 기획 전면 폐기 후 3세계관×3직업 프레임워크로 재설계, 2개월 실개발 납품 및 클라이언트 후속 제안 획득',
-      '한국콘텐츠진흥원 AI 직업체험 국가과제 — 초기 기획 참여. 페르소나·난이도 파라미터·평가지표 설계가 LLM 생성 시스템의 토대가 됨',
+      'KISTI 고령자 XR 인지·운동 훈련 시스템: 단독 기획·PM. 연구진·개발사·클라이언트 요구를 우선순위로 정렬해 1차 임상 테스트 60명 크리티컬 이슈 없이 완료(2차 진행 중), 1년 단위 용역이 성과를 인정받아 3년차 운영까지 연장(마지막 6년차 연장 논의 중)',
+      '고령자 UX 재설계: 진입 6단계 메뉴를 1~2 depth로 단축, 교수자 중앙 제어 구조, 임상 데이터 정합성·시스템 안정성을 품질 기준으로 확립',
+      'ZING 캠페인 플랫폼: 9개월 동안 미뤄지던 마케팅 홈페이지 구축을 6영업일에 완료. 프로토타입을 실서비스 구조로 재편, 기획·설계·개발 1인',
+      '꿈키올래 Vision Pro 직업체험 9종: PM·기획·QA. 초기 기획 전면 폐기 후 3세계관×3직업 프레임워크로 재설계, 2개월 실개발 납품 및 클라이언트 후속 제안 획득',
+      '한국콘텐츠진흥원 AI 직업체험 국가과제: 초기 기획 참여. 페르소나·난이도 파라미터·평가지표 설계가 LLM 생성 시스템의 토대가 됨',
       '제안서 작성부터 수주·인력 배정·수행·정산까지 직접 돌려 전년 대비 팀 매출 3배 이상 성장 견인 (3.8억 원 → 11.5억 원)',
     ],
   },
   {
     company: '웹마인드',
     role: '기획 · 주임',
-    period: '2023.04 — 2024.07',
+    period: '2023.04 ~ 2024.07',
     intro: 'B2B 웹/앱 서비스 구축 기획 전 과정(IA·요구사항 정의·화면설계·일정/예산) 주도.',
     bullets: [
-      '아마노코리아 브랜드 사이트 리뉴얼 — 경쟁사 분석·화면정의서 기반 기획, 웹어워드 코리아(K-Award) 금상 수상, 유지보수 계약 연장',
-      'Intertek 공식 사이트 고도화 — 방대한 기술·연구 콘텐츠를 사용자 관점에서 재구조화(IA 개편), 정보 접근성 개선',
-      '한국건설품질협의회 공식 사이트 구축(대우건설 진행) — 제안 PT부터 참여, 신규 제안 수주 100% 기여',
+      '아마노코리아 브랜드 사이트 리뉴얼: 경쟁사 분석·화면정의서 기반 기획, 웹어워드 코리아(K-Award) 금상 수상, 유지보수 계약 연장',
+      'Intertek 공식 사이트 고도화: 방대한 기술·연구 콘텐츠를 사용자 관점에서 재구조화(IA 개편), 정보 접근성 개선',
+      '한국건설품질협의회 공식 사이트 구축(대우건설 진행): 제안 PT부터 참여, 신규 제안 수주 100% 기여',
     ],
   },
   {
     company: '캐파 (CAPA)',
     role: '개발 인턴',
-    period: '2023.01 — 2023.02',
+    period: '2023.01 ~ 2023.02',
     intro: null,
     bullets: ['React·Spring Boot 웹 서비스 파일첨부(Dropzone) UI 구현 및 API 연동'],
   },
 ];
 
 export const SIDE_PROJECTS = {
-  title: '개인 프로젝트 — AI 활용 서비스 기획·출시',
-  period: '2026.01 — 진행 중',
+  title: '개인 프로젝트: AI 활용 서비스 기획·출시',
+  period: '2026.01 ~ 진행 중',
   bullets: [
-    '토스 앱인토스 미니앱 4종 + Google Play 앱 1종을 기획·개발·심사 대응·출시까지 단독 수행 — 성격유형 퀴즈왕 · 반려동물 산책지수 · 소비유형 테스트 · 오늘은 누가 쏠래? · PillStack(영양제 성분 분석) (리워드 광고 BM, 랭킹 시스템, 공공데이터 API 연동 설계 포함)',
-    "웹 3D 게임 'Leaf It Alone' 7일 단독 개발·배포 — React Three Fiber, ONNX 딥러닝 AI, 8,000개 객체 렌더링 최적화 (라이브 서비스 중)",
+    '토스 앱인토스 미니앱 4종 + Google Play 앱 1종을 기획·개발·심사 대응·출시까지 단독 수행: 성격유형 퀴즈왕 · 반려동물 산책지수 · 소비유형 테스트 · 오늘은 누가 쏠래? · PillStack(영양제 성분 분석) (리워드 광고 BM, 랭킹 시스템, 공공데이터 API 연동 설계 포함)',
+    "웹 3D 게임 'Leaf It Alone' 7일 단독 개발·배포: React Three Fiber, ONNX 딥러닝 AI, 8,000개 객체 렌더링 최적화 (라이브 서비스 중)",
   ],
 };
 
 const EDUCATION = [
-  { name: '강남대학교', detail: '컴퓨터공학 전공 · 미디어공학 복수전공', period: '2014.03 — 2020.02 졸업' },
+  { name: '강남대학교', detail: '컴퓨터공학 전공 · 미디어공학 복수전공', period: '2014.03 ~ 2020.02 졸업' },
 ];
 
 const CERTS = [
   { name: '정보처리기사', detail: '한국산업인력공단', period: '2021.06' },
-  { name: '웹어워드 코리아(K-Award) 금상', detail: '한국인터넷전문가협회 — 리뉴얼 프로젝트 기획 담당', period: '수상' },
+  { name: '웹어워드 코리아(K-Award) 금상', detail: '한국인터넷전문가협회, 리뉴얼 프로젝트 기획 담당', period: '수상' },
   { name: '컴퓨터활용능력 1급 (필기)', detail: '대한상공회의소', period: '' },
   { name: 'ICDL', detail: '국제 컴퓨터 활용 자격', period: '' },
 ];
 
 const TRAININGS = [
-  { name: '멀티캠퍼스 Java/Spring · DB · API 개발 교육', period: '2021 — 2022' },
-  { name: '한국기술교육대학교 협동로봇 연수 · KSA IoT/데이터 교육', period: '2020 — 2021' },
+  { name: '멀티캠퍼스 Java/Spring · DB · API 개발 교육', period: '2021 ~ 2022' },
+  { name: '한국기술교육대학교 협동로봇 연수 · KSA IoT/데이터 교육', period: '2020 ~ 2021' },
 ];
 
 export const SKILLS = {
@@ -100,7 +100,7 @@ export const SKILLS = {
   'AI·기술': ['프롬프트 엔지니어링', 'ChatGPT', 'Claude', 'Cursor', 'Midjourney', 'React', 'Spring Boot', 'Unity(협업)'],
 };
 
-const MILITARY = '육군 병장 만기전역 (2016.01 — 2017.10)';
+const MILITARY = '육군 병장 만기전역 (2016.01 ~ 2017.10)';
 
 /* ── 프리미티브 ── */
 
@@ -165,7 +165,7 @@ export default function Resume({ onNavigate }) {
               유희수
             </h1>
             <p className="text-[14px] font-semibold mt-1" style={{ color: ACCENT }}>
-              서비스 기획 · PM — 임상 XR 3년 운영 · 캠페인 플랫폼 1인 구축 · 앱 5종 출시
+              서비스 기획 · PM | 임상 XR 3년 운영 · 캠페인 플랫폼 1인 구축 · 앱 5종 출시
             </p>
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[12.5px]" style={{ color: INK_50 }}>
               <a href="mailto:iplay3473@gmail.com" style={{ color: 'inherit' }}>iplay3473@gmail.com</a>
@@ -199,7 +199,7 @@ export default function Resume({ onNavigate }) {
 
         {/* ── 경력 ── */}
         <section className="mb-8">
-          <SectionTitle>경력 — 총 3년 7개월</SectionTitle>
+          <SectionTitle>경력 (총 3년 7개월)</SectionTitle>
           <div className="flex flex-col gap-6">
             {CAREERS.map((c) => (
               <div key={c.company} style={{ breakInside: 'avoid' }}>

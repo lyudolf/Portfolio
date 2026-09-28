@@ -39,8 +39,8 @@ const CAPABILITIES = [
    (컴공 전공·정보처리기사·캐파 인턴·개발자 취준·웹마인드 1년 4개월). */
 const BACKGROUND = [
   '컴퓨터공학 전공 · 정보처리기사',
-  'B2B 웹 서비스 기획 — 에이전시 1년 4개월',
-  '백엔드 개발 경험 — Spring Boot · React',
+  'B2B 웹 서비스 기획 (에이전시 1년 4개월)',
+  '백엔드 개발 경험 (Spring Boot · React)',
 ];
 
 /* 실무 프로젝트 — 색·워드마크를 Work 쇼케이스 패널과 맞춰 같은 계보로 읽히게 한다.
@@ -49,14 +49,14 @@ const BACKGROUND = [
 const PROJECTS = [
   {
     tab: 'kisti', name: 'KISTI', sub: '고령자 인지-운동 융합 훈련 VR',
-    meta: '2024 — 현재 · 단독 기획 · PM',
+    meta: '2024 ~ 현재 · 단독 기획 · PM',
     desc: '1차 임상 60명 무이슈 완료. 1년 용역이 3년차 운영으로 연장됐습니다.',
     thumb: '/images/kisti/card.png',
     bg: '#1540c9', bgSoft: '#2f66ee', accent: '#8ee4ff',
   },
   {
     tab: 'zing', name: 'ZING', sub: '중국 인플루언서 × 한국 광고주 캠페인 플랫폼',
-    meta: '2026.09 — 진행 중 · 기획 · 개발',
+    meta: '2026.09 ~ 진행 중 · 기획 · 개발',
     desc: '9개월 미뤄지던 홈페이지 구축을 6영업일에. 상태 6벌을 4축으로, 규칙은 DB로.',
     thumb: '/images/zing/01-home.png',
     bg: '#1f2326', bgSoft: '#3a4045', accent: '#ff5a3c',
@@ -91,7 +91,7 @@ const WEB_PROJECTS = [
     bg: '#14614f', bgSoft: '#248a72', accent: '#93ead6',
   },
   {
-    tab: 'webmind', name: '건설품질협의회', sub: '공식 사이트 구축 — 대우건설 진행',
+    tab: 'webmind', name: '건설품질협의회', sub: '공식 사이트 구축 (대우건설 진행)',
     thumb: '/images/webmind/kacq.jpg',
     meta: '제안 PT 참여 · 수주 100%',
     bg: '#16603a', bgSoft: '#26905a', accent: '#97eeb8',

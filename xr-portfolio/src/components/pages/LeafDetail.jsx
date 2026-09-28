@@ -101,14 +101,14 @@ graph TD
             style NextApp fill:transparent,stroke:none,color:#cbd5e1
             Page["page.tsx<br/>(Entry Point)"]:::app --> Canvas["@react-three/fiber<br/>Canvas"]:::app
         end
-        subgraph R3F ["React Three Fiber — 3D Scene"]
+        subgraph R3F ["React Three Fiber: 3D Scene"]
             style R3F fill:transparent,stroke:none,color:#cbd5e1
             Canvas --> Physics["@react-three/cannon<br/>Physics World"]:::r3f
             Canvas --> Leaves["InstancedMesh<br/>Leaf System"]:::r3f
             Canvas --> Tools["Tool Components<br/>(HAND / RAKE / BLOWER)"]:::r3f
             Canvas --> Stage["Scene Components<br/>(Tornado / StageGate)"]:::r3f
         end
-        subgraph State ["Global State — Zustand"]
+        subgraph State ["Global State: Zustand"]
             style State fill:transparent,stroke:none,color:#cbd5e1
             Store["useGameStore<br/>(store.ts)"]:::state
             Store --> GameLogic["Game Logic<br/>(Score / Money)"]:::state
@@ -496,7 +496,7 @@ function TroubleshootingBlock({ item, index }) {
                     {b.term}
                   </span>
                   <span className="text-[14px]" style={{ color: 'rgba(243,246,251,0.45)' }}>
-                    {' '}— {b.desc}
+                    {': '}{b.desc}
                   </span>
                 </div>
               </li>

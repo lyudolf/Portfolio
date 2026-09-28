@@ -11,22 +11,22 @@ import ProjectQA from '../ui/ProjectQA';
 /* 라이브(비공개 QA 환경) 캡처. 데이터는 QA 시드, 계정 이메일·연락처는 캡처 단계에서 가림.
    결제 탭(수수료율 노출)·메시지(테스트 대화)·지원자 카드(테스트 문구)는 제외. */
 export const SHOTS = [
-  { src: '/images/zing/01-home.png', title: '공개 메인 — 플랫폼 소개와 모집 중 캠페인' },
-  { src: '/images/zing/02-campaigns.png', title: '캠페인 탐색 — 카테고리·플랫폼·유형 필터' },
-  { src: '/images/zing/03-campaign-detail.png', title: '캠페인 상세 — 보상 · 인원 · 마감 · 유형' },
-  { src: '/images/zing/07-influencer-participation.png', title: '참여 진행 — 선정부터 정산까지 7단계' },
-  { src: '/images/zing/08-admin-requests.png', title: '어드민 콘솔 — 캠페인 요청 큐' },
-  { src: '/images/zing/04-advertiser-dashboard.png', title: '광고주 콘솔 — 대시보드' },
+  { src: '/images/zing/01-home.png', title: '공개 메인: 플랫폼 소개와 모집 중 캠페인' },
+  { src: '/images/zing/02-campaigns.png', title: '캠페인 탐색: 카테고리·플랫폼·유형 필터' },
+  { src: '/images/zing/03-campaign-detail.png', title: '캠페인 상세: 보상 · 인원 · 마감 · 유형' },
+  { src: '/images/zing/07-influencer-participation.png', title: '참여 진행: 선정부터 정산까지 7단계' },
+  { src: '/images/zing/08-admin-requests.png', title: '어드민 콘솔: 캠페인 요청 큐' },
+  { src: '/images/zing/04-advertiser-dashboard.png', title: '광고주 콘솔: 대시보드' },
 ];
 
 /* 기획 산출물 — docs/08~10 HTML·04 Diagram을 그대로 캡처. 기한 일수·수수료 등 정책 수치는 캡처 단계에서 제거. */
 export const DOCS = [
-  { src: '/images/zing/doc-01-ia-tree.png', title: 'IA 구조도 — 공개 · 광고주 · 인플루언서 · 관리자 화면 46개' },
-  { src: '/images/zing/doc-02-flow.png', title: '진행 흐름도 — 4개 레인 34단계' },
-  { src: '/images/zing/doc-03-status-axes.png', title: '상태값 네 축 — 캠페인 · 지원 · 참여 · 정산' },
+  { src: '/images/zing/doc-01-ia-tree.png', title: 'IA 구조도: 공개 · 광고주 · 인플루언서 · 관리자 화면 46개' },
+  { src: '/images/zing/doc-02-flow.png', title: '진행 흐름도: 4개 레인 34단계' },
+  { src: '/images/zing/doc-03-status-axes.png', title: '상태값 네 축: 캠페인 · 지원 · 참여 · 정산' },
   { src: '/images/zing/doc-05-state-machine.png', title: '캠페인 상태 머신' },
-  { src: '/images/zing/doc-04-erd.png', title: 'DB 핵심 관계도 — 47개 중 흐름에 걸리는 19개' },
-  { src: '/images/zing/doc-06-spec.png', title: '화면 기능명세 — 캠페인 상세 · 지원자 탭' },
+  { src: '/images/zing/doc-04-erd.png', title: 'DB 핵심 관계도: 47개 중 흐름에 걸리는 19개' },
+  { src: '/images/zing/doc-06-spec.png', title: '화면 기능명세: 캠페인 상세 · 지원자 탭' },
 ];
 
 export const QA = [
@@ -35,7 +35,7 @@ export const QA = [
     a: [
       '한국 브랜드(광고주)와 중국 인플루언서(샤오홍슈·더우인·디엔핑)를 잇는 캠페인 매칭 플랫폼입니다. 광고주가 캠페인을 열면 인플루언서가 지원하고, 방문 또는 제품 수령 → 원고 → 게시 → 성과 확인 → 정산까지 한 화면 안에서 진행됩니다.',
       '이트라이브 사내 신사업으로, 9개월 동안 미뤄지던 마케팅 홈페이지 구축입니다. 디자인 시안과 사업 개요, 마케터의 요건을 받아 Figma Make 프로토타입을 실서비스 구조로 재편하는 일을 맡았습니다. 기획·설계·개발·문서화·QA 설계를 혼자 했고, 6영업일 67커밋으로 비공개 테스트 환경까지 올렸습니다.',
-      '사용자는 셋입니다. 광고주는 캠페인을 요청하고 승인·입금하고 지원자를 고르고 원고를 검토합니다. 인플루언서는 지원하고 계약에 동의하고 방문·수령하고 원고를 내고 게시하고 성과 자료를 제출합니다. ZING 관리자는 요청을 받아 캠페인을 대행 등록하고 입금을 확인하고 이의를 풀고 회차마다 지급합니다 — 나머지는 시스템이 자동으로 넘깁니다.',
+      '사용자는 셋입니다. 광고주는 캠페인을 요청하고 승인·입금하고 지원자를 고르고 원고를 검토합니다. 인플루언서는 지원하고 계약에 동의하고 방문·수령하고 원고를 내고 게시하고 성과 자료를 제출합니다. ZING 관리자는 요청을 받아 캠페인을 대행 등록하고 입금을 확인하고 이의를 풀고 회차마다 지급합니다. 나머지는 시스템이 자동으로 넘깁니다.',
     ],
   },
   {
@@ -53,12 +53,12 @@ export const QA = [
           {
             num: '01', title: '상태가 여러 벌',
             body: '캠페인 상태 4벌, 콘텐츠 상태 5벌, 정산 상태 3벌이 화면마다 따로 정의돼 있어 광고주·인플루언서·어드민이 같은 건을 다르게 읽었습니다.',
-            foot: '네 축(캠페인 · 지원 · 참여 · 정산)으로 통합 — 화면의 모든 배지와 버튼 조건이 여기서 나오게',
+            foot: '네 축(캠페인 · 지원 · 참여 · 정산)으로 통합, 화면의 모든 배지와 버튼 조건이 여기서 나오게',
           },
           {
             num: '02', title: '정책값이 코드에',
             body: '수수료율이 화면마다 다른 값으로 하드코딩돼 있었고, 기한·위약 규칙도 페이지 안에 흩어져 있었습니다.',
-            foot: '규칙은 DB 설정값으로 — UI는 렌더만. 코드에 상수 금지',
+            foot: '규칙은 DB 설정값으로, UI는 렌더만. 코드에 상수 금지',
           },
           {
             num: '03', title: '끊긴 퍼널',
@@ -78,7 +78,7 @@ export const QA = [
     q: '방향 설정',
     a: [
       '설계 원칙 네 개를 먼저 세웠습니다. 플랫폼에서 결제하지 않음, 기한이 지나면 자동 진행, 상태는 네 축, 규칙은 DB 설정값.',
-      'MVP는 한 사이클만 돌리기로 했습니다 — 광고주 문의 → 어드민이 캠페인 등록 → 인플루언서·광고주가 프로세스 진행. 결제·견적·심사 세 덩어리를 뒤로 미루고 메인 사이클만 먼저 검증합니다. 대금은 오프라인입니다 — 초기 거래량에서 연동 비용 대비 효과가 없고, 기록 테이블은 같아서 나중에 자동화해도 마이그레이션이 필요 없습니다.',
+      'MVP는 광고주 문의 → 어드민이 캠페인 등록 → 인플루언서·광고주가 프로세스 진행, 이 한 사이클만 돌리기로 했습니다. 결제·견적·심사 세 덩어리를 뒤로 미루고 메인 사이클만 먼저 검증합니다. 대금은 오프라인입니다. 초기 거래량에서 연동 비용 대비 효과가 없고, 기록 테이블은 같아서 나중에 자동화해도 마이그레이션이 필요 없습니다.',
     ],
     blocks: [
       {
@@ -102,7 +102,7 @@ export const QA = [
           },
           {
             tag: '구조', title: '소통',
-            before: '광고주 ↔ 인플루언서 직접 채팅', after: '제공하지 않음 — 어드민을 거치는 메시지 스레드',
+            before: '광고주 ↔ 인플루언서 직접 채팅', after: '제공하지 않음, 어드민을 거치는 메시지 스레드',
             verdict: '언어 장벽과 중개 모델에 맞추기 위해 ZING이 항상 중간에 섭니다.',
           },
           {
@@ -138,7 +138,7 @@ export const QA = [
       {
         type: 'steps',
         accent: '#ff5a3c',
-        label: '만든 순서 — 6영업일',
+        label: '만든 순서 (6영업일)',
         items: [
           {
             num: '1일', title: '설계 · 기반',
@@ -168,7 +168,7 @@ export const QA = [
       },
       {
         type: 'gallery',
-        label: '기획 산출물 — IA · 흐름도 · 상태 · ERD · 기능명세',
+        label: '기획 산출물: IA · 흐름도 · 상태 · ERD · 기능명세',
         accent: '#ff5a3c',
         fit: 'contain',
         aspect: '4 / 3',
@@ -176,7 +176,7 @@ export const QA = [
       },
       {
         type: 'gallery',
-        label: '실제 화면 — 세 콘솔이 같은 데이터를 읽는 방식',
+        label: '실제 화면: 세 콘솔이 같은 데이터를 읽는 방식',
         accent: '#ff5a3c',
         items: SHOTS,
       },

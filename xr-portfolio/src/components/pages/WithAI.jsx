@@ -30,10 +30,10 @@ const EXPERIMENTS = [
     meta: [{ k: 'duration', v: '7일' }, { k: 'role', v: '기획·개발 단독' }, { k: 'status', v: 'live' }],
     video: '/withai/leaf/render.mp4',
     poster: '/withai/leaf/leaf.jpg',
-    mediaTag: 'InstancedMesh — 8,000 objects / 1 draw call',
+    mediaTag: 'InstancedMesh: 8,000 objects / 1 draw call',
     body: [
       '1인칭 시점으로 낙엽을 치우는 캐주얼 게임입니다. 아이디어부터 배포까지 7일이 걸렸고, 기획·개발·배포를 혼자 했습니다.',
-      '만들면서 확인하고 싶었던 건 하나였습니다 — AI를 제대로 쓰면 기획자가 어디까지 직접 만들 수 있는가.',
+      '만들면서 확인하고 싶었던 건 하나였습니다. AI를 제대로 쓰면 기획자가 어디까지 직접 만들 수 있는가.',
     ],
     highlights: [
       'InstancedMesh로 8,000개 오브젝트를 단일 드로우콜로 렌더링',
@@ -46,7 +46,7 @@ const EXPERIMENTS = [
     log: [
       '$ npm run build && vercel deploy --prod',
       '✓ built in 3.2s',
-      '✓ deployed — leaf-it-alone-web.vercel.app',
+      '✓ deployed: leaf-it-alone-web.vercel.app',
       '! 8000 instances / 1 draw call',
     ],
   },
@@ -60,13 +60,13 @@ const EXPERIMENTS = [
     meta: [{ k: 'period', v: '2026.02' }, { k: 'steps', v: '27,000,000' }, { k: 'revisions', v: '5' }],
     video: '/withai/rl/v2-distance.mp4',
     poster: '/withai/rl/thumb.png',
-    mediaTag: 'V2 — 거리 보상을 넣자 술래가 벽 너머 신호에 밀착',
+    mediaTag: 'V2: 거리 보상을 넣자 술래가 벽 너머 신호에 밀착',
     body: [
       'OpenAI Hide & Seek을 Unity ML-Agents로 재현한 개인 실험. 술래와 도망자를 셀프플레이로 붙여 누적 2,700만 step을 학습시켰고, 그동안 보상 설계를 다섯 번 갈아엎었습니다.',
       '보상 설계를 바꿀 때마다 에이전트가 허점을 찾아낸 기록입니다.',
     ],
     highlights: [
-      '거리 보상을 넣자 술래가 탐색을 버리고 벽 너머 신호에 밀착 — 지표를 주면 지표만 최적화된다',
+      '거리 보상을 넣자 술래가 탐색을 버리고 벽 너머 신호에 밀착. 지표를 주면 지표만 최적화된다',
       '도망자가 램프를 벽 밖으로 떨어뜨려 발각 불가 상태를 만드는 버그를 스스로 발견',
       '중간 보상을 전량 삭제하고 승 +1 / 패 -1만 남기자, 가르친 적 없는 입구 봉쇄 전략이 출현',
     ],
@@ -338,7 +338,7 @@ export default function WithAI({ onNavigate }) {
           </div>
           <h1 className="text-[36px] md:text-[54px] font-extrabold leading-[1.08] mb-5"
             style={{ color: INK, letterSpacing: '-0.035em' }}>
-            with AI —<br className="md:hidden" /> Human-in-the-Loop
+            with AI:<br className="md:hidden" /> Human-in-the-Loop
           </h1>
           <p className="text-[17px] md:text-[19px] font-semibold leading-[1.6] mb-4" style={{ color: INK, maxWidth: 640 }}>
             AI로 직접 만든 것들의 기록.
