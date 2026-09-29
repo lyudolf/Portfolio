@@ -3,7 +3,7 @@
 
    포맷: 원티드 제공 [PO] 포트폴리오 샘플(2026-09-16 본인 공유)을 따른다.
    - 16:9 슬라이드: 프로필 표지 / MAIN PROJECTS 요약 / 프로젝트별
-     (문제정의 | 전략 → 결과 Key Result + 우측 표·배지 → 화면) / SIDE PROJECTS / THANK YOU
+     (STAR: 상황·과제·행동 → 행동·결과 + 우측 표·배지 → 화면) / SIDE PROJECTS / THANK YOU
    - 밝은 회색 배경 + 흰 라운드 카드 + 네이비 제목 + 점선 2단 분할.
 
    2026-09-28 B2B/B2C 두 판을 하나로 합침(본인 결정). 옛 주소 /print/b2b · /print/b2c 도 같은 문서.
@@ -123,6 +123,57 @@ function Card({ children, className = '', style }) {
 function CardTitle({ children, accent = NAVY, style }) {
   return (
     <p className="text-[21px] font-extrabold mb-5" style={{ color: accent, letterSpacing: '-0.01em', ...style }}>{children}</p>
+  );
+}
+
+/* ── STAR (상황 · 과제 · 행동 · 결과) ── 2026-09-30 본인 요청으로 프로젝트 장을 STAR 순서로 재구성 */
+const STAR = { S: ['상황', 'Situation'], T: ['과제', 'Task'], A: ['행동', 'Action'], R: ['결과', 'Result'] };
+
+function StarTitle({ k, accent = BLUE, note, sm = false, style }) {
+  const [ko, en] = STAR[k];
+  const d = sm ? 24 : 28;
+  return (
+    <div className="flex items-center gap-2.5" style={{ marginBottom: sm ? 10 : 13, ...style }}>
+      <span className="rounded-full flex items-center justify-center font-extrabold text-white"
+        style={{ width: d, height: d, fontSize: d * 0.52, background: accent, flexShrink: 0 }}>{k}</span>
+      <span className="font-extrabold" style={{ fontSize: sm ? 16 : 19, color: NAVY, letterSpacing: '-0.01em' }}>{ko}</span>
+      <span className="text-[10.5px] font-bold uppercase tracking-[0.12em]" style={{ color: INK_45 }}>
+        {en}{note ? ` · ${note}` : ''}
+      </span>
+    </div>
+  );
+}
+
+/* 제목 오른쪽: 이 장이 STAR 중 어디를 다루는지 */
+function StarTrack({ on, accent }) {
+  return (
+    <div className="flex gap-1.5" style={{ alignSelf: 'flex-start', marginTop: 6 }}>
+      {['S', 'T', 'A', 'R'].map((k) => {
+        const a = on.includes(k);
+        return (
+          <span key={k} className="rounded-full flex items-center justify-center text-[12px] font-extrabold"
+            style={{ width: 28, height: 28, background: a ? accent : '#fff', color: a ? '#fff' : INK_45, border: `1px solid ${a ? accent : LINE}` }}>
+            {k}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+/* 한 줄씩 S · T · A · R (1장짜리 프로젝트용) */
+function StarRows({ rows, accent }) {
+  return (
+    <div className="flex flex-col" style={{ gap: 12 }}>
+      {rows.map(([k, text]) => (
+        <div key={k} className="grid items-start" style={{ gridTemplateColumns: '24px 42px 1fr', gap: 10 }}>
+          <span className="rounded-full flex items-center justify-center text-[12.5px] font-extrabold text-white"
+            style={{ width: 24, height: 24, background: accent }}>{k}</span>
+          <span className="text-[14px] font-extrabold" style={{ color: NAVY, lineHeight: '24px' }}>{STAR[k][0]}</span>
+          <span className="text-[14px]" style={{ color: INK, lineHeight: 1.6 }}>{text}</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -390,25 +441,29 @@ function KistiSlides() {
       {/* 문제정의 | 전략 (개요는 한 줄 + 칩으로) */}
       <Slide>
         <Head chip={KISTI_CHIP} accent={KISTI} title="KISTI 고령자 XR 인지 · 운동 훈련 시스템"
-          sub="병원에서 50세 이상 훈련자와 교수자가 함께 쓰는 임상 XR 훈련 시스템입니다. 6년 사업의 3년차에 투입됐습니다." />
+          sub="병원에서 50세 이상 훈련자와 교수자가 함께 쓰는 임상 XR 훈련 시스템입니다. 6년 사업의 3년차에 투입됐습니다."
+          right={<StarTrack on={['S', 'T', 'A']} accent={KISTI} />} />
         <MetaRow accent={KISTI} items={[
           ['역할', '기획 · PM (단독)'], ['팀', '개발 2 · 디자인 1 · 기획 1'], ['사용자', '훈련자 · 교수자'], ['목표', '기술이전까지 가는 제품'],
         ]} />
         <div className="grid" style={{ gridTemplateColumns: '1fr 360px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
         <Split gap={32} left={
           <>
-            <CardTitle>문제정의</CardTitle>
-            <Bullets accent={KISTI} items={[
-              '지평선까지 펼쳐진 씬, 고령자에게 시각 부하 과다',
-              '카메라 이동으로 멀미 · 적응 부담',
-              '진입 6단계 메뉴, 교수자 · 훈련자 모두 혼란',
+            <StarTitle k="S" accent={KISTI} />
+            <Bullets accent={KISTI} size={15} gap={10} items={[
               '매년 바뀐 구축 업체, 확정된 기획이 불분명',
+              '지평선까지 펼쳐진 씬 · 카메라 이동, 시각 부하와 멀미',
+              '진입 6단계 메뉴, 교수자 · 훈련자 모두 혼란',
+            ]} />
+            <StarTitle k="T" accent={KISTI} style={{ marginTop: 24 }} />
+            <Bullets accent={KISTI} size={15} gap={10} items={[
+              '임상을 안정적으로 돌리고, 기술이전까지 가는 제품으로',
             ]} />
           </>
         } right={
           <>
-            <CardTitle>전략 Strategies / Objectives</CardTitle>
-            <Bullets accent={KISTI} marker="➤" items={[
+            <StarTitle k="A" accent={KISTI} />
+            <Bullets accent={KISTI} marker="➤" size={15} gap={12} items={[
               '조작은 전부 교수자 PC로, 훈련자는 쓰고 움직이기만',
               '시점 고정 · 핵심 오브젝트 중심으로 씬 재설계',
               '진입 6단계 → 1~2 depth 단일 흐름',
@@ -425,20 +480,21 @@ function KistiSlides() {
 
       {/* 결과 */}
       <Slide>
-        <Head chip={KISTI_CHIP} accent={KISTI} title="임상 60명 무이슈 · 1년 용역이 3년차 운영으로" />
+        <Head chip={KISTI_CHIP} accent={KISTI} title="임상 60명 무이슈 · 1년 용역이 3년차 운영으로"
+          right={<StarTrack on={['A', 'R']} accent={KISTI} />} />
         <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
           <Card>
-            <CardTitle>결과 Key Result</CardTitle>
+            <StarTitle k="A" accent={KISTI} note="협업 · 현장" />
+            <Bullets accent={KISTI} marker="▪" size={15} gap={12} items={[
+              '클라이언트 세 분의 요구를 모아 우선순위화, 1순위는 안정성',
+              '기획서 맨 앞에 유저 플로우, 기능마다 엣지 케이스 병기',
+              '임상지에 직접 내려가 가시성 · 멀미 · 그랩 난이도 즉시 수정',
+            ]} />
+            <StarTitle k="R" accent={KISTI} style={{ marginTop: 30 }} />
             <Bullets accent={KISTI} marker="➤" items={[
               '1차 임상 60명 무이슈 완료, 2차 60명 진행 중',
               '1년 용역 → 3년차 운영, 마지막 6년차 연장 논의',
               '클라이언트 기술이전 준비, 아키텍처 전환 진행 중',
-            ]} />
-            <SubLabel accent={KISTI}>어떻게 풀었나</SubLabel>
-            <Bullets accent={KISTI} marker="▪" size={15} gap={13} items={[
-              '클라이언트 세 분의 요구를 모아 우선순위화, 1순위는 안정성',
-              '기획서 맨 앞에 유저 플로우, 기능마다 엣지 케이스 병기',
-              '임상지에 직접 내려가 가시성 · 멀미 · 그랩 난이도 즉시 수정',
             ]} />
           </Card>
           <div className="flex flex-col" style={{ gap: 20 }}>
@@ -495,28 +551,31 @@ function ZingSlides() {
       {/* 문제정의 | 전략 */}
       <Slide>
         <Head chip={ZING_CHIP} accent={ZING} title="ZING: 한국 광고주 × 중국 인플루언서 캠페인 매칭 플랫폼"
-          sub="광고주 · 인플루언서 · 관리자 세 콘솔이 캠페인 요청부터 정산까지 한 흐름으로 움직이는 플랫폼입니다." />
+          sub="광고주 · 인플루언서 · 관리자 세 콘솔이 캠페인 요청부터 정산까지 한 흐름으로 움직이는 플랫폼입니다."
+          right={<StarTrack on={['S', 'T', 'A']} accent={ZING} />} />
         <MetaRow accent={ZING} items={[
           ['역할', '기획 · 설계 · 개발 (1인)'], ['입력', 'Figma Make 프로토타입 · 디자인 시안'], ['사용자', '광고주 · 인플루언서 · 관리자'], ['기간', '6영업일'],
         ]} />
         <div className="grid" style={{ gridTemplateColumns: '1fr 360px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
         <Split gap={32} left={
           <>
-            <CardTitle>문제정의</CardTitle>
-            <Bullets accent={ZING} items={[
-              '화면만 있는 프로토타입, 백엔드 없이 데이터는 전부 mock',
-              '연결 안 된 페이지 40개, 끊긴 링크 14개',
-              '캠페인 · 콘텐츠 · 정산 상태가 화면마다 따로 정의',
-              '수수료율 등 정책값이 코드 곳곳에 하드코딩',
+            <StarTitle k="S" accent={ZING} />
+            <Bullets accent={ZING} size={15} gap={10} items={[
+              '9개월 미뤄지던 마케팅 홈페이지, 넘겨받은 건 화면만 있는 프로토타입',
+              '데이터는 전부 mock, 연결 안 된 페이지 40 · 끊긴 링크 14',
+              '상태는 화면마다 따로, 정책값은 코드 곳곳에 하드코딩',
+            ]} />
+            <StarTitle k="T" accent={ZING} style={{ marginTop: 24 }} />
+            <Bullets accent={ZING} size={15} gap={10} items={[
+              'MVP 한 사이클(문의 → 관리자 등록 → 진행)을 실서비스 구조로',
             ]} />
           </>
         } right={
           <>
-            <CardTitle>전략 Strategies / Objectives</CardTitle>
-            <Bullets accent={ZING} marker="➤" items={[
+            <StarTitle k="A" accent={ZING} />
+            <Bullets accent={ZING} marker="➤" size={15} gap={12} items={[
               '상태는 캠페인 · 지원 · 참여 · 정산 네 축으로 통합',
               '규칙은 DB 설정값으로, 화면은 보여주기만',
-              'MVP는 문의 → 관리자 등록 → 진행, 한 사이클만',
               '결제 · 직접 채팅은 제외, 기한이 지나면 자동 진행',
             ]} />
           </>
@@ -530,17 +589,11 @@ function ZingSlides() {
 
       {/* 결과 */}
       <Slide>
-        <Head chip={ZING_CHIP} accent={ZING} title="9개월 미뤄지던 구축을 6영업일에" />
+        <Head chip={ZING_CHIP} accent={ZING} title="9개월 미뤄지던 구축을 6영업일에"
+          right={<StarTrack on={['A', 'R']} accent={ZING} />} />
         <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
           <Card style={{ display: 'flex', flexDirection: 'column' }}>
-            <CardTitle>결과 Key Result</CardTitle>
-            <Bullets accent={ZING} marker="➤" items={[
-              '6영업일 67커밋, 비공개 테스트 환경까지 오픈',
-              '화면 73 · 테이블 47 · 자동화 8종 문서화',
-              'QA 96항목 설계, 1차 회신 13건 반영',
-              '다음 단계: 클로즈드 베타',
-            ]} />
-            <p className="text-[12px] font-extrabold mt-auto mb-2.5" style={{ color: ZING }}>만든 순서 (6영업일)</p>
+            <StarTitle k="A" accent={ZING} note="만든 순서 6영업일" />
             <div className="grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
               {steps.map((t, i) => (
                 <div key={t} className="rounded-lg px-2.5 py-2" style={{ background: `${ZING}0c`, border: `1px solid ${ZING}22` }}>
@@ -549,6 +602,13 @@ function ZingSlides() {
                 </div>
               ))}
             </div>
+            <StarTitle k="R" accent={ZING} style={{ marginTop: 30 }} />
+            <Bullets accent={ZING} marker="➤" items={[
+              '6영업일 67커밋, 비공개 테스트 환경까지 오픈',
+              '화면 73 · 테이블 47 · 자동화 8종 문서화',
+              'QA 96항목 설계, 1차 회신 13건 반영',
+              '다음 단계: 클로즈드 베타',
+            ]} />
           </Card>
           <div className="flex flex-col" style={{ gap: 20 }}>
             <Panel title="넘겨받은 것 → 6영업일 후" accent={ZING}>
@@ -589,20 +649,29 @@ function DreamSlide() {
     <Slide>
       <Head chip="ETRIBE · 서귀포 진로직업체험센터 납품 · Apple Vision Pro" accent={DREAM}
         title="꿈키올래: Vision Pro 직업체험 9종, 실개발 2개월"
-        sub="3개 세계관 × 3개 직업을 40~50분 동안 이어서 체험하는 콘텐츠입니다. PM · 기획 · QA를 맡았습니다." />
+        sub="3개 세계관 × 3개 직업을 40~50분 동안 이어서 체험하는 콘텐츠입니다. PM · 기획 · QA를 맡았습니다."
+        right={<StarTrack on={['S', 'T', 'A', 'R']} accent={DREAM} />} />
       <div className="grid" style={{ gridTemplateColumns: '1.1fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
-        <Card>
-          <CardTitle>문제정의</CardTitle>
-          <Bullets accent={DREAM} size={15} gap={12} items={[
+        <Card style={{ padding: '24px 32px' }}>
+          <StarTitle k="S" accent={DREAM} sm />
+          <Bullets accent={DREAM} size={14} gap={6} items={[
             '9종을 따로 만들면 9개월, 실개발 기간은 2개월',
             '팀 전원이 처음 쓰는 Vision Pro, 참고 사례 없음',
             '진행 중 타깃이 초등 고학년까지 확대',
           ]} />
-          <CardTitle style={{ marginTop: 30 }}>전략 Strategies / Objectives</CardTitle>
-          <Bullets accent={DREAM} marker="➤" size={15} gap={12} items={[
+          <StarTitle k="T" accent={DREAM} sm style={{ marginTop: 16 }} />
+          <Bullets accent={DREAM} size={14} gap={6} items={[
+            '2개월 안에 9종, 저학년은 막히지 않고 고학년은 지루하지 않게',
+          ]} />
+          <StarTitle k="A" accent={DREAM} sm style={{ marginTop: 16 }} />
+          <Bullets accent={DREAM} marker="➤" size={14} gap={6} items={[
             '수주 판단 전에 프레임워크 기획서 먼저, "불가능" → "가능"',
             '직업당 30분 기획을 스스로 폐기, 전체 40~50분으로',
             '1종 기획 즉시 개발로 넘기는 병렬 진행, 외주 없이 완료',
+          ]} />
+          <StarTitle k="R" accent={DREAM} sm style={{ marginTop: 16 }} />
+          <Bullets accent={DREAM} marker="➤" size={14} gap={6} items={[
+            '9종 기한 내 납품, 후속 제안이 한콘진 국가과제로 연결',
           ]} />
         </Card>
         <div className="flex flex-col" style={{ gap: 18 }}>
@@ -659,15 +728,16 @@ function WebmindSlide() {
   const posts = WEBMIND_QA[2].blocks.find((b) => b.type === 'posts').items;
   return (
     <Slide>
-      <Head chip="웹마인드 · 2023.04 ~ 2024.07 · B2B 웹 구축" accent={WEB} title="B2B 웹 구축 3건, 제안 PT부터 유지보수까지" />
-      {/* 위: 결과 불릿 | 성과 표 / 아래: 사이트 3건 썸네일 | 숫자 배지 */}
+      <Head chip="웹마인드 · 2023.04 ~ 2024.07 · B2B 웹 구축" accent={WEB} title="B2B 웹 구축 3건, 제안 PT부터 유지보수까지"
+        right={<StarTrack on={['S', 'T', 'A', 'R']} accent={WEB} />} />
+      {/* 위: STAR 한 줄씩 | 성과 표 / 아래: 사이트 3건 썸네일 | 숫자 배지 */}
       <div className="grid" style={{ gridTemplateColumns: '1.2fr 1fr', gap: 22, marginBottom: 22 }}>
-        <Card>
-          <CardTitle>결과 Key Result</CardTitle>
-          <Bullets accent={WEB} marker="➤" items={[
-            '제안 PT부터 참여, 참여한 신규 제안 전건 수주',
-            '경쟁사 분석 → IA · 요구사항 정의 → 화면정의서',
-            '아마노코리아 리뉴얼로 웹어워드 코리아 금상',
+        <Card style={{ padding: '24px 30px' }}>
+          <StarRows accent={WEB} rows={[
+            ['S', 'B2B 웹에이전시, 제안 PT로 수주하고 구축 후 유지보수까지 맡는 구조'],
+            ['T', '클라이언트 사이트 3건의 제안 · 기획 · 구축'],
+            ['A', '제안 PT 참여, 경쟁사 분석 → IA · 요구사항 정의 → 화면정의서'],
+            ['R', '참여한 신규 제안 전건 수주, 아마노코리아 리뉴얼로 웹어워드 코리아 금상'],
           ]} />
         </Card>
         <Panel title="프로젝트별 성과" accent={WEB}>
@@ -688,7 +758,7 @@ function WebmindSlide() {
         ))}
         <Badges accent={WEB} vertical items={[
           { num: '금상', label: '웹어워드 코리아' },
-          { num: '100%', label: '신규 제안 수주' },
+          { num: '전건', label: '참여 신규 제안 수주' },
         ]} />
       </div>
     </Slide>
