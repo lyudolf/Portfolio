@@ -2,28 +2,34 @@
    /print — PDF 포트폴리오 조판 라우트 (단일본)
 
    포맷: 원티드 제공 [PO] 포트폴리오 샘플(2026-09-16 본인 공유)을 따른다.
-   - 16:9 슬라이드 24p 구조 → 프로필 표지 / MAIN PROJECTS 요약 / 프로젝트별
-     (개요 → 문제정의 | 전략 → 결과 Key Result + 우측 표·배지 → 화면) / SIDE PROJECTS / THANK YOU
+   - 16:9 슬라이드: 프로필 표지 / MAIN PROJECTS 요약 / 프로젝트별
+     (문제정의 | 전략 → 결과 Key Result + 우측 표·배지 → 화면) / SIDE PROJECTS / THANK YOU
    - 밝은 회색 배경 + 흰 라운드 카드 + 네이비 제목 + 점선 2단 분할.
 
-   - 2026-09-28 B2B/B2C 두 판을 하나로 합침(본인 결정). 차이가 순서와 1장뿐이라
-     받는 쪽에 한 파일만 가도록. 순서: KISTI → ZING → 꿈키올래 → Side 2p → 웹마인드.
-     옛 주소 /print/b2b · /print/b2c 도 같은 문서를 보여준다.
+   2026-09-28 B2B/B2C 두 판을 하나로 합침(본인 결정). 옛 주소 /print/b2b · /print/b2c 도 같은 문서.
 
-   원칙: 콘텐츠는 전부 기존 페이지의 export 데이터를 재사용한다(단일 원본).
+   2026-09-29 간결화(본인 결정): 16장 → 12장, 글자 수 절반 이하.
+   - 이전엔 사이트 문단(QA)을 그대로 가져와 한 장에 700~940자였다. 원티드 샘플은 150~250자.
+   - 그래서 PDF 문장은 이 파일 안에 따로 둔다(사이트와 단일 원본 아님).
+     숫자·이미지·캡션처럼 사실 데이터만 사이트 export를 재사용한다.
+   - 개요 장은 없애고 제목 아래 한 줄 + 메타 칩으로 흡수. 꿈키·Side는 한 장씩.
+   - 문장 규칙: 불릿은 한 줄, 설명 문단 금지, 배경 설명은 사이트로.
+   - 본인 확정 문장(표지, ZING "9개월 미뤄지던 구축을 6영업일에")은 토씨 그대로.
+
    PDF 추출: `npm run pdf` (scripts/make-pdf.mjs, 링크 보존) 또는 Ctrl+P. */
 
-import { QA as KISTI_QA, SCREENS, FAQ as KISTI_FAQ } from './Kisti';
-import { QA as ZING_QA, SHOTS as ZING_SHOTS, DOCS as ZING_DOCS } from './Zing';
-import { QA as DREAM_QA, SHOTS as DREAM_SHOTS } from './Dream';
+import { SCREENS } from './Kisti';
+import { SHOTS as ZING_SHOTS, DOCS as ZING_DOCS } from './Zing';
+import { SHOTS as DREAM_SHOTS } from './Dream';
 import { QA as WEBMIND_QA } from './Webmind';
-import { APPS, LEAF, LEARNED } from './SoloWork';
+import { APPS, LEAF } from './SoloWork';
 import { CAREERS, SKILLS, KEY_RESULTS } from './Resume';
 
 /* ── 표지 확정본(2026-09-16 본인 문장) ── */
 const COVER_MAIN = '몰입할 환경은 스스로 만들고, 결과로 증명합니다.';
 const COVER_TAG = '몰입에서 즐거움을 찾는 기획자';
-const HASHTAGS = ['#문제정의', '#가설검증', '#책임감', '#몰입', '#기술제약직접확인'];
+/* 2026-09-28 본인 수정(문체작업_2): #기술제약직접확인 → #기술제약확인 */
+const HASHTAGS = ['#문제정의', '#가설검증', '#책임감', '#몰입', '#기술제약확인'];
 
 const CONTACT = {
   name: '유희수',
@@ -69,10 +75,10 @@ function Slide({ children, dark = false, style }) {
   );
 }
 
-/* 슬라이드 상단: 회사 칩 + 제목 (샘플의 흐린 로고 칩 + 큰 네이비 제목) */
-function Head({ chip, kicker, title, accent = BLUE, right }) {
+/* 슬라이드 상단: 회사 칩 + 제목 + (선택) 한 줄 소개 */
+function Head({ chip, kicker, title, sub, accent = BLUE, right }) {
   return (
-    <div className="flex items-end justify-between" style={{ marginBottom: 22 }}>
+    <div className="flex items-end justify-between" style={{ marginBottom: 18 }}>
       <div>
         {chip && (
           <span className="inline-block text-[10.5px] font-bold px-2.5 py-1 rounded-md mb-2"
@@ -84,8 +90,23 @@ function Head({ chip, kicker, title, accent = BLUE, right }) {
           <p className="text-[15px] font-extrabold tracking-[0.04em] uppercase" style={{ color: accent }}>{kicker}</p>
         )}
         <h2 className="text-[30px] font-extrabold leading-[1.25]" style={{ color: NAVY, letterSpacing: '-0.02em' }}>{title}</h2>
+        {sub && <p className="text-[14px] leading-[1.6] mt-2" style={{ color: INK_65, maxWidth: 900 }}>{sub}</p>}
       </div>
       {right}
+    </div>
+  );
+}
+
+/* 역할 · 팀 · 사용자 · 기간 한 줄 칩 (개요 장 대신) */
+function MetaRow({ items, accent }) {
+  return (
+    <div className="flex flex-wrap gap-2" style={{ marginBottom: 16 }}>
+      {items.map(([k, v]) => (
+        <span key={k} className="text-[12px] font-semibold px-3 py-1.5 rounded-full"
+          style={{ background: '#fff', border: `1px solid ${LINE}`, color: INK_65 }}>
+          <b style={{ color: accent, marginRight: 6 }}>{k}</b>{v}
+        </span>
+      ))}
     </div>
   );
 }
@@ -99,9 +120,9 @@ function Card({ children, className = '', style }) {
   );
 }
 
-function CardTitle({ children, accent = NAVY }) {
+function CardTitle({ children, accent = NAVY, style }) {
   return (
-    <p className="text-[19px] font-extrabold mb-4" style={{ color: accent, letterSpacing: '-0.01em' }}>{children}</p>
+    <p className="text-[21px] font-extrabold mb-5" style={{ color: accent, letterSpacing: '-0.01em', ...style }}>{children}</p>
   );
 }
 
@@ -115,24 +136,16 @@ function Split({ left, right, ratio = '1fr 1fr', gap = 44 }) {
   );
 }
 
-/* 불릿 — 문자열 또는 { t, d } */
-function Bullets({ items, size = 12.5, gap = 10, marker = '❑', accent = BLUE }) {
+/* 불릿 — 한 줄짜리 문자열 */
+function Bullets({ items, size = 16, gap = 16, marker = '❑', accent = BLUE }) {
   return (
     <ul className="flex flex-col" style={{ gap }}>
-      {items.map((it, i) => {
-        const t = typeof it === 'string' ? null : it.t;
-        const d = typeof it === 'string' ? it : it.d;
-        return (
-          <li key={i} className="flex gap-2.5" style={{ fontSize: size, lineHeight: 1.7, color: INK_65 }}>
-            <span style={{ color: accent, flexShrink: 0, fontSize: size - 2, lineHeight: `${size * 1.7}px` }}>{marker}</span>
-            <span>
-              {t && <b style={{ color: INK, fontWeight: 700 }}>{t}</b>}
-              {t && d && <br />}
-              {d}
-            </span>
-          </li>
-        );
-      })}
+      {items.map((d, i) => (
+        <li key={i} className="flex gap-2.5" style={{ fontSize: size, lineHeight: 1.6, color: INK }}>
+          <span style={{ color: accent, flexShrink: 0, fontSize: size - 2, lineHeight: `${size * 1.6}px` }}>{marker}</span>
+          <span>{d}</span>
+        </li>
+      ))}
     </ul>
   );
 }
@@ -152,13 +165,13 @@ function Panel({ title, children, accent = NAVY }) {
 
 function Table({ head, rows, accent = NAVY }) {
   return (
-    <table className="w-full" style={{ borderCollapse: 'collapse', fontSize: 11.5 }}>
+    <table className="w-full" style={{ borderCollapse: 'collapse', fontSize: 12 }}>
       {head && (
         <thead>
           <tr>
             {head.map((h, i) => (
               <th key={i} className="font-bold py-1.5 px-2 text-center"
-                style={{ color: accent, borderBottom: `1px solid ${LINE}`, fontSize: 11 }}>{h}</th>
+                style={{ color: accent, borderBottom: `1px solid ${LINE}`, fontSize: 11.5 }}>{h}</th>
             ))}
           </tr>
         </thead>
@@ -167,7 +180,7 @@ function Table({ head, rows, accent = NAVY }) {
         {rows.map((r, i) => (
           <tr key={i}>
             {r.map((c, j) => (
-              <td key={j} className="py-1.5 px-2 text-center"
+              <td key={j} className="py-2 px-2 text-center"
                 style={{ borderBottom: i < rows.length - 1 ? `1px solid ${LINE}` : 'none',
                   color: j === 0 ? INK : INK_65, fontWeight: j === 0 ? 700 : 500, lineHeight: 1.45 }}>{c}</td>
             ))}
@@ -179,16 +192,16 @@ function Table({ head, rows, accent = NAVY }) {
 }
 
 /* 큰 숫자 배지 (샘플 우하단 "5→25명 팀 증원") */
-function Badges({ items, accent = BLUE }) {
+function Badges({ items, accent = BLUE, vertical = false, style }) {
   return (
-    <Card style={{ padding: '18px 26px', display: 'grid', gridTemplateColumns: `repeat(${items.length}, 1fr)`, gap: 16 }}>
+    <Card style={{ padding: '18px 26px', display: 'grid', gridTemplateColumns: vertical ? '1fr' : `repeat(${items.length}, 1fr)`, gap: 16, alignContent: 'center', ...style }}>
       {items.map((b) => (
         <div key={b.label} className="flex items-center gap-3">
           <span className="rounded-full flex-shrink-0"
             style={{ width: 44, height: 44, background: `radial-gradient(circle at 35% 30%, #fff 0%, ${accent}aa 25%, ${accent} 70%)`, boxShadow: `0 6px 14px ${accent}55` }} />
           <div>
-            <p className="text-[19px] font-extrabold leading-none" style={{ color: accent }}>{b.num}</p>
-            <p className="text-[11px] font-bold mt-1" style={{ color: INK_65 }}>{b.label}</p>
+            <p className="text-[21px] font-extrabold leading-none" style={{ color: accent }}>{b.num}</p>
+            <p className="text-[11.5px] font-bold mt-1" style={{ color: INK_65 }}>{b.label}</p>
           </div>
         </div>
       ))}
@@ -203,22 +216,27 @@ function Shot({ src, title, aspect = '16 / 10', fit = 'cover', style }) {
         style={{ aspectRatio: aspect, background: '#f4f5f9', border: `1px solid ${LINE}`, boxShadow: '0 4px 14px rgba(27,36,97,0.08)' }}>
         <img src={src} alt={title} style={{ width: '100%', height: '100%', objectFit: fit, objectPosition: 'top center' }} />
       </div>
-      {title && <figcaption className="text-[10px] font-semibold mt-1.5 leading-snug" style={{ color: INK_45 }}>{title}</figcaption>}
+      {title && <figcaption className="text-[10.5px] font-semibold mt-1.5 leading-snug" style={{ color: INK_45 }}>{title}</figcaption>}
     </figure>
   );
 }
 
-function Meta({ rows, accent }) {
+/* 칸을 꽉 채우는 이미지 (그리드 셀 높이에 맞춤) */
+function FillShot({ src, title, fit = 'cover', style }) {
   return (
-    <dl className="grid gap-y-2" style={{ gridTemplateColumns: '64px 1fr', fontSize: 12, lineHeight: 1.6 }}>
-      {rows.map(([k, v]) => (
-        <div key={k} className="contents">
-          <dt className="font-bold" style={{ color: accent }}>{k}</dt>
-          <dd style={{ color: INK_65 }}>{v}</dd>
-        </div>
-      ))}
-    </dl>
+    <figure className="min-w-0 flex flex-col" style={{ minHeight: 0, flex: 1, ...style }}>
+      <div className="w-full flex-1 overflow-hidden rounded-xl"
+        style={{ minHeight: 0, background: '#f4f5f9', border: `1px solid ${LINE}`, boxShadow: '0 4px 14px rgba(27,36,97,0.08)' }}>
+        <img src={src} alt={title} style={{ width: '100%', height: '100%', objectFit: fit, objectPosition: 'top center' }} />
+      </div>
+      {title && <figcaption className="text-[10.5px] font-semibold mt-1.5 leading-snug" style={{ color: INK_45 }}>{title}</figcaption>}
+    </figure>
   );
+}
+
+/* 작은 소제목 (카드 안 두 번째 묶음) */
+function SubLabel({ children, accent }) {
+  return <p className="text-[14px] font-extrabold mt-8 mb-3" style={{ color: accent }}>{children}</p>;
 }
 
 /* ══ 1. 프로필 표지 (샘플 p1) ══ */
@@ -228,7 +246,7 @@ function CoverSlide() {
   return (
     <Slide>
       <div className="grid h-full" style={{ gridTemplateColumns: '440px 1fr', gap: 48, paddingBottom: 30 }}>
-        {/* 좌: 이름 · 한 문장 · 해시태그 · 연락처 */}
+        {/* 좌: 이름 · 한 문장 · 해시태그 · 숫자 · 연락처 */}
         <div className="flex flex-col">
           <p className="text-[13px] font-extrabold tracking-[0.2em] uppercase" style={{ color: BLUE }}>Portfolio · 2026</p>
           <h1 className="text-[52px] font-extrabold leading-none mt-5" style={{ color: NAVY, letterSpacing: '-0.03em' }}>{CONTACT.name}</h1>
@@ -258,34 +276,36 @@ function CoverSlide() {
           </div>
         </div>
 
-        {/* 우: Work / Others / Side Projects / Tools */}
+        {/* 우: Work / Others / Side Projects / Tools — 샘플처럼 회사·기간·직책만 */}
         <div className="grid" style={{ gridTemplateColumns: '1.15fr 1fr', gap: 28 }}>
           <Card style={{ padding: '24px 28px' }}>
             <CardTitle accent={NAVY}>Work</CardTitle>
-            <div className="flex flex-col" style={{ gap: 14 }}>
+            <div className="flex flex-col" style={{ gap: 18 }}>
               {CAREERS.map((c) => (
                 <div key={c.company} className="flex gap-3">
                   <span className="rounded-full flex-shrink-0 mt-1.5" style={{ width: 9, height: 9, background: BLUE, boxShadow: `0 0 0 3px ${BLUE}22` }} />
                   <div>
-                    <p className="text-[13px] font-extrabold" style={{ color: INK }}>{c.company}</p>
-                    <p className="text-[10.5px] font-bold" style={{ color: BLUE }}>{c.period}</p>
-                    <p className="text-[11px] font-semibold" style={{ color: INK_65 }}>{c.role}</p>
-                    {c.intro && <p className="text-[10.5px] leading-[1.6] mt-0.5" style={{ color: INK_45 }}>{c.intro}</p>}
+                    <p className="text-[14px] font-extrabold" style={{ color: INK }}>{c.company}</p>
+                    <p className="text-[11px] font-bold" style={{ color: BLUE }}>{c.period}</p>
+                    <p className="text-[11.5px] font-semibold" style={{ color: INK_65 }}>{c.role}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <CardTitle accent={NAVY}><span className="block mt-6">Others</span></CardTitle>
-            <Bullets size={11.5} gap={4} marker="-" accent={INK_45} items={[
-              '강남대학교 컴퓨터공학 전공 · 미디어공학 복수전공 (2020.02 졸업)',
-              '정보처리기사 (2021.06) · 웹어워드 코리아 금상 (리뉴얼 프로젝트 기획)',
-            ]} />
+            <CardTitle accent={NAVY} style={{ marginTop: 28 }}>Others</CardTitle>
+            <ul className="flex flex-col gap-1.5 text-[12px] leading-[1.6]" style={{ color: INK_65 }}>
+              <li>- 강남대학교 컴퓨터공학 · 미디어공학 복수전공</li>
+              <li>- 정보처리기사</li>
+              <li>- 웹어워드 코리아 금상</li>
+            </ul>
           </Card>
 
           <div className="flex flex-col" style={{ gap: 28 }}>
             <Card style={{ padding: '24px 28px' }}>
               <CardTitle accent={NAVY}>Side Projects</CardTitle>
-              <Bullets size={11.5} gap={4} marker="-" accent={INK_45} items={sideProjects} />
+              <ul className="flex flex-col gap-1.5 text-[12px] leading-[1.6]" style={{ color: INK_65 }}>
+                {sideProjects.map((s) => <li key={s}>- {s}</li>)}
+              </ul>
             </Card>
             <Card className="flex-1" style={{ padding: '24px 28px' }}>
               <CardTitle accent={NAVY}>Tools</CardTitle>
@@ -303,7 +323,9 @@ function CoverSlide() {
   );
 }
 
-/* ══ 2. MAIN PROJECTS 요약 (샘플 p2) ══ */
+/* ══ 2. MAIN PROJECTS 요약 (샘플 p2) ══
+   꿈키·웹마인드 문구는 2026-09-28 본인 수정(문체작업_2) 반영.
+   ⚠️ 본인이 웹마인드 직책을 "매니저"로 적었으나 이력서·사람인 기록은 "주임" → 확인 전까지 주임 유지. */
 const MAIN = [
   {
     key: 'KI', name: 'KISTI 고령자 XR 훈련 시스템', role: '기획 · PM (단독)', accent: KISTI, period: '2024.07 ~ 재직 중 · 국가과제',
@@ -315,11 +337,11 @@ const MAIN = [
   },
   {
     key: 'DR', name: '꿈키올래 Vision Pro 직업체험 9종', role: 'PM · 기획 · QA', accent: DREAM, period: '2025 · 서귀포 진로직업체험센터',
-    bullets: ['"불가능" 판정을 프레임워크 기획서로 뒤집음', '3 세계관 × 3 직업, 실개발 2개월 납품', '클라이언트 후속 제안 → 한콘진 국가과제로 연결'],
+    bullets: ['개발 단의 일정 내 불가능 판정을 기획 프레임워크화로 문제 해결', '3 세계관 × 3 직업, 실개발 2개월 납품', '클라이언트 후속 제안 → 한국콘텐츠진흥원 국가과제로 연결'],
   },
   {
-    key: 'WM', name: '웹마인드 B2B 웹 구축 3건', role: '기획 · 주임', accent: WEB, period: '2023.04 ~ 2024.07',
-    bullets: ['제안 PT → 수주 → IA · 화면정의서 → 유지보수', '아마노코리아 리뉴얼로 웹어워드 코리아 금상', '참여 신규 제안 수주 100%'],
+    key: 'WM', name: '웹마인드 B2B 웹 구축 및 운영', role: '기획 · 주임', accent: WEB, period: '2023.04 ~ 2024.07',
+    bullets: ['제안 PT → 수주 → IA · 화면정의서 → 유지보수', '아마노코리아 홈페이지 재구축으로 웹어워드 코리아 금상', '인터텍 테스팅 서비스 리뉴얼 IA 재구조화', '한국건설품질협의회 홈페이지 구축 및 유지보수'],
   },
 ];
 
@@ -343,7 +365,7 @@ function MainProjectsSlide() {
             <p className="text-[10.5px] font-semibold mt-0.5" style={{ color: INK_45 }}>{m.period}</p>
             <ul className="mt-4 flex flex-col gap-1">
               {m.bullets.map((b) => (
-                <li key={b} className="text-[11.5px] leading-[1.6]" style={{ color: INK_65 }}>- {b}</li>
+                <li key={b} className="text-[12px] leading-[1.6]" style={{ color: INK_65 }}>- {b}</li>
               ))}
             </ul>
           </div>
@@ -353,85 +375,71 @@ function MainProjectsSlide() {
   );
 }
 
-/* ══ 3. KISTI (4p) ══ */
+/* ══ 3. KISTI (3p) ══ */
+const KISTI_CHIP = 'ETRIBE · 2024.07 ~ 재직 중 · 국가과제 XR';
+
 function KistiSlides() {
-  const [q1, q2, q3, q4] = KISTI_QA;
-  const issues = q2.blocks.find((b) => b.type === 'issues').items;
-  const [ops, collab] = q3.blocks.filter((b) => b.type === 'cards');
-  const stats = q4.blocks.find((b) => b.type === 'stats').items;
-  const whyVr = KISTI_FAQ.find((f) => f.q.includes('VR'));
-  const team = KISTI_FAQ.find((f) => f.q.includes('몇 명'));
-  const chip = 'ETRIBE · 2024.07 ~ 재직 중 · 국가과제 XR';
-  const pairs = ['prepare', 'class', 'monitor'].map((id) => SCREENS.find((s) => s.id === id));
+  const pairs = [
+    ['prepare', '대상 선택부터 시작까지 한 화면으로'],
+    ['class', '상시 좌측 메뉴로 뒤로가기 제거'],
+    ['monitor', '자세 · 이탈 안전 지표 상시 표시'],
+  ].map(([id, cap]) => ({ ...SCREENS.find((s) => s.id === id), cap }));
 
   return (
     <>
-      {/* 개요 */}
+      {/* 문제정의 | 전략 (개요는 한 줄 + 칩으로) */}
       <Slide>
-        <Head chip={chip} accent={KISTI} title="KISTI 고령자 XR 인지 · 운동 훈련 시스템" />
-        <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
-          <Split ratio="1.15fr 1fr" left={
-            <>
-              <CardTitle>프로젝트 개요</CardTitle>
-              <Bullets accent={KISTI} items={q1.a} />
-              <div className="rounded-xl mt-5 px-4 py-3" style={{ background: `${KISTI}0a`, border: `1px solid ${KISTI}22` }}>
-                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>왜 VR이었나: 3차원 움직임 측정</p>
-                <p className="text-[11px] leading-[1.7]" style={{ color: INK_65 }}>{whyVr.a[1]}</p>
-              </div>
-            </>
-          } right={
-            <>
-              <Shot src="/images/kisti/prepare-new.png" title="교수자 런처 수업 준비 화면 (재설계 후)" />
-              <div className="mt-5">
-                <Meta accent={KISTI} rows={[
-                  ['역할', '기획 → PM. 제안 · 일정 · 기획 · 매니징 · QA · 클라이언트 응대'],
-                  ['팀', team.a[0].split(', 총')[0]],
-                  ['사용자', '50세 이상 훈련자 · 진행을 주관하는 교수자 (병원)'],
-                  ['기간', '6년 사업의 3년차 투입 → 1년 용역이 3년차 운영까지 연장'],
-                ]} />
-              </div>
-            </>
-          } />
+        <Head chip={KISTI_CHIP} accent={KISTI} title="KISTI 고령자 XR 인지 · 운동 훈련 시스템"
+          sub="병원에서 50세 이상 훈련자와 교수자가 함께 쓰는 임상 XR 훈련 시스템입니다. 6년 사업의 3년차에 투입됐습니다." />
+        <MetaRow accent={KISTI} items={[
+          ['역할', '기획 · PM (단독)'], ['팀', '개발 2 · 디자인 1 · 기획 1'], ['사용자', '훈련자 · 교수자'], ['목표', '기술이전까지 가는 제품'],
+        ]} />
+        <div className="grid" style={{ gridTemplateColumns: '1fr 360px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
+        <Split gap={32} left={
+          <>
+            <CardTitle>문제정의</CardTitle>
+            <Bullets accent={KISTI} items={[
+              '지평선까지 펼쳐진 씬, 고령자에게 시각 부하 과다',
+              '카메라 이동으로 멀미 · 적응 부담',
+              '진입 6단계 메뉴, 교수자 · 훈련자 모두 혼란',
+              '매년 바뀐 구축 업체, 확정된 기획이 불분명',
+            ]} />
+          </>
+        } right={
+          <>
+            <CardTitle>전략 Strategies / Objectives</CardTitle>
+            <Bullets accent={KISTI} marker="➤" items={[
+              '조작은 전부 교수자 PC로, 훈련자는 쓰고 움직이기만',
+              '시점 고정 · 핵심 오브젝트 중심으로 씬 재설계',
+              '진입 6단계 → 1~2 depth 단일 흐름',
+              '인계 2주 만에 새 기획서를 들고 선제 미팅',
+            ]} />
+          </>
+        } />
+        <Card style={{ padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, minHeight: 0 }}>
+          <Shot src="/images/kisti/start-new.png" title="교수자 런처: 시작 화면 (재설계 후)" aspect="16 / 8.6" />
+          <Shot src="/images/kisti/learner-new.png" title="교수자 런처: 훈련자 관리 (재설계 후)" aspect="16 / 8.6" />
+        </Card>
         </div>
       </Slide>
 
-      {/* 문제정의 | 전략 */}
+      {/* 결과 */}
       <Slide>
-        <Head chip={chip} accent={KISTI} title="인수받은 콘텐츠를 고령자가 쓸 수 있게" />
-        <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
-          <Split left={
-            <>
-              <CardTitle>문제정의</CardTitle>
-              <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q2.a[0]}</p>
-              <Bullets accent={KISTI} gap={8} size={12} items={issues.map((c) => ({ t: `${c.num} ${c.title}`, d: c.body }))} />
-              <div className="rounded-xl mt-5 px-4 py-3" style={{ background: `${KISTI}0a`, border: `1px solid ${KISTI}22` }}>
-                <p className="text-[11px] font-bold mb-1" style={{ color: KISTI }}>어디까지가 확정된 결정인가</p>
-                <p className="text-[11px] leading-[1.7]" style={{ color: INK_65 }}>{q2.a[1]}</p>
-              </div>
-            </>
-          } right={
-            <>
-              <CardTitle>전략 Strategies / Objectives</CardTitle>
-              <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK }}>
-                <b>조작은 교수자 PC로.</b> 계정 연결 · 세션 생성 · 진행 제어를 전부 교수자 PC로 옮기고, 훈련자는 헤드셋을 쓰고 움직이기만 하면 되게 했습니다.
-              </p>
-              <Bullets accent={KISTI} gap={6} size={12} marker="➤" items={issues.map((c) => c.foot)} />
-              <p className="text-[11px] font-bold mt-5 mb-2" style={{ color: KISTI }}>{ops.label}</p>
-              <Bullets accent={KISTI} gap={6} size={11.5} marker="▪" items={ops.items.map((c) => ({ t: c.title, d: c.body }))} />
-            </>
-          } />
-        </div>
-      </Slide>
-
-      {/* 결과 Key Result */}
-      <Slide>
-        <Head chip={chip} accent={KISTI} title="임상 60명 무이슈 · 1년 용역이 3년차 운영으로" />
-        <div className="grid" style={{ gridTemplateColumns: '1.35fr 1fr', gap: 28, flex: 1, minHeight: 0 }}>
+        <Head chip={KISTI_CHIP} accent={KISTI} title="임상 60명 무이슈 · 1년 용역이 3년차 운영으로" />
+        <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
           <Card>
             <CardTitle>결과 Key Result</CardTitle>
-            <Bullets accent={KISTI} marker="➤" size={12.5} items={q4.a} />
-            <p className="text-[11px] font-bold mt-6 mb-2" style={{ color: KISTI }}>{collab.label}</p>
-            <Bullets accent={KISTI} gap={6} size={11.5} marker="▪" items={collab.items.map((c) => ({ t: c.title, d: c.body }))} />
+            <Bullets accent={KISTI} marker="➤" items={[
+              '1차 임상 60명 무이슈 완료, 2차 60명 진행 중',
+              '1년 용역 → 3년차 운영, 마지막 6년차 연장 논의',
+              '클라이언트 기술이전 준비, 아키텍처 전환 진행 중',
+            ]} />
+            <SubLabel accent={KISTI}>어떻게 풀었나</SubLabel>
+            <Bullets accent={KISTI} marker="▪" size={15} gap={13} items={[
+              '클라이언트 세 분의 요구를 모아 우선순위화, 1순위는 안정성',
+              '기획서 맨 앞에 유저 플로우, 기능마다 엣지 케이스 병기',
+              '임상지에 직접 내려가 가시성 · 멀미 · 그랩 난이도 즉시 수정',
+            ]} />
           </Card>
           <div className="flex flex-col" style={{ gap: 20 }}>
             <Panel title="인수 시점 → 현재" accent={KISTI}>
@@ -439,25 +447,30 @@ function KistiSlides() {
                 ['운영 depth', '진입 6단계', '1~2 depth'],
                 ['임상', '-', '1차 60명 완료 · 2차 진행'],
                 ['계약', '1년 용역', '3년차 운영 · 6년차 논의'],
-                ['다음 단계', '-', '기술이전 준비 (클라이언트)'],
               ]} />
             </Panel>
-            <Badges accent={KISTI} items={[stats[0], stats[1]].map((s) => ({ num: s.num, label: s.label }))} />
+            <Badges accent={KISTI} items={[
+              { num: '60명', label: '1차 임상 무이슈' },
+              { num: '3년차', label: '1년 용역 → 연장' },
+            ]} />
+            <Card style={{ padding: 16, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+              <FillShot src="/images/kisti/cognitive-new.png" title="인지검사 결과: 회차별 표 · 추이 그래프 · 내보내기" />
+            </Card>
           </div>
         </div>
       </Slide>
 
-      {/* 화면 재설계 */}
+      {/* 화면 전후 */}
       <Slide>
-        <Head chip={chip} accent={KISTI} title="화면 재설계: 인수 시점과 개선 후"
+        <Head chip={KISTI_CHIP} accent={KISTI} title="화면 재설계: 인수 시점과 개선 후"
           right={<p className="text-[10.5px] font-semibold text-right" style={{ color: INK_45 }}>7개 화면 전체 비교 → {CONTACT.site}/kisti<br />화면 속 이름 · 영상은 개인정보 보호를 위해 가렸습니다</p>} />
         <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
           {pairs.map((s) => (
             <Card key={s.id} style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column' }}>
-              <p className="text-[14px] font-extrabold mb-2.5" style={{ color: NAVY }}>{s.label}</p>
-              <Shot src={s.old} title="인수 시점" aspect="16 / 8" />
-              <Shot src={s.new} title="재설계 후" aspect="16 / 8" style={{ marginTop: 8 }} />
-              <p className="text-[10.5px] leading-[1.6] mt-2.5" style={{ color: INK_65 }}>{s.did}</p>
+              <p className="text-[15px] font-extrabold" style={{ color: NAVY }}>{s.label}</p>
+              <p className="text-[12.5px] font-semibold mb-3" style={{ color: KISTI }}>{s.cap}</p>
+              <Shot src={s.old} title="인수 시점" aspect="16 / 8.4" />
+              <Shot src={s.new} title="재설계 후" aspect="16 / 8.4" style={{ marginTop: 10 }} />
             </Card>
           ))}
         </div>
@@ -466,103 +479,99 @@ function KistiSlides() {
   );
 }
 
-/* ══ 4. ZING (4p) ══ */
+/* ══ 4. ZING (3p) ══ */
+const ZING_CHIP = 'ETRIBE 사내 신사업 · 2026.09 · 캠페인 플랫폼';
+
 function ZingSlides() {
-  const [q1, q2, q3, q4] = ZING_QA;
-  const issues = q2.blocks.find((b) => b.type === 'issues').items;
-  const swaps = q3.blocks.find((b) => b.type === 'swaps').items;
-  const steps = q3.blocks.find((b) => b.type === 'steps').items;
-  const autos = q3.blocks.find((b) => b.type === 'cards');
-  const stats = q4.blocks.find((b) => b.type === 'stats').items;
-  const chip = 'ETRIBE 사내 신사업 · 2026.09 · 캠페인 플랫폼';
+  const steps = ['설계 · 기반', '프로세스 콘솔', '공개 사이트', '운영 규칙', '문서 · QA', '반영'];
   /* 세로로 긴 문서(IA 트리)는 상단만 잘라 보여주고, 가로형(상태 4축·ERD)은 전체를 담는다 */
   const docs = [['doc-01', 'cover'], ['doc-03', 'contain'], ['doc-04', 'contain']]
     .map(([k, fit]) => ({ ...ZING_DOCS.find((d) => d.src.includes(k)), fit }));
-  const shots = ['01-home', '03-campaign', '07-influencer'].map((k) => ZING_SHOTS.find((d) => d.src.includes(k)));
+  /* 01-home은 문제정의 장, 08-admin은 결과 장에 썼으니 여기선 나머지 화면 */
+  const shots = ['02-campaigns', '03-campaign', '07-influencer'].map((k) => ZING_SHOTS.find((d) => d.src.includes(k)));
 
   return (
     <>
+      {/* 문제정의 | 전략 */}
       <Slide>
-        <Head chip={chip} accent={ZING} title="ZING: 한국 광고주 × 중국 인플루언서 캠페인 매칭 플랫폼" />
-        <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
-          <Split ratio="1.15fr 1fr" left={
-            <>
-              <CardTitle>프로젝트 개요</CardTitle>
-              <Bullets accent={ZING} items={q1.a} size={12} />
-            </>
-          } right={
-            <>
-              <Shot src="/images/zing/01-home.png" title={ZING_SHOTS[0].title} />
-              <div className="mt-5">
-                <Meta accent={ZING} rows={[
-                  ['역할', '기획 · 설계 · 개발 · 문서화 · QA 설계 (1인)'],
-                  ['입력', '디자인 시안 · 사업 개요 · 마케터 요건 · Figma Make 프로토타입'],
-                  ['사용자', '광고주 · 인플루언서 · ZING 관리자 (콘솔 3종)'],
-                  ['기간', '6영업일 67커밋 → 비공개 테스트 환경. 다음: 클로즈드 베타'],
-                ]} />
-              </div>
-            </>
-          } />
+        <Head chip={ZING_CHIP} accent={ZING} title="ZING: 한국 광고주 × 중국 인플루언서 캠페인 매칭 플랫폼"
+          sub="광고주 · 인플루언서 · 관리자 세 콘솔이 캠페인 요청부터 정산까지 한 흐름으로 움직이는 플랫폼입니다." />
+        <MetaRow accent={ZING} items={[
+          ['역할', '기획 · 설계 · 개발 (1인)'], ['입력', 'Figma Make 프로토타입 · 디자인 시안'], ['사용자', '광고주 · 인플루언서 · 관리자'], ['기간', '6영업일'],
+        ]} />
+        <div className="grid" style={{ gridTemplateColumns: '1fr 360px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
+        <Split gap={32} left={
+          <>
+            <CardTitle>문제정의</CardTitle>
+            <Bullets accent={ZING} items={[
+              '화면만 있는 프로토타입, 백엔드 없이 데이터는 전부 mock',
+              '연결 안 된 페이지 40개, 끊긴 링크 14개',
+              '캠페인 · 콘텐츠 · 정산 상태가 화면마다 따로 정의',
+              '수수료율 등 정책값이 코드 곳곳에 하드코딩',
+            ]} />
+          </>
+        } right={
+          <>
+            <CardTitle>전략 Strategies / Objectives</CardTitle>
+            <Bullets accent={ZING} marker="➤" items={[
+              '상태는 캠페인 · 지원 · 참여 · 정산 네 축으로 통합',
+              '규칙은 DB 설정값으로, 화면은 보여주기만',
+              'MVP는 문의 → 관리자 등록 → 진행, 한 사이클만',
+              '결제 · 직접 채팅은 제외, 기한이 지나면 자동 진행',
+            ]} />
+          </>
+        } />
+        <Card style={{ padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, minHeight: 0 }}>
+          <Shot src="/images/zing/01-home.png" title={ZING_SHOTS[0].title} aspect="16 / 8.6" />
+          <Shot src="/images/zing/04-advertiser-dashboard.png" title="광고주 콘솔: 대시보드" aspect="16 / 8.6" />
+        </Card>
         </div>
       </Slide>
 
+      {/* 결과 */}
       <Slide>
-        <Head chip={chip} accent={ZING} title="완성돼 보이는 프로토타입을 실서비스 구조로" />
-        <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
-          <Split left={
-            <>
-              <CardTitle>문제정의</CardTitle>
-              <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q2.a[0]}</p>
-              <Bullets accent={ZING} gap={8} size={12} items={issues.map((c) => ({ t: `${c.num} ${c.title}`, d: c.body }))} />
-            </>
-          } right={
-            <>
-              <CardTitle>전략 Strategies / Objectives</CardTitle>
-              <p className="text-[12px] leading-[1.7] mb-3" style={{ color: INK }}>
-                <b>설계 원칙 네 개:</b> 플랫폼에서 결제하지 않음 · 기한이 지나면 자동 진행 · 상태는 네 축 · 규칙은 DB 설정값
-              </p>
-              <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q3.a[1]}</p>
-              <p className="text-[11px] font-bold mb-2" style={{ color: ZING }}>버린 것 → 택한 것</p>
-              <Bullets accent={ZING} gap={5} size={11.5} marker="➤" items={swaps.slice(0, 5).map((s) => ({ t: s.title, d: `${s.before} → ${s.after}` }))} />
-            </>
-          } />
-        </div>
-      </Slide>
-
-      <Slide>
-        <Head chip={chip} accent={ZING} title="9개월 미뤄지던 구축을 6영업일에" />
-        <div className="grid" style={{ gridTemplateColumns: '1.35fr 1fr', gap: 28, flex: 1, minHeight: 0 }}>
+        <Head chip={ZING_CHIP} accent={ZING} title="9개월 미뤄지던 구축을 6영업일에" />
+        <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
           <Card style={{ display: 'flex', flexDirection: 'column' }}>
             <CardTitle>결과 Key Result</CardTitle>
-            <Bullets accent={ZING} marker="➤" size={12.5} items={q4.a} />
-            <p className="text-[11px] font-bold mt-5 mb-2" style={{ color: ZING }}>{autos.label}</p>
-            <Bullets accent={ZING} gap={6} size={11.5} marker="▪" items={autos.items.map((c) => ({ t: c.title, d: c.body }))} />
-            <p className="text-[11px] font-bold mt-auto mb-2" style={{ color: ZING }}>만든 순서 (6영업일)</p>
+            <Bullets accent={ZING} marker="➤" items={[
+              '6영업일 67커밋, 비공개 테스트 환경까지 오픈',
+              '화면 73 · 테이블 47 · 자동화 8종 문서화',
+              'QA 96항목 설계, 1차 회신 13건 반영',
+              '다음 단계: 클로즈드 베타',
+            ]} />
+            <p className="text-[12px] font-extrabold mt-auto mb-2.5" style={{ color: ZING }}>만든 순서 (6영업일)</p>
             <div className="grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
-              {steps.map((s) => (
-                <div key={s.num} className="rounded-lg px-2.5 py-2" style={{ background: `${ZING}0c`, border: `1px solid ${ZING}22` }}>
-                  <p className="text-[10px] font-extrabold" style={{ color: ZING }}>{s.num}</p>
-                  <p className="text-[11px] font-bold leading-tight" style={{ color: INK }}>{s.title}</p>
+              {steps.map((t, i) => (
+                <div key={t} className="rounded-lg px-2.5 py-2" style={{ background: `${ZING}0c`, border: `1px solid ${ZING}22` }}>
+                  <p className="text-[10.5px] font-extrabold" style={{ color: ZING }}>{i + 1}일</p>
+                  <p className="text-[11.5px] font-bold leading-tight" style={{ color: INK }}>{t}</p>
                 </div>
               ))}
             </div>
           </Card>
           <div className="flex flex-col" style={{ gap: 20 }}>
-            <Panel title="설계 → 문서 → QA" accent={ZING}>
+            <Panel title="넘겨받은 것 → 6영업일 후" accent={ZING}>
               <Table accent={ZING} head={['', '인수 시점', '6영업일 후']} rows={[
-                ['화면', '라우팅 41 · 미연결 40', '73 (문서화)'],
-                ['상태 모델', 'enum 6벌 이상', '4축 통합'],
-                ['데이터', 'mock · localStorage', '테이블 47 · 자동화 8종'],
-                ['QA', '-', '96항목 · 1차 13건 반영'],
+                ['화면', '미연결 40 · 끊긴 링크 14', '73 (문서화)'],
+                ['상태 모델', '화면마다 6벌 이상', '4축 통합'],
+                ['데이터', 'mock', '테이블 47 · 자동화 8종'],
               ]} />
             </Panel>
-            <Badges accent={ZING} items={[stats[0], stats[2]].map((s) => ({ num: s.num, label: s.label }))} />
+            <Badges accent={ZING} items={[
+              { num: '6영업일', label: '프로토타입 → 실서비스' },
+              { num: '96', label: 'QA 항목 설계' },
+            ]} />
+            <Card style={{ padding: 16, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+              <FillShot src="/images/zing/08-admin-requests.png" title="관리자 콘솔: 캠페인 요청 큐" />
+            </Card>
           </div>
         </div>
       </Slide>
 
+      {/* 산출물 · 화면 */}
       <Slide>
-        <Head chip={chip} accent={ZING} title="기획 산출물과 실제 화면"
+        <Head chip={ZING_CHIP} accent={ZING} title="기획 산출물과 실제 화면"
           right={<p className="text-[10.5px] font-semibold text-right" style={{ color: INK_45 }}>산출물 6종 · 화면 6종 전체 → {CONTACT.site}/zing<br />내부 정책 수치는 가렸습니다</p>} />
         <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: '1fr 1fr', gap: 18, flex: 1, minHeight: 0 }}>
           {docs.map((d) => <Shot key={d.src} src={d.src} title={d.title} aspect="16 / 8.6" fit={d.fit} />)}
@@ -573,162 +582,116 @@ function ZingSlides() {
   );
 }
 
-/* ══ 5. 꿈키올래 (2p) ══ */
-function DreamSlides() {
-  const [, q2, q3, q4] = DREAM_QA;
-  const limits = q2.blocks.find((b) => b.type === 'cards').items;
-  const worlds = q3.blocks.find((b) => b.type === 'cards').items;
-  const stats = q4.blocks.find((b) => b.type === 'stats').items;
-  const chip = 'ETRIBE · 서귀포 진로직업체험센터 납품 · Apple Vision Pro';
+/* ══ 5. 꿈키올래 (1p) ══ */
+function DreamSlide() {
   const shots = [0, 3, 6, 7].map((i) => DREAM_SHOTS[i]);
-
-  return (
-    <>
-      <Slide>
-        <Head chip={chip} accent={DREAM} title="꿈키올래: Vision Pro 직업체험 9종, 실개발 2개월" />
-        <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
-          <Split left={
-            <>
-              <CardTitle>문제정의</CardTitle>
-              <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q2.a[0]}</p>
-              <Bullets accent={DREAM} gap={8} size={12} items={limits.map((c) => ({ t: `${c.num} ${c.title}`, d: c.body }))} />
-            </>
-          } right={
-            <>
-              <CardTitle>전략 Strategies / Objectives</CardTitle>
-              <p className="text-[12px] leading-[1.7] mb-4" style={{ color: INK_65 }}>{q3.a[0]}</p>
-              <Bullets accent={DREAM} gap={8} size={12} marker="➤" items={[
-                { t: '수주 판단을 미루고 기획서를 먼저', d: '주말 · 연휴에 모든 직업이 같은 절차(인트로 · 메인 미션 · 미니게임 · 진로 정보)를 공유하는 프레임워크 기획서를 썼고, 개발자의 판단이 "불가능"에서 "가능"으로 바뀌었습니다.' },
-                { t: '한 달치 상세 기획을 스스로 폐기', d: '"이 분량이면 2종에 두 달"이라는 계산이 나와, 직업당 30분 깊이를 버리고 전체 40~50분으로 조정했습니다.' },
-                { t: '폭포수 대신 병렬 파이프라인', d: '1종을 기획하는 즉시 개발로 넘겨 기획 · 개발 · 검수를 반복. 외주 없이 9종이 일정 안에 들어왔습니다.' },
-              ]} />
-              <p className="text-[11px] font-bold mt-4 mb-2" style={{ color: DREAM }}>3 세계관 × 3 직업</p>
-              <Bullets accent={DREAM} gap={3} size={11.5} marker="▪" items={worlds.map((w) => `${w.title}: ${w.foot}`)} />
-            </>
-          } />
-        </div>
-      </Slide>
-
-      <Slide>
-        <Head chip={chip} accent={DREAM} title="9종 기한 내 납품 · 후속 제안 → 국가과제로" />
-        <div className="grid" style={{ gridTemplateColumns: '1fr 1.3fr', gap: 28, flex: 1, minHeight: 0 }}>
-          <div className="flex flex-col" style={{ gap: 20 }}>
-            <Card className="flex-1">
-              <CardTitle>결과 Key Result</CardTitle>
-              <Bullets accent={DREAM} marker="➤" size={12.5} items={q4.a} />
-              <div className="grid grid-cols-2 gap-2 mt-5">
-                {stats.map((s) => (
-                  <div key={s.label} className="rounded-xl px-3 py-2.5" style={{ background: `${DREAM}0c`, border: `1px solid ${DREAM}22` }}>
-                    <p className="text-[17px] font-extrabold leading-none" style={{ color: DREAM }}>{s.num}</p>
-                    <p className="text-[10.5px] font-bold mt-1" style={{ color: INK_65 }}>{s.label}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
-          <Card style={{ padding: 22, display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 14 }}>
-            {shots.map((s) => <Shot key={s.src} src={s.src} title={s.title} aspect="16 / 9.4" />)}
-          </Card>
-        </div>
-      </Slide>
-    </>
-  );
-}
-
-/* ══ 6. 웹마인드 (1p) ══ */
-function WebmindSlide() {
-  const [q1, , q3, q4] = WEBMIND_QA;
-  const posts = q3.blocks.find((b) => b.type === 'posts').items;
-  const stats = q4.blocks.find((b) => b.type === 'stats').items;
   return (
     <Slide>
-      <Head chip="웹마인드 · 2023.04 ~ 2024.07 · B2B 웹 구축" accent={WEB} title="B2B 웹 구축 3건, 제안 PT부터 유지보수까지" />
-      <div className="grid" style={{ gridTemplateColumns: '1.35fr 1fr', gap: 28, flex: 1, minHeight: 0 }}>
-        <Card style={{ display: 'flex', flexDirection: 'column' }}>
-          <CardTitle>결과 Key Result</CardTitle>
-          <Bullets accent={WEB} marker="➤" size={12} items={[q1.a[0], q3.a[0], q4.a[0]]} />
-          <div className="grid mt-auto" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
-            {posts.map((p) => (
-              <div key={p.client}>
-                <Shot src={p.thumb} aspect="16 / 9" />
-                <p className="text-[11px] font-extrabold mt-2" style={{ color: INK }}>{p.title}</p>
-                <p className="text-[10px] font-semibold" style={{ color: WEB }}>{p.client}</p>
-              </div>
-            ))}
-          </div>
+      <Head chip="ETRIBE · 서귀포 진로직업체험센터 납품 · Apple Vision Pro" accent={DREAM}
+        title="꿈키올래: Vision Pro 직업체험 9종, 실개발 2개월"
+        sub="3개 세계관 × 3개 직업을 40~50분 동안 이어서 체험하는 콘텐츠입니다. PM · 기획 · QA를 맡았습니다." />
+      <div className="grid" style={{ gridTemplateColumns: '1.1fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
+        <Card>
+          <CardTitle>문제정의</CardTitle>
+          <Bullets accent={DREAM} size={15} gap={12} items={[
+            '9종을 따로 만들면 9개월, 실개발 기간은 2개월',
+            '팀 전원이 처음 쓰는 Vision Pro, 참고 사례 없음',
+            '진행 중 타깃이 초등 고학년까지 확대',
+          ]} />
+          <CardTitle style={{ marginTop: 30 }}>전략 Strategies / Objectives</CardTitle>
+          <Bullets accent={DREAM} marker="➤" size={15} gap={12} items={[
+            '수주 판단 전에 프레임워크 기획서 먼저, "불가능" → "가능"',
+            '직업당 30분 기획을 스스로 폐기, 전체 40~50분으로',
+            '1종 기획 즉시 개발로 넘기는 병렬 진행, 외주 없이 완료',
+          ]} />
         </Card>
-        <div className="flex flex-col" style={{ gap: 20 }}>
-          <Panel title="프로젝트별 성과" accent={WEB}>
-            <Table accent={WEB} head={['클라이언트', '한 일', '결과']} rows={posts.map((p) => [p.client.split(' (')[0], p.title, p.tags.slice(-1)[0]])} />
-          </Panel>
-          <Badges accent={WEB} items={[stats[1], stats[0]].map((s) => ({ num: s.num, label: s.label }))} />
+        <div className="flex flex-col" style={{ gap: 18 }}>
+          <Card style={{ padding: 18, display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 12, flex: 1, minHeight: 0 }}>
+            {shots.map((s) => <FillShot key={s.src} src={s.src} />)}
+          </Card>
+          <Badges accent={DREAM} items={[
+            { num: '9종', label: '기한 내 납품' },
+            { num: '후속 제안', label: '→ 한콘진 국가과제' },
+          ]} />
         </div>
       </div>
     </Slide>
   );
 }
 
-/* ══ 7. SIDE PROJECTS (1~2p) ══ */
-function SideSlides() {
+/* ══ 6. SIDE PROJECTS (1p) ══ */
+function SideSlide() {
   const all = [...APPS, LEAF];
-  const quiz = APPS.find((a) => a.id === 'quizking');
-  const funnel = quiz.decisions.find((d) => d.t.includes('시작까지'));
-  const pill = APPS.find((a) => a.id === 'pillstack');
-  const judge = pill.decisions[0];
-
   return (
-    <>
-      <Slide>
-        <Head kicker="Side Projects" accent={SOLO} title="혼자 기획하고 출시한 앱 5종 + 웹 3D 게임 1종"
-          right={<p className="text-[10.5px] font-semibold text-right" style={{ color: INK_45 }}>앱인토스 미니앱 4종 · Google Play 1종 · 웹 게임 1종<br />기획 판단 전문 → {CONTACT.site}/solo</p>} />
-        <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: '1fr 1fr', gap: 18, flex: 1, minHeight: 0 }}>
-          {all.map((a) => (
-            <Card key={a.id} style={{ padding: '18px 20px', display: 'grid', gridTemplateColumns: a.shots ? '78px 1fr' : '1fr', gap: 16, borderTop: `4px solid ${a.color}` }}>
-              {a.shots && (
-                <div className="overflow-hidden rounded-xl" style={{ aspectRatio: '390 / 844', border: `1px solid ${LINE}`, background: BG }}>
-                  <img src={a.shots[0].src} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
-                </div>
-              )}
-              <div className="min-w-0 flex flex-col">
-                <p className="text-[14px] font-extrabold leading-tight" style={{ color: NAVY }}>{a.name}</p>
-                <p className="text-[10px] font-bold mt-0.5" style={{ color: a.color }}>{a.category} · {a.released}</p>
-                <p className="text-[11px] leading-[1.6] mt-2" style={{ color: INK_65 }}>{a.summary}</p>
+    <Slide>
+      <Head kicker="Side Projects" accent={SOLO} title="혼자 기획하고 출시한 앱 5종 + 웹 3D 게임 1종"
+        right={<p className="text-[10.5px] font-semibold text-right" style={{ color: INK_45 }}>앱인토스 미니앱 4종 · Google Play 1종 · 웹 게임 1종<br />기획 판단 전문 → {CONTACT.site}/solo</p>} />
+      <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16, flex: 1, minHeight: 0 }}>
+        {all.map((a) => (
+          <Card key={a.id} style={{ padding: '16px 18px', display: 'grid', gridTemplateColumns: a.shots ? '104px 1fr' : '1fr', gap: 16, borderTop: `4px solid ${a.color}`, minHeight: 0 }}>
+            {a.shots && (
+              <div className="overflow-hidden rounded-lg" style={{ height: '100%', minHeight: 0, border: `1px solid ${LINE}`, background: BG }}>
+                <img src={a.shots[0].src} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
               </div>
-            </Card>
-          ))}
-        </div>
-      </Slide>
+            )}
+            <div className="min-w-0 flex flex-col justify-center">
+              <p className="text-[16px] font-extrabold leading-tight" style={{ color: NAVY }}>{a.name}</p>
+              <p className="text-[11px] font-bold mt-1" style={{ color: a.color }}>{a.category} · {a.released}</p>
+              <p className="text-[12.5px] leading-[1.65] mt-2.5" style={{ color: INK_65 }}>{a.summary}</p>
+            </div>
+          </Card>
+        ))}
+      </div>
+      <Card style={{ padding: '14px 24px', marginTop: 16, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28 }}>
+        <p className="text-[12.5px] leading-[1.6]" style={{ color: INK }}>
+          <b style={{ color: SOLO }}>판단</b>{'  '}퀴즈왕: 시작까지의 단계를 줄이자 풀이 비율 · 재방문이 근소하게 상승 (표본 작음)
+        </p>
+        <p className="text-[12.5px] leading-[1.6]" style={{ color: INK }}>
+          <b style={{ color: SOLO }}>회고</b>{'  '}5종 모두 출시했지만 유입 확보에 실패. 다음엔 채널부터 정하고 시작합니다
+        </p>
+      </Card>
+    </Slide>
+  );
+}
 
-      <Slide>
-          <Head kicker="Side Projects" accent={SOLO} title="출시작에서 돌려본 관측 → 가설 → 조치 → 확인" />
-          <div className="grid" style={{ gridTemplateColumns: '1.2fr 1fr', gap: 28, flex: 1, minHeight: 0 }}>
-            <Split ratio="1fr 118px" gap={24} left={
-              <>
-                <CardTitle>기획 판단</CardTitle>
-                <Bullets accent={SOLO} gap={12} size={12} marker="➤" items={[
-                  { t: `${quiz.name}: ${funnel.t}`, d: funnel.d },
-                  { t: `${pill.name}: ${judge.t}`, d: judge.d },
-                ]} />
-              </>
-            } right={
-              <div className="flex flex-col" style={{ gap: 10 }}>
-                {quiz.shots.map((s) => (
-                  <div key={s.src} className="overflow-hidden rounded-lg" style={{ aspectRatio: '390 / 640', border: `1px solid ${LINE}`, background: BG }}>
-                    <img src={s.src} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
-                  </div>
-                ))}
-              </div>
-            } />
-            <Card>
-              <CardTitle>회고: 5종 모두 출시했지만 유입 확보에 실패</CardTitle>
-              <Bullets accent={SOLO} gap={12} size={12} items={LEARNED} />
-              <p className="text-[10.5px] leading-[1.7] mt-5 rounded-xl px-3.5 py-3" style={{ background: `${SOLO}0a`, border: `1px solid ${SOLO}22`, color: INK_65 }}>
-                표본이 작아 지표로 단정하지는 않습니다. 출시한 앱에서 유저 행동을 보고 가설을 세워 수정한 뒤 결과를 확인한 기록입니다.
-              </p>
-            </Card>
-          </div>
-        </Slide>
-    </>
+/* ══ 7. 웹마인드 (1p) ══ */
+function WebmindSlide() {
+  const posts = WEBMIND_QA[2].blocks.find((b) => b.type === 'posts').items;
+  return (
+    <Slide>
+      <Head chip="웹마인드 · 2023.04 ~ 2024.07 · B2B 웹 구축" accent={WEB} title="B2B 웹 구축 3건, 제안 PT부터 유지보수까지" />
+      {/* 위: 결과 불릿 | 성과 표 / 아래: 사이트 3건 썸네일 | 숫자 배지 */}
+      <div className="grid" style={{ gridTemplateColumns: '1.2fr 1fr', gap: 22, marginBottom: 22 }}>
+        <Card>
+          <CardTitle>결과 Key Result</CardTitle>
+          <Bullets accent={WEB} marker="➤" items={[
+            '제안 PT부터 참여, 참여한 신규 제안 전건 수주',
+            '경쟁사 분석 → IA · 요구사항 정의 → 화면정의서',
+            '아마노코리아 리뉴얼로 웹어워드 코리아 금상',
+          ]} />
+        </Card>
+        <Panel title="프로젝트별 성과" accent={WEB}>
+          <Table accent={WEB} head={['클라이언트', '한 일', '결과']} rows={[
+            ['Intertek', 'IA 재구조화', '정보 접근성 개선'],
+            ['아마노코리아', '브랜드 사이트 리뉴얼', '금상 · 유지보수 연장'],
+            ['한국건설품질협의회', '공식 사이트 구축', '제안 수주'],
+          ]} />
+        </Panel>
+      </div>
+      <div className="grid" style={{ gridTemplateColumns: '1fr 1fr 1fr 240px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
+        {posts.map((p) => (
+          <Card key={p.client} style={{ padding: 14, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <FillShot src={p.thumb} />
+            <p className="text-[12.5px] font-extrabold mt-2.5" style={{ color: INK }}>{p.title}</p>
+            <p className="text-[11px] font-semibold" style={{ color: WEB }}>{p.client}</p>
+          </Card>
+        ))}
+        <Badges accent={WEB} vertical items={[
+          { num: '금상', label: '웹어워드 코리아' },
+          { num: '100%', label: '신규 제안 수주' },
+        ]} />
+      </div>
+    </Slide>
   );
 }
 
@@ -802,8 +765,8 @@ export default function Print() {
       <MainProjectsSlide />
       <KistiSlides />
       <ZingSlides />
-      <DreamSlides />
-      <SideSlides />
+      <DreamSlide />
+      <SideSlide />
       <WebmindSlide />
       <ClosingSlide />
     </div>
