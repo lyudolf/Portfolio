@@ -16,14 +16,15 @@ const INK_60 = 'rgba(24,32,27,0.62)';
 const INK_45 = 'rgba(24,32,27,0.45)';
 const ACCENT = '#0f8f74';
 
-/* 일하는 순서 — 본인 구술(2026-09-11)을 그대로 옮긴 흐름.
-   핵심은 리스크를 찾은 뒤의 세 갈래: 파훼 → 우회(유저가 보는 결과는 같게) → 가설로 복귀.
-   "안 됩니다" 대신 선택지를 만드는 방식이 어디서 나오는지를 이 분기가 설명한다. */
+/* 일하는 순서 — 본인 구술(2026-09-11) 흐름.
+   핵심은 리스크를 찾은 뒤의 세 갈래: 해결 → 우회(같은 결과, 다른 방법) → 가설로 복귀.
+   2026-09-29 본인 피드백("알아보기 어렵다, 너무 길다, 말이 이상하다")으로
+   세로(TD) → 가로(LR) 한 줄, 노드 설명문 제거, "파훼" 등 어색한 말 교체. */
 const WORKFLOW = `%%{init: {
   'theme': 'base',
   'themeVariables': {
     'fontFamily': 'Pretendard, -apple-system, sans-serif',
-    'fontSize': '13px',
+    'fontSize': '15px',
     'primaryColor': '#ffffff',
     'primaryTextColor': '#1a231e',
     'primaryBorderColor': 'rgba(24,32,27,0.22)',
@@ -33,22 +34,22 @@ const WORKFLOW = `%%{init: {
     'edgeLabelBackground': '#eff1ed',
     'clusterBkg': 'transparent'
   },
-  'flowchart': { 'curve': 'basis', 'nodeSpacing': 34, 'rankSpacing': 44, 'padding': 10 }
+  'flowchart': { 'curve': 'basis', 'nodeSpacing': 40, 'rankSpacing': 46, 'padding': 12 }
 }}%%
-flowchart TD
-  A["<b>문제 정의</b><br/>어디가 문제인가"] --> B["<b>가설 수립</b><br/>풀려면 어떤 방법이 있는가"]
-  B --> C["<b>리스크 탐색</b><br/>이대로 가면 막히는 데가 있는가"]
+flowchart LR
+  A["<b>문제 정의</b>"] --> B["<b>가설 수립</b>"]
+  B --> C["리스크가 있는가"]
   C -->|없음| GO(["진행"])
-  C -->|있음| D{"파훼 방법이<br/>있는가"}
-  D -->|있음| GO
-  D -->|없음| E{"유저가 보는 결과는 같게<br/>돌아가는 길이 있는가"}
-  E -->|있음| GO
-  E -->|없음| B
+  C -->|있음| D["해결할 수 있는가"]
+  D -->|예| GO
+  D -->|아니오| E["우회할 수 있는가"]
+  E -->|예| GO
+  E -->|아니오| B
   classDef step fill:#ffffff,stroke:#c9ccc8,stroke-width:1px,rx:10,ry:10;
-  classDef ask fill:#f2f4f0,stroke:#c9ccc8,stroke-width:1px;
+  classDef ask fill:#f2f4f0,stroke:#c9ccc8,stroke-width:1px,stroke-dasharray:4 3,rx:10,ry:10;
   classDef go fill:#0f8f74,stroke:#0f8f74,color:#ffffff,font-weight:700;
-  class A,B,C step;
-  class D,E ask;
+  class A,B step;
+  class C,D,E ask;
   class GO go;
 `;
 
@@ -218,8 +219,11 @@ export default function WhyMe() {
           </h2>
           <div className="rounded-3xl p-6 md:p-8"
             style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(24,32,27,0.08)' }}>
-            <div style={{ maxWidth: 560, margin: '0 auto' }}>
-              <MermaidDiagram chart={WORKFLOW} />
+            {/* 가로 흐름: 모바일에선 글자가 작아지지 않게 최소 폭을 두고 가로 스크롤 */}
+            <div className="overflow-x-auto -mx-2 px-2">
+              <div style={{ minWidth: 760, maxWidth: 980, margin: '0 auto' }}>
+                <MermaidDiagram chart={WORKFLOW} />
+              </div>
             </div>
           </div>
         </motion.div>
