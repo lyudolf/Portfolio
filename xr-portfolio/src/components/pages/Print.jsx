@@ -14,7 +14,7 @@
      숫자·이미지·캡션처럼 사실 데이터만 사이트 export를 재사용한다.
    - 개요 장은 없애고 제목 아래 한 줄 + 메타 칩으로 흡수. 꿈키·Side는 한 장씩.
    - 문장 규칙: 불릿은 한 줄, 설명 문단 금지, 배경 설명은 사이트로.
-   - 본인 확정 문장(표지, ZING "9개월 미뤄지던 구축을 6영업일에")은 토씨 그대로.
+   - 본인 확정 문장(표지, ZING "9개월 미뤄지던 구축을 약 10영업일에")은 토씨 그대로. 2026-10-06 Gemini 교차검토 반영: 6→약 10영업일(본인 정정), 미뤄진 사유, MVP 범위 명시.
 
    PDF 추출: `npm run pdf` (scripts/make-pdf.mjs, 링크 보존) 또는 Ctrl+P. */
 
@@ -384,7 +384,7 @@ const MAIN = [
   },
   {
     key: 'ZI', name: 'ZING 캠페인 매칭 플랫폼', role: '기획 · 설계 · 개발 (1인)', accent: ZING, period: '2026.09 · 사내 신사업',
-    bullets: ['9개월 미뤄진 구축을 6영업일에 완료', '프로토타입 → 실서비스 구조 (화면 73 · 테이블 47)', '상태 4축 통합 · 자동화 8종 · QA 96항목 설계'],
+    bullets: ['9개월 미뤄진 구축을 약 10영업일에 완료', '프로토타입 → 실서비스 구조 (화면 73 · 테이블 47)', '상태 4축 통합 · 자동화 8종 · QA 96항목 설계'],
   },
   {
     key: 'DR', name: '꿈키올래 Vision Pro 직업체험 9종', role: 'PM · 기획 · QA', accent: DREAM, period: '2025 · 서귀포 진로직업체험센터',
@@ -493,7 +493,7 @@ function KistiSlides() {
             <StarTitle k="R" accent={KISTI} style={{ marginTop: 30 }} />
             <Bullets accent={KISTI} marker="➤" items={[
               '1차 임상 60명 무이슈 완료, 2차 60명 진행 중',
-              '1년 용역 → 3년차 운영, 마지막 6년차 연장 논의',
+              '1년 용역 → 3년차 운영, 4년차 사업 논의 중',
               '클라이언트 기술이전 준비, 아키텍처 전환 진행 중',
             ]} />
           </Card>
@@ -502,7 +502,7 @@ function KistiSlides() {
               <Table accent={KISTI} head={['', '인수 시점', '현재']} rows={[
                 ['운영 depth', '진입 6단계', '1~2 depth'],
                 ['임상', '-', '1차 60명 완료 · 2차 진행'],
-                ['계약', '1년 용역', '3년차 운영 · 6년차 논의'],
+                ['계약', '1년 용역', '3년차 운영 · 4년차 논의'],
               ]} />
             </Panel>
             <Badges accent={KISTI} items={[
@@ -554,14 +554,14 @@ function ZingSlides() {
           sub="광고주 · 인플루언서 · 관리자 세 콘솔이 캠페인 요청부터 정산까지 한 흐름으로 움직이는 플랫폼입니다."
           right={<StarTrack on={['S', 'T', 'A']} accent={ZING} />} />
         <MetaRow accent={ZING} items={[
-          ['역할', '기획 · 설계 · 개발 (1인)'], ['입력', 'Figma Make 프로토타입 · 디자인 시안'], ['사용자', '광고주 · 인플루언서 · 관리자'], ['기간', '6영업일'],
+          ['역할', '기획 · 설계 · 개발 (1인)'], ['입력', 'Figma Make 프로토타입 · 디자인 시안'], ['사용자', '광고주 · 인플루언서 · 관리자'], ['기간', '약 10영업일'],
         ]} />
         <div className="grid" style={{ gridTemplateColumns: '1fr 360px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
         <Split gap={32} left={
           <>
             <StarTitle k="S" accent={ZING} />
             <Bullets accent={ZING} size={15} gap={10} items={[
-              '9개월 미뤄지던 마케팅 홈페이지, 넘겨받은 건 화면만 있는 프로토타입',
+              '매출 책임이 붙는 신사업이라 9개월간 착수되지 못한 구축, 넘겨받은 건 화면만 있는 프로토타입',
               '데이터는 전부 mock, 연결 안 된 페이지 40 · 끊긴 링크 14',
               '상태는 화면마다 따로, 정책값은 코드 곳곳에 하드코딩',
             ]} />
@@ -589,11 +589,11 @@ function ZingSlides() {
 
       {/* 결과 */}
       <Slide>
-        <Head chip={ZING_CHIP} accent={ZING} title="9개월 미뤄지던 구축을 6영업일에"
+        <Head chip={ZING_CHIP} accent={ZING} title="9개월 미뤄지던 구축을 약 10영업일에"
           right={<StarTrack on={['A', 'R']} accent={ZING} />} />
         <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
           <Card style={{ display: 'flex', flexDirection: 'column' }}>
-            <StarTitle k="A" accent={ZING} note="만든 순서 6영업일" />
+            <StarTitle k="A" accent={ZING} note="만든 순서 · 초기 구축 6일" />
             <div className="grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
               {steps.map((t, i) => (
                 <div key={t} className="rounded-lg px-2.5 py-2" style={{ background: `${ZING}0c`, border: `1px solid ${ZING}22` }}>
@@ -604,22 +604,22 @@ function ZingSlides() {
             </div>
             <StarTitle k="R" accent={ZING} style={{ marginTop: 30 }} />
             <Bullets accent={ZING} marker="➤" items={[
-              '6영업일 67커밋, 비공개 테스트 환경까지 오픈',
+              '약 10영업일에 비공개 테스트 환경까지 오픈 (MVP 코어 사이클 구조 검증, 프로덕션 전)',
               '화면 73 · 테이블 47 · 자동화 8종 문서화',
               'QA 96항목 설계, 1차 회신 13건 반영',
               '다음 단계: 클로즈드 베타',
             ]} />
           </Card>
           <div className="flex flex-col" style={{ gap: 20 }}>
-            <Panel title="넘겨받은 것 → 6영업일 후" accent={ZING}>
-              <Table accent={ZING} head={['', '인수 시점', '6영업일 후']} rows={[
+            <Panel title="넘겨받은 것 → 약 10영업일 후" accent={ZING}>
+              <Table accent={ZING} head={['', '인수 시점', '10영업일 후']} rows={[
                 ['화면', '미연결 40 · 끊긴 링크 14', '73 (문서화)'],
                 ['상태 모델', '화면마다 6벌 이상', '4축 통합'],
                 ['데이터', 'mock', '테이블 47 · 자동화 8종'],
               ]} />
             </Panel>
             <Badges accent={ZING} items={[
-              { num: '6영업일', label: '프로토타입 → 실서비스' },
+              { num: '10영업일', label: '프로토타입 → 실서비스' },
               { num: '96', label: 'QA 항목 설계' },
             ]} />
             <Card style={{ padding: 16, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
