@@ -22,7 +22,7 @@ const ACCENT = '#0f8f74';
 
 /* 리멤버 자기소개 본인 최종본(2026-09-16)과 같은 문장 — 플랫폼 간 문체 통일 */
 export const SUMMARY =
-  '서비스 기획·PM 3년 7개월. 현재 ㈜이트라이브에서 국가과제 XR 시스템과 사내 신사업 플랫폼의 기획·PM을 맡고 있습니다. ' +
+  '서비스 기획·PM 3년 8개월. 현재 ㈜이트라이브에서 국가과제 XR 시스템과 사내 신사업 플랫폼의 기획·PM을 맡고 있습니다. ' +
   '컴퓨터공학 전공 · 정보처리기사 · React/Spring Boot 실무 경험. 기술 제약을 직접 확인하고 기획합니다.';
 
 /* 팀 매출: 2026-09-30 본인 결정으로 "3배 견인" 대신 연도별 숫자만 (2024 4억 · 2025 9억 · 2026 현재 13억) */
@@ -85,6 +85,9 @@ const EDUCATION = [
 const CERTS = [
   { name: '정보처리기사', detail: '한국산업인력공단', period: '2021.06' },
   { name: '웹어워드 코리아(K-Award) 금상', detail: '한국인터넷전문가협회, 리뉴얼 프로젝트 기획 담당', period: '수상' },
+  /* 2026-10-01 발표. 정식 시상명은 본인 확인 대기 — 확인되면 name 교체 */
+  { name: '과학기술정보통신부 금상', detail: 'AI 기반 실시간 동적 생성형 과학수사·프로파일링 직무체험, 초기 기획 참여', period: '2026.10' },
+  { name: 'KSA 한국표준협회 프로젝트 대상', detail: 'OpenCV 이미지 기반 외관 불량 검출 (Python·JavaScript)', period: '2020' },
 ];
 
 const TRAININGS = [
@@ -200,7 +203,7 @@ export default function Resume({ onNavigate }) {
 
         {/* ── 경력 ── */}
         <section className="mb-8">
-          <SectionTitle>경력 (총 3년 7개월)</SectionTitle>
+          <SectionTitle>경력 (총 3년 8개월)</SectionTitle>
           <div className="flex flex-col gap-6">
             {CAREERS.map((c) => (
               <div key={c.company} style={{ breakInside: 'avoid' }}>
