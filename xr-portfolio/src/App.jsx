@@ -18,6 +18,7 @@ import Webmind from './components/pages/Webmind';
 import Zing from './components/pages/Zing';
 import Print from './components/pages/Print';
 import { TAB_PATHS, PATH_TABS, PAGE_META, SITE_URL } from './lib/site';
+import { trackPageView } from './lib/analytics';
 
 const PAGES = { about: About, kisti: Kisti, dream: Dream, 'kocca-detail': KoccaDetail, zing: Zing, webmind: Webmind, solo: SoloWork, withai: WithAI, whyme: WhyMe, 'leaf-detail': LeafDetail, 'rl-detail': RlDetail, resume: Resume };
 
@@ -59,6 +60,14 @@ export default function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
+
+  /* GA4 page_view — SPA라 라우트마다 직접 보낸다. /print는 제외.
+     <title>이 React 19 호이스팅으로 바뀐 뒤 잡히도록 한 틱 미룬다. */
+  useEffect(() => {
+    if (printMatch) return;
+    const t = setTimeout(() => trackPageView(location.pathname), 0);
+    return () => clearTimeout(t);
+  }, [location.pathname, printMatch]);
 
   if (printMatch) return <Print />;
 
