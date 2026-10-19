@@ -347,7 +347,7 @@ function CoverSlide() {
             <ul className="flex flex-col gap-1.5 text-[12px] leading-[1.6]" style={{ color: INK_65 }}>
               <li>- 강남대학교 컴퓨터공학 · 미디어공학 복수전공</li>
               <li>- 정보처리기사</li>
-              <li>- 웹어워드 코리아 금상 · 과기정통부 금상(2026.10) · KSA 프로젝트 대상</li>
+              <li>- 웹어워드 코리아 금상 · 제20회 과학기술혁신대상 에듀테크 금상(2026.10) · KSA 프로젝트 대상</li>
             </ul>
           </Card>
 
