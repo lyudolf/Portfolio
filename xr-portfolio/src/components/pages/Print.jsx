@@ -23,7 +23,7 @@ import { SHOTS as ZING_SHOTS, DOCS as ZING_DOCS } from './Zing';
 import { SHOTS as DREAM_SHOTS } from './Dream';
 import { QA as WEBMIND_QA } from './Webmind';
 import { APPS, LEAF } from './SoloWork';
-import { CAREERS, SKILLS, KEY_RESULTS } from './Resume';
+import { CAREERS, SKILLS, KEY_RESULTS, AI_USAGE } from './Resume';
 
 /* ── 표지 확정본(2026-09-16 본인 문장) ── */
 const COVER_MAIN = '몰입할 환경은 스스로 만들고, 결과로 증명합니다.';
@@ -347,7 +347,7 @@ function CoverSlide() {
             <ul className="flex flex-col gap-1.5 text-[12px] leading-[1.6]" style={{ color: INK_65 }}>
               <li>- 강남대학교 컴퓨터공학 · 미디어공학 복수전공</li>
               <li>- 정보처리기사</li>
-              <li>- 웹어워드 코리아 금상 · 제20회 과학기술혁신대상 에듀테크 금상(2026.10) · KSA 프로젝트 대상</li>
+              <li>- 웹어워드 코리아 금상 · 제20회 과학기술혁신대상 에듀테크 부문 금상(2026.10) · KSA 프로젝트 대상</li>
             </ul>
           </Card>
 
@@ -671,7 +671,7 @@ function DreamSlide() {
           ]} />
           <StarTitle k="R" accent={DREAM} sm style={{ marginTop: 16 }} />
           <Bullets accent={DREAM} marker="➤" size={14} gap={6} items={[
-            '9종 기한 내 납품, 후속 제안이 한콘진 국가과제로 연결',
+            '9종 기한 내 납품, 후속 제안이 한국콘텐츠진흥원 국가과제로 연결',
           ]} />
         </Card>
         <div className="flex flex-col" style={{ gap: 18 }}>
@@ -680,7 +680,7 @@ function DreamSlide() {
           </Card>
           <Badges accent={DREAM} items={[
             { num: '9종', label: '기한 내 납품' },
-            { num: '후속 제안', label: '→ 한콘진 국가과제' },
+            { num: '후속 제안', label: '→ 한국콘텐츠진흥원 국가과제' },
           ]} />
         </div>
       </div>
@@ -719,6 +719,35 @@ function SideSlide() {
           <b style={{ color: SOLO }}>회고</b>{'  '}5종 모두 출시했지만 유입 확보에 실패. 다음엔 채널부터 정하고 시작합니다
         </p>
       </Card>
+    </Slide>
+  );
+}
+
+/* ══ 6-2. AI 활용 (1p) — 2026-10-20, 내용은 Resume.jsx AI_USAGE 단일 출처 ══ */
+const AI_COLOR = { 실무: BLUE, '개인 출시': SOLO, 실험: '#0f8f74' };
+function AiSlide() {
+  const cols = AI_USAGE.groups.filter((g) => g.label !== '방식');
+  const method = AI_USAGE.groups.find((g) => g.label === '방식');
+  return (
+    <Slide>
+      <Head kicker="AI Usage" accent={BLUE} title="AI 활용: 실무 프로젝트와 개인 출시"
+        right={<p className="text-[10.5px] font-semibold text-right" style={{ color: INK_45 }}>{AI_USAGE.period}</p>} />
+      <div className="grid" style={{ gridTemplateColumns: '1.5fr 1fr 1fr', gap: 16, flex: 1, minHeight: 0 }}>
+        {cols.map((g) => (
+          <Card key={g.label} style={{ padding: '20px 22px', borderTop: `4px solid ${AI_COLOR[g.label]}`, minHeight: 0 }}>
+            <CardTitle accent={AI_COLOR[g.label]}>{g.label}</CardTitle>
+            <Bullets items={g.items} size={15} gap={16} marker="▪" accent={AI_COLOR[g.label]} />
+          </Card>
+        ))}
+      </div>
+      <div className="grid" style={{ gridTemplateColumns: '1fr 1.4fr', gap: 16, marginTop: 16 }}>
+        <Badges items={[{ num: '5종', label: '개인 앱 단독 출시' }, { num: '금상', label: '과학기술혁신대상 에듀테크' }]} />
+        <Card style={{ padding: '18px 24px', display: 'flex', alignItems: 'center' }}>
+          <p className="text-[13.5px] leading-[1.65]" style={{ color: INK }}>
+            <b style={{ color: BLUE }}>방식</b>{'  '}{method.items[0]}
+          </p>
+        </Card>
+      </div>
     </Slide>
   );
 }
@@ -837,6 +866,7 @@ export default function Print() {
       <ZingSlides />
       <DreamSlide />
       <SideSlide />
+      <AiSlide />
       <WebmindSlide />
       <ClosingSlide />
     </div>

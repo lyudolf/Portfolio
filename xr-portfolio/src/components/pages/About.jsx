@@ -17,7 +17,7 @@ const CARD = 'rgba(255,255,255,0.6)';
 const ACCENT = '#0f8f74';
 /* 섹션 라벨 색 = 그 섹션이 이어지는 페이지의 시그니처.
    색만 봐도 어디로 가는 목록인지 알 수 있게 한다. */
-const XR_ACCENT = '#1540c9';     // Work(KISTI·ZING·꿈키·한콘진)
+const XR_ACCENT = '#1540c9';     // Work(KISTI·ZING·꿈키·한국콘텐츠진흥원)
 const WEB_ACCENT = '#0d6b46';    // 웹마인드
 const SIDE_ACCENT = '#6d4fd6';   // Solo Work
 

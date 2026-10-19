@@ -96,7 +96,7 @@ const PROJECTS = [
     id: 'kocca',
     tab: 'kocca-detail',
     company: 'ETRIBE',
-    label: '한콘진',
+    label: '한국콘텐츠진흥원',
     display: ['KOC', 'CA'],
     subtitle: 'AI 직업체험 콘텐츠',
     eyebrow: 'AI × Career · 2026.04 ~ 진행 중 · 초기 기획 · 콘텐츠 기획안 작성',
@@ -270,7 +270,7 @@ function PlaceholderModel({ id, accent }) {
       </group>
     );
   }
-  /* 돋보기 + 증거 표식 (한콘진) */
+  /* 돋보기 + 증거 표식 (한국콘텐츠진흥원) */
   return (
     <group rotation={[0, 0, -0.5]}>
       <mesh position={[0, 0.35, 0]}>

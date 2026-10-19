@@ -69,12 +69,36 @@ export const CAREERS = [
   },
 ];
 
-export const SIDE_PROJECTS = {
-  title: '개인 프로젝트: AI 활용 서비스 기획·출시',
-  period: '2026.01 ~ 진행 중',
-  bullets: [
-    '앱인토스 미니앱 4종 + Google Play 앱 1종 단독 기획·개발·출시 (퀴즈왕 · 산책지수 · 소비유형 테스트 · 오늘은 누가 쏠래? · PillStack)',
-    "웹 3D 게임 'Leaf It Alone' 7일 단독 개발·배포 (React Three Fiber · ONNX AI, 라이브 서비스 중)",
+/* 2026-10-20: 개인 프로젝트 섹션을 "AI 활용"으로 대체(본인 OK·Gemini 검토 후). 문장은 명사형 종결.
+   실무 순서는 본인 지정: 한국콘텐츠진흥원 → KISTI → 꿈키올래, ZING은 마지막. */
+export const AI_USAGE = {
+  title: 'AI 활용',
+  period: '2025.12 ~ 진행 중',
+  groups: [
+    {
+      label: '실무',
+      items: [
+        '한국콘텐츠진흥원 국가과제: LLM이 매 플레이마다 사건·증거를 생성하는 구조의 콘텐츠 기획안과 난이도 파라미터를 설계함 (제20회 과학기술혁신대상 에듀테크 부문 금상)',
+        'KISTI XR 시스템: 노션·빌드노트·스크립트에 흩어진 운영 자료를 AI로 교차 분석해 IA 구조도·기능명세서·상태 정의로 재구성함',
+        '꿈키올래 9종: 이미지 생성 AI로 컨셉 시안을 먼저 만들어 클라이언트 검토 기간을 단축함',
+        'ZING 캠페인 플랫폼: 상태·운영 규칙·MVP 범위를 직접 설계하고, Claude Code를 활용해 3개 콘솔과 백오피스를 비공개 테스트 환경까지 구축함',
+      ],
+    },
+    {
+      label: '개인 출시',
+      items: [
+        '앱인토스 미니앱 4종 + Google Play 앱 1종을 단독 기획·개발·출시함 (PillStack: Gemini OCR + 식약처 공공데이터 연동)',
+        '웹 3D 게임 Leaf It Alone을 7일 동안 단독 개발·배포함 (직접 학습시킨 적 AI를 브라우저에 탑재)',
+      ],
+    },
+    {
+      label: '실험',
+      items: ['강화학습 보상 설계, RAG, 비전 인식(YOLO·MediaPipe)을 직접 구현해 보며 AI 기능을 기획할 때의 기술 제약을 확인함'],
+    },
+    {
+      label: '방식',
+      items: ['구현을 맡기기 전에 룰과 제약을 먼저 정의하며, 코드 작성보다 기능의 우선순위와 작업 순서를 설계하는 데 집중함'],
+    },
   ],
 };
 
@@ -86,7 +110,7 @@ const CERTS = [
   { name: '정보처리기사', detail: '한국산업인력공단', period: '2021.06' },
   { name: '웹어워드 코리아(K-Award) 금상', detail: '한국인터넷전문가협회, 리뉴얼 프로젝트 기획 담당', period: '수상' },
   /* 2026-10-01 발표. 정식 시상명 확인(2026-10-19, ditoday 수상작 명단) */
-  { name: '제20회 과학기술혁신대상 에듀테크 부문 금상', detail: '한국정보과학진흥협회·전자신문 주최, 과학기술정보통신부 후원 · 한콘진 국가과제 "AI 기반 실시간 동적 생성형 과학수사·프로파일링 직무체험", 초기 기획·콘텐츠 기획안 작성', period: '2026.10' },
+  { name: '제20회 과학기술혁신대상 에듀테크 부문 금상', detail: '한국콘텐츠진흥원 국가과제 "AI 기반 실시간 동적 생성형 과학수사·프로파일링 직무체험" 초기 기획·콘텐츠 기획안 작성', period: '2026.10' },
   { name: 'KSA 한국표준협회 프로젝트 대상', detail: 'OpenCV 이미지 기반 외관 불량 검출 (Python·JavaScript)', period: '2020' },
 ];
 
@@ -223,16 +247,22 @@ export default function Resume({ onNavigate }) {
           </div>
         </section>
 
-        {/* ── 개인 프로젝트 ── */}
+        {/* ── AI 활용 (개인 프로젝트 포함) ── */}
         <section className="mb-8" style={{ breakInside: 'avoid' }}>
-          <SectionTitle>개인 프로젝트</SectionTitle>
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 mb-2">
-            <h3 className="text-[15px] font-bold" style={{ color: INK }}>{SIDE_PROJECTS.title}</h3>
-            <span className="text-[12px] font-semibold" style={{ color: INK_38 }}>{SIDE_PROJECTS.period}</span>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+            <div className="flex-1"><SectionTitle>{AI_USAGE.title}</SectionTitle></div>
           </div>
-          <ul className="flex flex-col gap-1.5">
-            {SIDE_PROJECTS.bullets.map((b) => <Bullet key={b.slice(0, 20)}>{b}</Bullet>)}
-          </ul>
+          <p className="text-[12px] font-semibold -mt-2 mb-3" style={{ color: INK_38 }}>{AI_USAGE.period}</p>
+          <div className="flex flex-col gap-3">
+            {AI_USAGE.groups.map((g) => (
+              <div key={g.label} className="grid gap-x-4" style={{ gridTemplateColumns: '64px 1fr' }}>
+                <span className="text-[12px] font-bold pt-[3px]" style={{ color: ACCENT }}>{g.label}</span>
+                <ul className="flex flex-col gap-1">
+                  {g.items.map((b) => <Bullet key={b.slice(0, 24)}>{b}</Bullet>)}
+                </ul>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* ── 학력 · 자격/수상 ── */}
