@@ -16,6 +16,9 @@
    - 문장 규칙: 불릿은 한 줄, 설명 문단 금지, 배경 설명은 사이트로.
    - 본인 확정 문장(표지, ZING 헤드라인)은 토씨 그대로. 2026-10-20 본인 결정: ZING 기간 숫자(10영업일·6일) 전면 삭제, 의심만 산다. 2026-10-06 Gemini 교차검토 반영: 6→약 10영업일(본인 정정), 미뤄진 사유, MVP 범위 명시.
 
+   2026-10-24 Gemini 피드백 반영: KISTI · ZING 각 3장 → 2장(인수 시점→현재 표 중복 제거, STAR를 한 장에), 13장 → 11장.
+   문장 3건 교체(KISTI 지평선 문장, ZING "매출 책임이 붙는" 삭제, 꿈키 "불가능→가능"). 표지 문구는 본인 결정 대기.
+
    PDF 추출: `npm run pdf` (scripts/make-pdf.mjs, 링크 보존) 또는 Ctrl+P. */
 
 import { SCREENS } from './Kisti';
@@ -426,7 +429,7 @@ function MainProjectsSlide() {
   );
 }
 
-/* ══ 3. KISTI (3p) ══ */
+/* ══ 3. KISTI (2p) ══ */
 const KISTI_CHIP = 'ETRIBE · 2024.07 ~ 재직 중 · 국가과제 XR';
 
 function KistiSlides() {
@@ -438,82 +441,51 @@ function KistiSlides() {
 
   return (
     <>
-      {/* 문제정의 | 전략 (개요는 한 줄 + 칩으로) */}
+      {/* STAR 한 장 (개요는 한 줄 + 칩으로) */}
       <Slide>
         <Head chip={KISTI_CHIP} accent={KISTI} title="KISTI 고령자 XR 인지 · 운동 훈련 시스템"
           sub="병원에서 50세 이상 훈련자와 교수자가 함께 쓰는 임상 XR 훈련 시스템입니다. 6년 사업의 3년차에 투입됐습니다."
-          right={<StarTrack on={['S', 'T', 'A']} accent={KISTI} />} />
+          right={<StarTrack on={['S', 'T', 'A', 'R']} accent={KISTI} />} />
         <MetaRow accent={KISTI} items={[
           ['역할', '기획 · PM (단독)'], ['팀', '개발 2 · 디자인 1 · 기획 1'], ['사용자', '훈련자 · 교수자'], ['목표', '기술이전까지 가는 제품'],
         ]} />
-        <div className="grid" style={{ gridTemplateColumns: '1fr 360px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
-        <Split gap={32} left={
+        {/* 2026-10-24 Gemini 피드백(3장→2장): 결과 장의 "인수 시점 → 현재" 표는 STAR와 중복이라 빼고, 행동 · 결과를 이 장에 합침 */}
+        <Split ratio="1fr 1.2fr" gap={36} left={
           <>
             <StarTitle k="S" accent={KISTI} />
-            <Bullets accent={KISTI} size={15} gap={10} items={[
+            <Bullets accent={KISTI} size={15.5} gap={11} items={[
               '매년 바뀐 구축 업체, 확정된 기획이 불분명',
-              '지평선까지 펼쳐진 씬 · 카메라 이동, 시각 부하와 멀미',
+              '지평선까지 펼쳐진 씬과 카메라 이동으로 시각 부하 · 멀미 발생',
               '진입 6단계 메뉴, 교수자 · 훈련자 모두 혼란',
             ]} />
-            <StarTitle k="T" accent={KISTI} style={{ marginTop: 24 }} />
-            <Bullets accent={KISTI} size={15} gap={10} items={[
+            <StarTitle k="T" accent={KISTI} style={{ marginTop: 26 }} />
+            <Bullets accent={KISTI} size={15.5} gap={11} items={[
               '임상을 안정적으로 돌리고, 기술이전까지 가는 제품으로',
             ]} />
-          </>
-        } right={
-          <>
-            <StarTitle k="A" accent={KISTI} />
-            <Bullets accent={KISTI} marker="➤" size={15} gap={12} items={[
-              '조작은 전부 교수자 PC로, 훈련자는 쓰고 움직이기만',
-              '시점 고정 · 핵심 오브젝트 중심으로 씬 재설계',
-              '진입 6단계 → 1~2 depth 단일 흐름',
-              '인계 2주 만에 새 기획서를 들고 선제 미팅',
-            ]} />
-          </>
-        } />
-        <Card style={{ padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, minHeight: 0 }}>
-          <Shot src="/images/kisti/start-new.png" title="교수자 런처: 시작 화면 (재설계 후)" aspect="16 / 8.6" />
-          <Shot src="/images/kisti/learner-new.png" title="교수자 런처: 훈련자 관리 (재설계 후)" aspect="16 / 8.6" />
-        </Card>
-        </div>
-      </Slide>
-
-      {/* 결과 */}
-      <Slide>
-        <Head chip={KISTI_CHIP} accent={KISTI} title="임상 60명 무이슈 · 1년 용역이 3년차 운영으로"
-          right={<StarTrack on={['A', 'R']} accent={KISTI} />} />
-        <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
-          <Card>
-            <StarTitle k="A" accent={KISTI} note="협업 · 현장" />
-            <Bullets accent={KISTI} marker="▪" size={15} gap={12} items={[
-              '클라이언트 세 분의 요구를 모아 우선순위화, 1순위는 안정성',
-              '기획서 맨 앞에 유저 플로우, 기능마다 엣지 케이스 병기',
-              '임상지에 직접 내려가 가시성 · 멀미 · 그랩 난이도 즉시 수정',
-            ]} />
-            <StarTitle k="R" accent={KISTI} style={{ marginTop: 30 }} />
-            <Bullets accent={KISTI} marker="➤" items={[
+            <StarTitle k="R" accent={KISTI} style={{ marginTop: 26 }} />
+            <Bullets accent={KISTI} marker="➤" size={15.5} gap={11} items={[
               '1차 임상 60명 무이슈 완료, 2차 60명 진행 중',
               '1년 용역 → 3년차 운영, 4년차 사업 논의 중',
               '클라이언트 기술이전 준비, 아키텍처 전환 진행 중',
             ]} />
-          </Card>
-          <div className="flex flex-col" style={{ gap: 20 }}>
-            <Panel title="인수 시점 → 현재" accent={KISTI}>
-              <Table accent={KISTI} head={['', '인수 시점', '현재']} rows={[
-                ['운영 depth', '진입 6단계', '1~2 depth'],
-                ['임상', '-', '1차 60명 완료 · 2차 진행'],
-                ['계약', '1년 용역', '3년차 운영 · 4년차 논의'],
-              ]} />
-            </Panel>
-            <Badges accent={KISTI} items={[
+          </>
+        } right={
+          <div className="flex flex-col h-full">
+            <StarTitle k="A" accent={KISTI} />
+            <Bullets accent={KISTI} marker="➤" size={15.5} gap={11} items={[
+              '조작은 전부 교수자 PC로, 훈련자는 쓰고 움직이기만',
+              '시점 고정 · 핵심 오브젝트 중심으로 씬 재설계, 진입 6단계 → 1~2 depth',
+              '인계 2주 만에 새 기획서를 들고 선제 미팅',
+              '분야별 클라이언트 요구를 모아 우선순위화, 1순위는 안정성',
+              '기획서 맨 앞에 유저 플로우, 기능마다 엣지 케이스 병기',
+              '임상지에 직접 내려가 가시성 · 멀미 · 그랩 난이도 즉시 수정',
+            ]} />
+            <Badges accent={KISTI} style={{ marginTop: 'auto', boxShadow: 'none', background: BG }} items={[
               { num: '60명', label: '1차 임상 무이슈' },
               { num: '3년차', label: '1년 용역 → 연장' },
             ]} />
-            <Card style={{ padding: 16, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-              <FillShot src="/images/kisti/cognitive-new.png" title="인지검사 결과: 회차별 표 · 추이 그래프 · 내보내기" />
-            </Card>
           </div>
-        </div>
+        } />
       </Slide>
 
       {/* 화면 전후 */}
@@ -535,98 +507,63 @@ function KistiSlides() {
   );
 }
 
-/* ══ 4. ZING (3p) ══ */
+/* ══ 4. ZING (2p) ══ */
 const ZING_CHIP = 'ETRIBE 사내 신사업 · 2026.09 · 캠페인 플랫폼';
 
 function ZingSlides() {
-  const steps = ['설계 · 기반', '프로세스 콘솔', '공개 사이트', '운영 규칙', '문서 · QA', '반영'];
   /* 세로로 긴 문서(IA 트리)는 상단만 잘라 보여주고, 가로형(상태 4축·ERD)은 전체를 담는다 */
   const docs = [['doc-01', 'cover'], ['doc-03', 'contain'], ['doc-04', 'contain']]
     .map(([k, fit]) => ({ ...ZING_DOCS.find((d) => d.src.includes(k)), fit }));
-  /* 01-home은 문제정의 장, 08-admin은 결과 장에 썼으니 여기선 나머지 화면 */
-  const shots = ['02-campaigns', '03-campaign', '07-influencer'].map((k) => ZING_SHOTS.find((d) => d.src.includes(k)));
+  /* 2026-10-24 2장으로 줄이며 첫 장 화면을 뺐으므로 관리자 요청 큐를 여기로 */
+  const shots = ['02-campaigns', '07-influencer', '08-admin-requests'].map((k) => ZING_SHOTS.find((d) => d.src.includes(k)));
 
   return (
     <>
-      {/* 문제정의 | 전략 */}
+      {/* STAR 한 장 */}
       <Slide>
         <Head chip={ZING_CHIP} accent={ZING} title="ZING: 한국 광고주 × 중국 인플루언서 캠페인 매칭 플랫폼"
           sub="광고주 · 인플루언서 · 관리자 세 콘솔이 캠페인 요청부터 정산까지 한 흐름으로 움직이는 플랫폼입니다."
-          right={<StarTrack on={['S', 'T', 'A']} accent={ZING} />} />
+          right={<StarTrack on={['S', 'T', 'A', 'R']} accent={ZING} />} />
         <MetaRow accent={ZING} items={[
           ['역할', '기획 · 설계 · 개발 (1인)'], ['입력', 'Figma Make 프로토타입 · 디자인 시안'], ['사용자', '광고주 · 인플루언서 · 관리자'], ['기간', '2026.09 ~ 진행 중'],
         ]} />
-        <div className="grid" style={{ gridTemplateColumns: '1fr 360px', gridTemplateRows: 'minmax(0, 1fr)', gap: 22, flex: 1, minHeight: 0 }}>
-        <Split gap={32} left={
-          <>
+        {/* 2026-10-24 Gemini 피드백(3장→2장): "넘겨받은 것 → 구축 후" 표는 상황 · 결과와 중복이라 빼고, 만든 순서는 한 줄로.
+            "매출 책임이 붙는" 사유는 누가 책임졌는지 헷갈린다는 지적으로 PDF에서만 뺌 */}
+        <Split ratio="1fr 1.15fr" gap={36} left={
+          <div className="flex flex-col h-full">
             <StarTitle k="S" accent={ZING} />
-            <Bullets accent={ZING} size={15} gap={10} items={[
-              '매출 책임이 붙는 신사업이라 9개월간 착수되지 못한 구축, 넘겨받은 건 화면만 있는 프로토타입',
+            <Bullets accent={ZING} size={15.5} gap={11} items={[
+              '9개월간 착수되지 못한 신사업, 넘겨받은 건 화면만 있는 프로토타입',
               '데이터는 전부 mock, 연결 안 된 페이지 40 · 끊긴 링크 14',
               '상태는 화면마다 따로, 정책값은 코드 곳곳에 하드코딩',
             ]} />
-            <StarTitle k="T" accent={ZING} style={{ marginTop: 24 }} />
-            <Bullets accent={ZING} size={15} gap={10} items={[
+            <StarTitle k="T" accent={ZING} style={{ marginTop: 26 }} />
+            <Bullets accent={ZING} size={15.5} gap={11} items={[
               'MVP 한 사이클(문의 → 관리자 등록 → 진행)을 실서비스 구조로',
             ]} />
-          </>
+            <Badges accent={ZING} style={{ marginTop: 'auto', boxShadow: 'none', background: BG }} items={[
+              { num: '73', label: '화면 (프로토타입 → 실서비스)' },
+              { num: '96', label: 'QA 항목 설계' },
+            ]} />
+          </div>
         } right={
           <>
             <StarTitle k="A" accent={ZING} />
-            <Bullets accent={ZING} marker="➤" size={15} gap={12} items={[
+            <Bullets accent={ZING} marker="➤" size={15.5} gap={11} items={[
               '상태는 캠페인 · 지원 · 참여 · 정산 네 축으로 통합',
               '규칙은 DB 설정값으로, 화면은 보여주기만',
               '결제 · 직접 채팅은 제외, 기한이 지나면 자동 진행',
+              '설계 · 기반 → 프로세스 콘솔 → 공개 사이트 → 운영 규칙 → 문서 · QA 순서로 구축',
             ]} />
-          </>
-        } />
-        <Card style={{ padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, minHeight: 0 }}>
-          <Shot src="/images/zing/01-home.png" title={ZING_SHOTS[0].title} aspect="16 / 8.6" />
-          <Shot src="/images/zing/04-advertiser-dashboard.png" title="광고주 콘솔: 대시보드" aspect="16 / 8.6" />
-        </Card>
-        </div>
-      </Slide>
-
-      {/* 결과 */}
-      <Slide>
-        <Head chip={ZING_CHIP} accent={ZING} title="9개월 미뤄지던 구축을 1인으로 설계·구축"
-          right={<StarTrack on={['A', 'R']} accent={ZING} />} />
-        <div className="grid" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 28, flex: 1, minHeight: 0 }}>
-          <Card style={{ display: 'flex', flexDirection: 'column' }}>
-            <StarTitle k="A" accent={ZING} note="만든 순서" />
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
-              {steps.map((t, i) => (
-                <div key={t} className="rounded-lg px-2.5 py-2" style={{ background: `${ZING}0c`, border: `1px solid ${ZING}22` }}>
-                  <p className="text-[10.5px] font-extrabold" style={{ color: ZING }}>0{i + 1}</p>
-                  <p className="text-[11.5px] font-bold leading-tight" style={{ color: INK }}>{t}</p>
-                </div>
-              ))}
-            </div>
-            <StarTitle k="R" accent={ZING} style={{ marginTop: 30 }} />
-            <Bullets accent={ZING} marker="➤" items={[
+            <StarTitle k="R" accent={ZING} style={{ marginTop: 26 }} />
+            <Bullets accent={ZING} marker="➤" size={15.5} gap={11} items={[
               '비공개 테스트 환경까지 오픈 (MVP 코어 사이클 구조 검증, 프로덕션 전)',
               '화면 73 · 테이블 47 · 자동화 8종 문서화',
               'QA 96항목 설계, 1차 회신 13건 반영',
               '다음 단계: 클로즈드 베타',
             ]} />
-          </Card>
-          <div className="flex flex-col" style={{ gap: 20 }}>
-            <Panel title="넘겨받은 것 → 구축 후" accent={ZING}>
-              <Table accent={ZING} head={['', '인수 시점', '구축 후']} rows={[
-                ['화면', '미연결 40 · 끊긴 링크 14', '73 (문서화)'],
-                ['상태 모델', '화면마다 6벌 이상', '4축 통합'],
-                ['데이터', 'mock', '테이블 47 · 자동화 8종'],
-              ]} />
-            </Panel>
-            <Badges accent={ZING} items={[
-              { num: '73', label: '화면 (프로토타입 → 실서비스)' },
-              { num: '96', label: 'QA 항목 설계' },
-            ]} />
-            <Card style={{ padding: 16, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-              <FillShot src="/images/zing/08-admin-requests.png" title="관리자 콘솔: 캠페인 요청 큐" />
-            </Card>
-          </div>
-        </div>
+          </>
+        } />
       </Slide>
 
       {/* 산출물 · 화면 */}
@@ -665,7 +602,7 @@ function DreamSlide() {
           ]} />
           <StarTitle k="A" accent={DREAM} sm style={{ marginTop: 16 }} />
           <Bullets accent={DREAM} marker="➤" size={14} gap={6} items={[
-            '수주 판단 전에 프레임워크 기획서 먼저, "불가능" → "가능"',
+            '수주 전 공통 프레임워크를 먼저 기획해 개발 가능성 확보',
             '직업당 30분 기획을 스스로 폐기, 전체 40~50분으로',
             '1종 기획 즉시 개발로 넘기는 병렬 진행, 외주 없이 완료',
           ]} />
