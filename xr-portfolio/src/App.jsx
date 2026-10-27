@@ -17,6 +17,7 @@ import KoccaDetail from './components/pages/KoccaDetail';
 import Webmind from './components/pages/Webmind';
 import Zing from './components/pages/Zing';
 import Print from './components/pages/Print';
+import PrintV2 from './components/pages/PrintV2';
 import { TAB_PATHS, PATH_TABS, PAGE_META, SITE_URL } from './lib/site';
 import { trackPageView } from './lib/analytics';
 
@@ -70,6 +71,8 @@ export default function App() {
   }, [location.pathname, printMatch]);
 
   if (printMatch) return <Print />;
+  /* /print2 — PDF 리메이크 시안(2026-10-27). 방향 확정 전까지 /print와 별도로 둔다. */
+  if (location.pathname === '/print2') return <PrintV2 />;
 
   const Page = PAGES[activeTab];
   const isDetailPage = DETAIL_PAGES.has(activeTab);
