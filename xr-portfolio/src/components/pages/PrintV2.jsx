@@ -54,10 +54,10 @@ function Headline({ children }) {
 function Block({ label, lines, strong = false }) {
   return (
     <div style={{ paddingTop: 14, borderTop: `1px solid ${LINE}` }}>
-      <p className="text-[12px] font-bold mb-1.5" style={{ color: INK_35 }}>{label}</p>
+      <p className="text-[12.5px] font-bold mb-2" style={{ color: INK_35 }}>{label}</p>
       <ul className="flex flex-col" style={{ gap: 3 }}>
         {lines.map((l) => (
-          <li key={l} className="flex gap-2.5" style={{ fontSize: 15, lineHeight: '24px', color: strong ? INK : INK_60, fontWeight: strong ? 700 : 500 }}>
+          <li key={l} className="flex gap-2.5" style={{ fontSize: 16, lineHeight: '26px', color: strong ? INK : INK_60, fontWeight: strong ? 700 : 500 }}>
             <span style={{ color: POINT, flexShrink: 0 }}>·</span>
             <span>{l}</span>
           </li>
@@ -94,7 +94,7 @@ function FillImg({ src, caption, grow = 1, fit = 'cover' }) {
 function KistiSlide() {
   return (
     <Slide>
-      <div className="grid flex-1" style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 56, paddingBottom: 36, minHeight: 0 }}>
+      <div className="grid flex-1" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 48, paddingBottom: 36, minHeight: 0 }}>
         <div className="flex flex-col" style={{ minHeight: 0 }}>
           <Meta>KISTI 고령자 XR 훈련 시스템 · 국가과제 · 2024.07 ~ 재직 중 · 기획 · PM 단독</Meta>
           <Headline>1년짜리 용역을 3년차 운영까지 이어가고, 임상 60명을 이슈 없이 마쳤습니다</Headline>
@@ -171,7 +171,7 @@ function KistiSpecSlide() {
 function MrPocSlide() {
   return (
     <Slide>
-      <div className="grid flex-1" style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 56, paddingBottom: 36, minHeight: 0 }}>
+      <div className="grid flex-1" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 48, paddingBottom: 36, minHeight: 0 }}>
         <div className="flex flex-col" style={{ minHeight: 0 }}>
           <Meta>KISTI 2026 과업 · 햅틱 MR PoC · 기획 · 스토리보드 · 시연 플레이어 1인</Meta>
           <Headline>프롬프트로 만든 진동 파형을 햅틱 글러브로 보내는 MR 훈련 런처, 기획서부터 시연까지</Headline>
@@ -212,7 +212,7 @@ function DreamSlide() {
   ];
   return (
     <Slide>
-      <div className="grid flex-1" style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 56, paddingBottom: 36, minHeight: 0 }}>
+      <div className="grid flex-1" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 48, paddingBottom: 36, minHeight: 0 }}>
         <div className="flex flex-col" style={{ minHeight: 0 }}>
           <Meta>꿈키올래 · 서귀포 진로직업체험센터 · Apple Vision Pro 직업체험 9종 · 2025.09 ~ 11 · PM · 기획 · QA</Meta>
           <Headline>기한 내 납품 불가 판정을 받은 9종을 공통 프레임워크로 다시 짜서 실개발 2개월에 납품</Headline>
@@ -240,26 +240,44 @@ function DreamSlide() {
           <div className="flex" style={{ gap: 14, flex: '1.45 1 0', minHeight: 0 }}>
             {pages.map(([src, cap]) => <FillImg key={src} src={src} caption={cap} />)}
           </div>
-          <FillImg src="/images/dream/storyboard/profiler-case14.png" caption="범죄분석관 CASE_14 — 왼쪽 화면 시안, 오른쪽 보드 구성 · NPC 대사 · HUD 트리거" />
+          <FillImg src="/images/dream/storyboard/profiler-case14.png" caption="범죄분석관 CASE_14 — 왼쪽 화면 시안, 오른쪽 보드 구성 · NPC 대사 · HUD 트리거" fit="contain" />
         </div>
       </div>
     </Slide>
   );
 }
 
-/* ══ 표지 — 2026-10-27 본인 결정: 슬로건·해시태그 삭제, 사실만 ══ */
+/* ══ 표지 — 2026-10-27 본인 결정: 슬로건·해시태그 삭제, 사실만. 오른쪽은 회사별 하위 목차 ══ */
+const TOC = [
+  {
+    company: '㈜이트라이브', role: '서비스 기획 · PM · 매니저', period: '2024.07 ~ 재직 중',
+    items: [
+      ['KISTI 고령자 XR 인지 · 운동 훈련 시스템', '국가과제 · 기획 · PM 단독', '02 – 03'],
+      ['KISTI 햅틱 MR PoC', '기획 · 스토리보드 · 시연 플레이어 1인', '04'],
+      ['ZING 캠페인 매칭 플랫폼', '사내 신사업 · 기획 · 설계 · 개발 1인', '05 – 06'],
+      ['꿈키올래 Vision Pro 직업체험 9종', 'PM · 기획 · QA', '07'],
+      ['한국콘텐츠진흥원 AI 직업체험 국가과제', '초기 기획 · 콘텐츠 기획안 · 과학기술혁신대상 금상', '09'],
+    ],
+  },
+  {
+    company: '웹마인드', role: '서비스 기획 · 주임', period: '2023.04 ~ 2024.07',
+    items: [
+      ['아마노코리아 브랜드 사이트 리뉴얼', '웹어워드 코리아 금상', '08'],
+      ['한국건설품질협의회 공식 사이트 구축', '제안 PT 수주', '08'],
+      ['Intertek 공식 사이트 고도화', 'IA 재구조화', '08'],
+    ],
+  },
+  { company: '캐파 (CAPA)', role: '개발 인턴', period: '2023.01 ~ 2023.02', items: [] },
+  {
+    company: '개인', role: '기획 · 개발 · 출시 단독', period: '2026',
+    items: [['앱 5종 · 웹 3D 게임 1종 · AI 활용', '', '09']],
+  },
+];
+
 function CoverSlide() {
-  const projects = [
-    ['KISTI 고령자 XR 훈련 시스템', '국가과제 · 기획 · PM 단독 · 2024.07 ~'],
-    ['KISTI 햅틱 MR PoC', '기획 · 스토리보드 · 시연 플레이어 1인 · 2026'],
-    ['ZING 캠페인 매칭 플랫폼', '사내 신사업 · 기획 · 설계 · 개발 1인 · 2026.09 ~'],
-    ['꿈키올래 Vision Pro 직업체험 9종', 'PM · 기획 · QA · 2025.09 ~ 11'],
-    ['한국콘텐츠진흥원 AI 직업체험 국가과제', '초기 기획 · 콘텐츠 기획안 · 과학기술혁신대상 금상'],
-    ['웹마인드 B2B 웹 구축 3건', '제안 PT → IA · 화면정의서 → 유지보수 · 2023.04 ~ 2024.07'],
-  ];
   return (
     <Slide>
-      <div className="grid flex-1" style={{ gridTemplateColumns: '1fr 1fr', gap: 72, paddingBottom: 36, minHeight: 0 }}>
+      <div className="grid flex-1" style={{ gridTemplateColumns: '1fr 1.15fr', gap: 64, paddingBottom: 36, minHeight: 0 }}>
         <div className="flex flex-col">
           <Meta>Portfolio · 2026</Meta>
           <h1 className="text-[56px] font-extrabold leading-none mt-4" style={{ letterSpacing: '-0.03em' }}>{CONTACT.name}</h1>
@@ -276,29 +294,36 @@ function CoverSlide() {
               </div>
             ))}
           </div>
-        </div>
-        <div className="flex flex-col" style={{ paddingTop: 6 }}>
-          <p className="text-[12px] font-bold mb-3" style={{ color: INK_35 }}>경력</p>
-          {CAREERS.map((c) => (
-            <div key={c.company} className="flex items-baseline justify-between" style={{ padding: '9px 0', borderTop: `1px solid ${LINE}` }}>
-              <div>
-                <p className="text-[14px] font-bold" style={{ color: INK }}>{c.company}</p>
-                <p className="text-[11.5px]" style={{ color: INK_60 }}>{c.role}</p>
-              </div>
-              <p className="text-[12px] font-semibold" style={{ color: INK_35, flexShrink: 0 }}>{c.period}</p>
-            </div>
-          ))}
-          <p className="text-[12px] font-bold mt-7 mb-3" style={{ color: INK_35 }}>이 문서의 프로젝트</p>
-          {projects.map(([n, d]) => (
-            <div key={n} className="flex items-baseline justify-between" style={{ padding: '7px 0', borderTop: `1px solid ${LINE}` }}>
-              <p className="text-[13.5px] font-bold" style={{ color: INK }}>{n}</p>
-              <p className="text-[11.5px] text-right" style={{ color: INK_60, flexShrink: 0, marginLeft: 16 }}>{d}</p>
-            </div>
-          ))}
-          <div className="mt-auto text-[12px] leading-[1.8]" style={{ color: INK_60 }}>
+          <div className="mt-6 text-[12px] leading-[1.8]" style={{ color: INK_60 }}>
             <p>{CONTACT.email}</p>
             <p>{CONTACT.site} · {CONTACT.github}</p>
           </div>
+        </div>
+
+        <div className="flex flex-col" style={{ paddingTop: 6 }}>
+          {TOC.map((c) => (
+            <div key={c.company} style={{ borderTop: `1px solid ${LINE}`, padding: '10px 0 8px' }}>
+              <div className="flex items-baseline justify-between">
+                <p className="text-[14.5px] font-extrabold" style={{ color: INK }}>
+                  {c.company} <span className="text-[11.5px] font-semibold" style={{ color: INK_60, marginLeft: 6 }}>{c.role}</span>
+                </p>
+                <p className="text-[11.5px] font-semibold" style={{ color: INK_35, flexShrink: 0 }}>{c.period}</p>
+              </div>
+              {c.items.length > 0 && (
+                <div className="flex flex-col" style={{ marginTop: 6, gap: 4 }}>
+                  {c.items.map(([n, d, pg]) => (
+                    <div key={n} className="grid items-baseline" style={{ gridTemplateColumns: '1fr auto 44px', gap: 12, paddingLeft: 14 }}>
+                      <p className="text-[13px] font-semibold" style={{ color: INK }}>
+                        <span style={{ color: POINT, marginRight: 8 }}>·</span>{n}
+                      </p>
+                      <p className="text-[11px]" style={{ color: INK_60 }}>{d}</p>
+                      <p className="text-[11px] text-right" style={{ color: INK_35 }}>{pg}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </Slide>
@@ -309,7 +334,7 @@ function CoverSlide() {
 function ZingSlide() {
   return (
     <Slide>
-      <div className="grid flex-1" style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 56, paddingBottom: 36, minHeight: 0 }}>
+      <div className="grid flex-1" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 48, paddingBottom: 36, minHeight: 0 }}>
         <div className="flex flex-col" style={{ minHeight: 0 }}>
           <Meta>ZING 캠페인 매칭 플랫폼 · 사내 신사업 · 2026.09 ~ 진행 중 · 기획 · 설계 · 개발 1인</Meta>
           <Headline>9개월 미뤄지던 신사업 플랫폼을 혼자 설계·구축해 비공개 테스트 환경까지 열었습니다</Headline>
@@ -378,7 +403,7 @@ function WebmindSlide() {
   const posts = WEBMIND_QA[2].blocks.find((b) => b.type === 'posts').items;
   return (
     <Slide>
-      <div className="grid flex-1" style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 56, paddingBottom: 36, minHeight: 0 }}>
+      <div className="grid flex-1" style={{ gridTemplateColumns: '1.3fr 1fr', gridTemplateRows: 'minmax(0, 1fr)', gap: 48, paddingBottom: 36, minHeight: 0 }}>
         <div className="flex flex-col" style={{ minHeight: 0 }}>
           <Meta>웹마인드 · B2B 웹에이전시 · 2023.04 ~ 2024.07 · 기획 · 주임</Meta>
           <Headline>제안 PT부터 IA · 화면정의서 · 유지보수까지, 참여한 신규 제안은 전부 수주했습니다</Headline>
